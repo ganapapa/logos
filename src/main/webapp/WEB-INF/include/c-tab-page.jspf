@@ -1,0 +1,204 @@
+<%@ page pageEncoding="utf-8"%>
+<div id="factory01" class="">
+<div>
+	<div class="row" id="row1">
+        <!-- 
+		<c:choose>
+			<c:when test="${fn:length(table_data) > 0}">
+				<c:forEach begin="1" end="31" step="1" varStatus="theCount">
+					<th nowrap>${theCount.index}일</th>
+				</c:forEach>
+			</c:when>
+			<c:otherwise>
+				<th colspan="31">조회된 결과가 없습니다.</th>
+			</c:otherwise>
+		</c:choose>
+        -->
+		<a href="#" class="col-2" id="C-1"	>
+			<p class="titlebox">C-1호기</p>
+			<p class="textbox">
+				가동율: 00.0%<br>실적율: 00.0%
+			</p>
+		</a> 
+		<a href="#" class="col-2" id="C-2"	onclick="fn_showPopUp()">
+			<p class="titlebox">C-2호기</p>
+			<p class="textbox">
+				가동율: 00.0%<br>실적율: 00.0%
+			</p>
+		</a> 
+		<a href="#" class="col-2" id="C-3"	onclick="fn_showPopUp()">
+			<p class="titlebox">C-3호기</p>
+			<p class="textbox">
+				가동율: 00.0%<br>실적율: 00.0%
+			</p>
+		</a> 
+		<a href="#" class="col-2" id="C-4"	onclick="fn_showPopUp()">
+			<p class="titlebox">C-4호기</p>
+			<p class="textbox">
+				가동율: 00.0%<br>실적율: 00.0%
+			</p>
+		</a> 
+		<a href="#" class="col-2" id="C-5"	onclick="fn_showPopUp()">
+			<p class="titlebox">C-4호기</p>
+			<p class="textbox">
+				가동율: 00.0%<br>실적율: 00.0%
+			</p>
+		</a>
+ 	</div>
+
+
+	<div class="row" id="row2">
+		<a href="#" class="col-2" id="C-6"	onclick="fn_showPopUp()">
+			<p class="titlebox">C-6호기</p>
+			<p class="textbox">
+				가동율: 00.0%<br>실적율: 00.0%
+			</p>
+		</a> 
+		<a href="#" class="col-2" id="C-7"	onclick="fn_showPopUp()">
+			<p class="titlebox">C-7호기</p>
+			<p class="textbox">
+				가동율: 00.0%<br>실적율: 00.0%
+			</p>
+		</a> 
+		<a href="#" class="col-2" id="C-8"	onclick="fn_showPopUp()">
+			<p class="titlebox">C-8호기</p>
+			<p class="textbox">
+				가동율: 00.0%<br>실적율: 00.0%
+			</p>
+		</a> 
+		<a href="#" class="col-2" id="C-9"	onclick="fn_showPopUp()">
+			<p class="titlebox">C-9호기</p>
+			<p class="textbox">
+				가동율: 00.0%<br>실적율: 00.0%
+			</p>
+		</a> 
+		<a href="#" class="col-2" id="C-10"	onclick="fn_showPopUp()">
+			<p class="titlebox">C-10호기</p>
+			<p class="textbox">
+				가동율: 00.0%<br>실적율: 00.0%
+			</p>
+		</a>
+	</div>
+
+
+
+	<div class="row" id="row3">
+		<a href="#" class="col-2" id="C-11"	onclick="fn_showPopUp()">
+			<p class="titlebox">C-11호기</p>
+			<p class="textbox">
+				가동율: 00.0%<br>실적율: 00.0%
+			</p>
+		</a> 
+		<a href="#" class="col-2" id="C-12"	onclick="fn_showPopUp()">
+			<p class="titlebox">C-12호기</p>
+			<p class="textbox">
+				가동율: 00.0%<br>실적율: 00.0%
+			</p>
+		</a> 
+		<a href="#" class="col-2" id="C-13"	onclick="fn_showPopUp()">
+			<p class="titlebox">C-13호기</p>
+			<p class="textbox">
+				가동율: 00.0%<br>실적율: 00.0%
+			</p>
+		</a> 
+		<a href="#" class="col-2" id="C-14"	onclick="fn_showPopUp()">
+			<p class="titlebox">C-14호기</p>
+			<p class="textbox">
+				가동율: 00.0%<br>실적율: 00.0%
+			</p>
+		</a> 
+		<a href="#" class="col-2" id="C-15"	onclick="fn_showPopUp()">
+			<p class="titlebox">C-15호기</p>
+			<p class="textbox">
+				가동율: 00.0%<br>실적율: 00.0%
+			</p>
+		</a>
+	</div>
+
+	<div class="row" id="row4">
+		<a href="#" class="col-2" id="C-16"	onclick="fn_showPopUp()">
+			<p class="titlebox">C-16호기</p>
+			<p class="textbox">
+				가동율: 00.0%<br>실적율: 00.0%
+			</p>
+		</a> 
+		<a href="#" class="col-2" id="C-17"	onclick="fn_showPopUp()">
+			<p class="titlebox">C-17호기</p>
+			<p class="textbox">
+				가동율: 00.0%<br>실적율: 00.0%
+			</p>
+		</a> 
+		<a href="#" class="col-2" id="C-18"	onclick="fn_showPopUp()">
+			<p class="titlebox">C-18호기</p>
+			<p class="textbox">
+				가동율: 00.0%<br>실적율: 00.0%
+			</p>
+		</a> 
+		<a href="#" class="col-2" id="C-19"	onclick="fn_showPopUp()">
+			<p class="titlebox">C-19호기</p>
+			<p class="textbox">
+				가동율: 00.0%<br>실적율: 00.0%
+			</p>
+		</a> 
+		<a href="#" class="col-2" id="C-20"	onclick="fn_showPopUp()">
+			<p class="titlebox">C-20호기</p>
+			<p class="textbox">
+				가동율: 00.0%<br>실적율: 00.0%
+			</p>
+		</a>
+	</div>
+
+
+	<div class="row" id="row5">
+		<a href="#" class="col-2" id="C-21"	onclick="fn_showPopUp()">
+			<p class="titlebox">C-21호기</p>
+			<p class="textbox">
+				가동율: 00.0%<br>실적율: 00.0%
+			</p>
+		</a> 
+		<a href="#" class="col-2" id="">
+			<p class="titlebox"></p>
+			<p class="textbox">
+				가동율: 00.0%<br>실적율: 00.0%
+			</p>
+		</a> 
+		<a href="#" class="col-2" id="">
+			<p class="titlebox"></p>
+			<p class="textbox">
+				가동율: 00.0%<br>실적율: 00.0%
+			</p>
+		</a>
+		<a href="#" class="col-2" id="">
+			<p class="titlebox"></p>
+			<p class="textbox">
+				가동율: 00.0%<br>실적율: 00.0%
+			</p>
+		</a> 
+		<a href="#" class="col-2" id="">
+			<p class="titlebox"></p>
+			<p class="textbox">
+				가동율: 00.0%<br>실적율: 00.0%
+			</p>
+		</a>
+ 		<div class="col-6 nohref">
+			<dl class="total-info">
+				<dt>
+					<span>가동중</span>
+				</dt>
+				<dd class="status-default">
+					<span>00</span>
+				</dd>
+				<dt>
+					<span>정지/대기</span>
+				</dt>
+				<dd class="status-waiting">
+					<span>00</span>
+				</dd>
+				<!-- <dt><span>고장/수리</span></dt>
+                                <dd class="status-wraning"><span>00</span></dd> -->
+			</dl>
+		</div>
+	</div>
+</div>
+</div>
+

@@ -1,0 +1,189 @@
+#makeSearchParams($searchParam, "orgCd,pos,limit,sortOrder", $searchParamUrl)
+#set ($searchParamUrl = "searchParamUrl=$!esc.url($searchParamUrl)")
+#set ($__brdTypeNm = $!CodeUtils.getCodeValue("BRDID", $!searchParam.brdType))
+<script language="javascript">
+<!--
+$(document).ready(function(){
+	$(".submit").keydown(function(e) {
+		if (e.keyCode == 13) {
+			e.preventDefault();
+			f_search();
+		}
+	});
+});
+
+function goPage(p) {
+	$("#searchForm input[name=page]").val(p);
+	$("#searchForm").submit();
+}
+
+// 조회
+function f_search() {
+	$("#searchForm input[name=selBrdProgSt]").val($("#tmpForm select[name=selBrdProgSt]").val());
+	$("#searchForm input[name=searchType]").val($("#tmpForm select[name=searchType]").val());
+	$("#searchForm input[name=searchKeyword]").val($("#tmpForm input[name=searchKeyword]").val());
+	$("#searchForm input[name=searchName]").val($("#tmpForm input[name=searchName]").val());
+
+	$("#searchForm input[name=searchID]").val($("#tmpForm input[name=searchID]").val());
+	$("#searchForm input[name=searchDept]").val($("#tmpForm input[name=searchDept]").val());
+	$("#searchForm input[name=searchJobtitl]").val($("#tmpForm input[name=searchJobtitl]").val());
+	
+	$("#searchForm input[name=searchType]").val($("#tmpForm select[name=searchType]").val());
+	$("#searchForm input[name=page]").val(1);
+	$("#searchForm").submit();
+}
+-->
+</script>
+<div class="right_content">
+<form id="searchForm" action="staff_mng_list.jsp" method="post">
+	<input type="hidden" name="selBrdProgSt" value="$!searchParam.selBrdProgSt"/>
+	<input type="hidden" name="searchType" value="$!searchParam.searchType"/>
+	<input type="hidden" name="searchKeyword" value="$!searchParam.searchKeyword"/>
+	<input type="hidden" name="searchName" value="$!searchParam.searchName"/>
+	
+	<input type="hidden" name="searchID" value="$!searchParam.searchID"/>
+	<input type="hidden" name="searchDept" value="$!searchParam.searchDept"/>
+	<input type="hidden" name="searchJobtitl" value="$!searchParam.searchJobtitl"/>
+	
+	<input type="hidden" name="brdType" value="$!searchParam.brdType"/>
+	<input type="hidden" name="page" value="$!searchParam.page"/>
+	<input type="hidden" name="pageSize" value="$!searchParam.pageSize"/>
+</form>
+<form id="tmpForm">
+	<input type="hidden" name="page" value="$!searchParam.page"/>
+	<input type="hidden" name="pageSize" value="$!searchParam.pageSize"/>
+	<div class="t_icon">$__brdTypeNm <div class="r_txt"><div class="navi">Home &gt; 관리자 &gt; <strong>$__brdTypeNm</strong></div></div></div>
+	
+<!--	
+	<div class="tc_box02">
+		<div class="l_box"></div>
+		<div class="r_box">
+			<div >
+				등록일: 
+				<input type="text" name="brdStratDt" value="$!DateUtils.getTime($!searchParam.brdStratDt, "yyyyMMdd", "yyyy-MM-dd")" maxlength="10" onkeydown="gf_num_only();" onKeyUp="gf_dateFormat(this);" required date alt="시작일" class="login02_input datepicker submit" style="width:70px; height:18px;ime-mode:disabled" />
+				~<input type="text" name="brdEndDt" value="$!DateUtils.getTime($!searchParam.brdEndDt, "yyyyMMdd", "yyyy-MM-dd")" maxlength="10" onkeydown="gf_num_only();" onKeyUp="gf_dateFormat(this);" required date alt="종료일" class="login02_input datepicker submit" style="width:70px; height:18px;ime-mode:disabled" />
+
+				
+				부서: <input type="text" name="searchQntj" value="$!searchParam.searchQntj" class="login02_input submit" style="width:50px; height:17px;" />&nbsp;
+				직급: <input type="text" name="searchJobtitl" value="$!searchParam.searchJobtitl" class="login02_input submit" style="width:50px; height:17px;" />&nbsp;
+				실명: <input type="text" name="searchName" value="$!searchParam.searchName" class="login02_input submit" style="width:50px; height:17px;" />&nbsp;
+				ID:	<input type="text" name="searchID" value="$!searchParam.searchID" class="login02_input submit" style="width:50px; height:17px;" />&nbsp;&nbsp;&nbsp;
+				<a href="javascript:f_search();"><img src="/admin/img/sh_s_btn.gif" style="margin-bottom:-6px;" alt="검색" /></a>
+			</div>
+		</div>
+	</div>	
+-->
+	<table cellpadding="0" cellspacing="0" width="1060" class="write_table">
+	<col width="15%" />
+	<col width="35%" />
+	<col width="15%" />
+	<col width="35%" />
+		<!--
+		<tr>
+			<th class="c_th">등록일</th>
+			<td colspan="3">
+				<div style="margin-right:10px; float:left;">
+					<input type="text" name="brdStratDt" value="$!DateUtils.getTime($!searchParam.brdStratDt, "yyyyMMdd", "yyyy-MM-dd")" maxlength="10" onkeydown="gf_num_only();" onKeyUp="gf_dateFormat(this);" required date alt="시작일" class="login02_input datepicker submit" style="width:70px; height:18px;ime-mode:disabled" />
+					~<input type="text" name="brdEndDt" value="$!DateUtils.getTime($!searchParam.brdEndDt, "yyyyMMdd", "yyyy-MM-dd")" maxlength="10" onkeydown="gf_num_only();" onKeyUp="gf_dateFormat(this);" required date alt="종료일" class="login02_input datepicker submit" style="width:70px; height:18px;ime-mode:disabled" />
+				</div>
+			</td>
+		</tr>
+		-->
+		<tr>
+			<th class="c_th">성명</th>
+			<td>
+				<div style="float:left; margin-right:10px;">
+				<input type="text" name="searchName" value="$!searchParam.searchName" class="login02_input submit" style="width:180px; height:17px;" />&nbsp;
+				</div>
+			</td>
+			<th class="c_th">ID</th>
+			<td>
+				<div style="margin-right:10px; float:left;">
+					<input type="text" name="searchID" value="$!searchParam.searchID" class="login02_input submit" style="width:180px; height:17px;" />&nbsp;&nbsp;&nbsp;
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<th class="c_th">부서</th>
+			<td>
+				<div style="float:left; margin-right:10px;">
+					<input type="text" name="searchDept" value="$!searchParam.searchDept" class="login02_input submit" style="width:180px; height:17px;" />&nbsp;
+				</div>
+			</td>
+			<th class="c_th">직급</th>
+			<td>
+				<div style="margin-right:10px; float:left;">
+					<input type="text" name="searchJobtitl" value="$!searchParam.searchJobtitl" class="login02_input submit" style="width:180px; height:17px;" />&nbsp;
+				</div>
+			</td>
+		</tr>
+
+	</table>
+	<div class="c_btn"><a href="javascript:f_search();"><img src="/admin/img/sh_s_btn.gif" alt="검색" /></a></div>
+	
+	<div class="tc_box02">
+		<div class="l_box">총 <strong>$!pageInfo.totalCount</strong>개의 내용이 등록되어 있습니다.</div>
+		<div class="r_box">
+			<div style=" margin-right:10px; margin-top:2px; float:left;">
+					<a href="#"><img src="/admin/img/btn_ch_xls.gif" alt="엑셀 전환" /></a>
+	
+<!-- 상담실 -->
+<!--
+#if ($!searchParam.brdType=="QNA")
+				진행단계 : #genCodeSelect("C060", "", "selBrdProgSt", "$!searchParam.selBrdProgSt", "id='selBrdProgSt' class='select' style='width:100px; height:20px;'", "전체")&nbsp;
+#end
+				<select name="searchType" class="select" style="width:100px; height:20px;">
+					<option value="BRD_TITLE" #if ($!searchParam.searchType=="BRD_TITLE") selected #end>제목</option>
+					<option value="BRD_MEMO" #if ($!searchParam.searchType=="BRD_MEMO") selected #end>내용</option>
+					<option value="BRD_ALL" #if ($!searchParam.searchType=="BRD_ALL") selected #end>제목+내용</option>
+				</select>
+			</div>
+			<div >
+				<input type="text" name="searchKeyword2" value="$!searchParam.searchKeyword2" class="login02_input submit" style="width:150px; height:17px;" />&nbsp;&nbsp;&nbsp;
+				<a href="javascript:f_search();"><img src="/admin/img/sh_s_btn.gif" style="margin-bottom:-6px;" alt="검색" /></a>
+-->
+			</div>
+		</div>
+	</div>
+	<table cellpadding="0" cellspacing="0" class="line_type02" width="100%">
+		<col width="3%" />
+		<col width="15%" />
+		<col width="10%" />
+		
+		<col width="10%" />
+		<col width="10%" />
+		<col width="12%" />
+		
+		<tr>
+			<th>번호</th>
+			<th>부서</th>
+			<th>직급</th>
+			<th>성명</th>
+			<th>ID</th>
+			<th>등록일</th>
+		</tr>
+#set ($__term = 7)
+#foreach($__info in $infos)
+	#set ($__tmpNo = $pageInfo.totalCount - ($pageInfo.page - 1) * $pageInfo.pageSize - $velocityCount + 1)
+	#if ($velocityCount % 2 == 1)
+		<tr class="g_td">##</tr>
+	#else
+		<tr>
+	#end
+			<td>$!__tmpNo</td>
+			<td>$!__info.orgDepthNm</td>
+			<td>$!__info.adStaffJobtitl</td>
+			<td>
+				<strong><a href="staff_mng_view.jsp?readCnt=1&adStaffNo=$!__info.adStaffNo&$!searchParamUrl">$!__info.adStaffNm</a></strong>
+			</td>
+			<td>$!__info.adStaffId</td>
+			<td>$!__info.adRegTm</td>
+		</tr>
+#end
+	</table>
+	<div class="paging_box">
+		#makePaging1($pageInfo)
+		<div class="pr_btn"><a href="staff_write.jsp?brdType=$!searchParam.brdType&brdTypeNm=$__brdTypeNm&$!searchParamUrl"><img src="/admin/img/btn_write.gif" alt="등록" /></a></div>
+	</div>
+</form>
+</div>

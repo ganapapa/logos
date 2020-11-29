@@ -1,0 +1,74 @@
+﻿#set ($searchParamUrl = "searchParamUrl=$!esc.url($searchParam.searchParamUrl)")
+<script language="javascript" type="text/javascript">
+// 등록
+function f_insert() {
+    var oForm = document.forms["writeForm"];
+
+	if(!gf_validation(oForm)) {
+		return;
+	}
+
+	if(confirm("$!searchParam.brdTypeNm정보를 등록하시겠습니까?")) {
+		gSubmitPost("writeForm",true);
+	}
+}
+</script>
+<div class="right_content">
+<form id="writeForm" name="writeForm" action="subcode_write_proc_final.jsp" method="post">
+	<input type="hidden" name="redirectUrl" value="subcode_view.jsp?
+		pseq=$!searchParam.pseq&pcode=$!searchParam.pcode&pbrdType=$!searchParam.pbrdType&
+		sseq=$!searchParam.seq&spcode=$!searchParam.code&sbrdType=$!searchParam.brdType"/>
+	<input type="hidden" name="mode" value="add"/>
+	<input type="hidden" name="brdType" value=""/>
+	<input type="hidden" name="pseq" value="$!searchParam.pseq"/>
+	<input type="hidden" name="pcode" value="$!searchParam.pcode"/>
+	<input type="hidden" name="sseq" value="$!searchParam.seq"/>
+	<input type="hidden" name="spcode" value="$!searchParam.code"/>
+#set($mixedCode = $!searchParam.pcode+"_"+$!searchParam.spcode)
+	<input type="hidden" name="mixedCode" value="$!mixedCode "/>
+	<input type="hidden" name="brdRegId" value="$!SessionUtils.getAdminId($request)" />
+	<input type="hidden" name="brdRegNm" value="$!SessionUtils.getAdminName($request)" />
+	<input type="hidden" name="managerIdUseYn" 	value="" />
+	<input type="hidden" name="codeType" value="FINALCODE"/>
+	
+
+	<div class="t_icon">$!searchParam.brdTypeNm최하위코드등록<div class="r_txt"><div class="navi">Home &gt; 관리자 &gt; <strong>$!searchParam.brdTypeNm최하위코드등록</strong></div></div></div>
+	<table cellpadding="0" cellspacing="0" class="write_table02" width="100%">
+		<col width="15%" />
+		<col width="35%" />
+		<col width="15%" />
+		<col width="35%" />
+		<tr>
+			<th>코드명</th>
+			<td colspan="3">
+				<input type="text"  name="name" value="$!info.name" required alt="코드명" class="login02_input" style="width:95%; height:18px;ime-mode:active" />
+			</td>
+		</tr>
+		<tr>
+			<th>코드</th>
+			<td>
+				<input type="text"  name="code" value="$!info.code" required alt="코드" class="login02_input" style="width:90%; height:18px;ime-mode:active" />
+			</td>
+			<th>코드순번</th>
+			<td >
+				<input type="text"  name="codeOdr" value="$!info.codeOdr" required alt="코드순번" class="login02_input" style="width:90%; height:18px;ime-mode:active" onkeydown="gf_num_only();" maxlength="2"/>
+			</td>
+		</tr>
+		<tr>
+			<th>사용유무</th>
+			<td>
+				<input type="radio" name="useYn" required radio value="Y" #setChecked("$!info.useYn", "Y") id="lab01" checked/> <label for="lab01">Y</label>&nbsp;&nbsp;
+				<input type="radio" name="useYn" value="N" #setChecked("$!info.useYn", "N") id="lab02"/> <label for="lab02">N</label>
+			</td>
+			<th>메모</th>
+			<td >
+				<input type="text" name="codeRmk"  required alt="메모" class="login02_input" style="width:90%; height:18px;ime-mode:active" />
+			</td>
+		</tr>
+	</table>
+	<div class="sys_btn">
+		<a href="subcode_view.jsp?seq=$!searchParam.pseq&code=$!searchParam.pcode&brdType="><img src="/admin/img/btn_cancel.gif" alt="취소" /></a>
+		<a href="javascript:f_insert();"><img src="/admin/img/btn_save.gif" alt="저장" /></a>
+	</div>
+</form>
+</div>

@@ -1,0 +1,68 @@
+#set ($__checkManagerId = "$!request.getParameter('checkManagerId')")
+#set ($__form = "$!request.getParameter('form')")
+#set ($__managerId = "$!request.getParameter('managerId')")
+#set ($__managerIdUseYn = "$!request.getParameter('managerIdUseYn')")
+<script language="javascript">
+// 아이디 중복확인
+function fCheckExistManagerId(form)
+{
+    //if (fCheckValidManagerId(form.txt_manager_id) && fCheckProhibitManagerId(form.txt_manager_id))
+    //{
+        form.submit();
+    //}
+
+    return;
+}
+function test() {
+    window.close();
+}
+
+// 아이디 사용
+function fSelectManagerId() {
+#if("$!__managerId" != "")
+		opener.$!__form.$!{__managerId}.value = "$!__checkManagerId";
+#end
+#if("$!__managerIdUseYn" != "")
+		opener.$!__form.$!{__managerIdUseYn}.value = "Y";
+#end
+
+    //returnValue = new Array("$!__managerId", "Y");
+    window.close();
+}
+</script>
+<div id="pop_area">
+<form name="frm_check_id" action="staff_mng_id_pop01.jsp" method="post" onSubmit="return;">
+	<input type="hidden" name="form" value="$!__form">
+	<input type="hidden" name="managerId" value="$!__managerId">
+	<input type="hidden" name="managerIdUseYn" value="$!__managerIdUseYn">
+	<div class="pop_title">id 중복확인</div>
+	<div class="pop_content">
+		<div class="org_find02" style="width:470px;">
+			<div class="pop_text">
+				<div class="b_t_l"><img src="/admin/img/b_t_l.gif" alt="" /></div>
+				<div class="b_t_r"><img src="/admin/img/b_t_r.gif" alt="" /></div>
+				<div class="pop_txt_area" style="text-align:center;">
+					<div class="id_txt">
+						<strong class="or_txt">$!__checkManagerId</strong>$!sInfoMessage<br />
+					</div>
+					<div class="ex_txt">* 다른 아이디를 확인 하시려면, 아이디 입력 후 중복확인을 누르세요.</div>
+					<div style="padding:17px 0 17px 70px; overflow:hidden; text-align:center;">
+						<div style="margin-right:10px; float:left;"><strong>아이디 입력</strong>&nbsp;&nbsp;&nbsp;
+							<input type="text" name="checkManagerId" value="$!__checkManagerId" class="login02_input" style="width:170px; height:19px;" />
+						</div>
+						<div style="float:left;"><a href="javascript:fCheckExistManagerId(document.forms['frm_check_id'])"><img src="/admin/img/pop_btn_id_checking.gif" alt="중복확인" /></a></div>
+					</div>
+				</div>
+				<div class="b_b_l"><img src="/admin/img/b_b_l.gif" alt="" /></div>
+				<div class="b_b_r"><img src="/admin/img/b_b_r.gif" alt="" /></div>
+			</div>
+			<div class="pop_c_btn">
+				#if ("$!sInfoDisplay"=="")
+					<a href="javascript:fSelectManagerId();"><img src="/admin/img/pop_btn_id.gif" alt="아이디 사용" /></a>
+				#end
+				<a href="javascript:test()"><img src="/admin//img/pop_btn_close.gif" alt="닫기" /></a>
+			</div>
+		</div>
+	</div>
+</form>
+</div>

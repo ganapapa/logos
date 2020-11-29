@@ -1,0 +1,110 @@
+#makeSearchParams($searchParam, "orgCd,pos,limit,sortOrder", $searchParamUrl)
+#set ($searchParamUrl = "searchParamUrl=$!esc.url($searchParamUrl)")
+#set ($__brdTypeNm = $!CodeUtils.getCodeValue("BRDTP", $!searchParam.brdType))
+<script language="javascript">
+<!--
+$(document).ready(function(){
+	$(".submit").keydown(function(e) {
+		if (e.keyCode == 13) {
+			e.preventDefault();
+			f_search();
+		}
+	});
+});
+
+function goPage(p) {
+	$("#searchForm input[name=page]").val(p);
+	$("#searchForm").submit();
+}
+
+// 조회
+function f_search() {
+	$("#searchForm input[name=selBrdProgSt]").val($("#tmpForm select[name=selBrdProgSt]").val());
+	$("#searchForm input[name=searchType]").val($("#tmpForm select[name=searchType]").val());
+	$("#searchForm input[name=searchKeyword]").val($("#tmpForm input[name=searchKeyword]").val());
+	
+	$("#searchForm input[name=year]").val($("#tmpForm select[name=year]").val());
+	
+	
+	$("#searchForm input[name=page]").val(1);
+	$("#searchForm").submit();
+}
+-->
+</script>
+<div class="right_content">
+<form id="searchForm" action="st_monthly_connection.jsp" method="post">
+	<input type="hidden" name="selBrdProgSt" value="$!searchParam.selBrdProgSt"/>
+	<input type="hidden" name="searchType" value="$!searchParam.searchType"/>
+	<input type="hidden" name="searchKeyword" value="$!searchParam.searchKeyword"/>
+	<input type="hidden" name="brdType" value="$!searchParam.brdType"/>
+	<input type="hidden" name="page" value="$!searchParam.page"/>
+	<input type="hidden" name="pageSize" value="$!searchParam.pageSize"/>
+	<input type="hidden" name="year" value="$!searchParam.year"/>
+	
+	
+</form>
+<form id="tmpForm">
+	<input type="hidden" name="page" value="$!searchParam.page"/>
+	<input type="hidden" name="pageSize" value="$!searchParam.pageSize"/>
+	<div class="t_icon">$__brdTypeNm <div class="r_txt"><div class="navi">Home &gt; 통계 &gt; <strong>$__brdTypeNm</strong></div></div></div>
+		<table cellpadding="0" cellspacing="0" width="1060" class="write_table">
+		<col width="10%" />
+		<col width="90%" />			
+			<tr>
+				<th>기준년도 </th>
+				<td>
+					<div style="margin-right:10px; float:left;">
+						
+						
+						#set($year = $!EtcUtils.getInt($!StringUtils.substring($DateUtils.getCurrentTime("yyyyMMdd"),0,4)))
+						
+						<select name="year">
+							#foreach($years in [$year..1990])
+								<option value="$years"  #if($!searchParam.year == $years ) selected   #end >$years</option>
+							#end
+						</select>
+						
+					</div>
+					<a href="javascript:f_search();"><img src="/admin/img/sh_s_btn.gif" style="margin-bottom:-6px;" alt="검색" /></a>
+				</td>
+			</tr>
+		</table>
+
+	<BR>
+<table border="1" width="1060" class="write_table">
+	<col width="10%">
+	<col width="90%">
+	
+	#foreach($aa in [1..12])
+	<TR>
+		<TH><center>$aa 월</center></TH>
+			
+			<TD>
+			#set($div = "")
+			#foreach($Monthly in $MonthlyStt)
+				#if($aa == $Monthly.s_mon )
+					<img src="/images/board/progressbar.gif" width="$Monthly.cnt" height="10px">$Monthly.cnt명
+				#set($div = "Y")
+				#end
+			#end
+			#if($div != "Y")
+					<img src="/images/board/progressbar.gif" width="0" height="10px">0명
+            #end
+			</TD>
+
+#*
+		#if($aa == 1)
+			<TD><img src="/images/board/progressbar.gif" width="1.2%" height="10px">10명</TD>
+		#elseif($aa == 2)
+			<TD><img src="/images/board/progressbar.gif" width="2.5%" height="10px">20명</TD>
+		#elseif($aa == 8)
+			<TD><img src="/images/board/progressbar.gif" width="3.8%" height="10px">30명</TD>
+		#else
+			<TD><img src="/images/board/progressbar.gif" width="10%" height="10px">80명</TD>
+		#end
+*#
+	</TR>
+	#end
+</table>
+</form>
+</div>

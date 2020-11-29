@@ -1,0 +1,145 @@
+﻿#set ($searchParamUrl = "searchParamUrl=$!esc.url($searchParam.searchParamUrl)")
+<script language="javascript" type="text/javascript">
+
+// id 중복확인
+function f_popMenu() {
+    alert("공사 중 입니다.");
+	
+	
+}
+// 이메일선택시
+function f_selEmail(aData) {
+	document.getElementById("tmpStaffEmailA").value = aData;
+}
+
+// 등록
+function f_insert() {
+    var oForm = document.forms["writeForm"];
+
+	if(!gf_validation(oForm)) {
+		return;
+	}
+	
+	if(oForm.adMenuNm.value == "") {
+		alert("메뉴명은 필수 입력사항입니다.");
+	}
+	
+	if(oForm.adMenuUrl.value == "") {
+		alert("메뉴URL은 필수 입력사항입니다.");
+	}
+	
+	if(oForm.adMenuDiv.value == "") {
+		alert("메뉴분류는 필수 입력사항입니다.");
+	}
+	// 비밀번호검증
+	//if(oForm.adStaffPwd.value != oForm.tempAdStaffPwd.value) {
+    //    alert("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+    //    oForm.adStaffPwd.select();
+    //    return;
+	//}
+	
+
+	//if(staffEmail != "") {
+	//	if(!gf_validEmail(staffEmail )) {
+	//		alert("올바른 메일 형식으로 입력해주세요. (예:koddi@koddi.com)");
+	//		oForm.tmpStaffEmail[0].focus();
+	//		return;
+	//	}
+	//}
+	
+	
+	//oForm.adStaffTelNo.value = joinInputArr(oForm.tmpStaffTelNo, "-");
+	//oForm.adStaffEmail.value = staffEmail ;
+
+	if(confirm("$!searchParam.brdTypeNm정보를 등록하시겠습니까?")) {
+		gSubmitPost("writeForm",true);
+	}
+}
+</script>
+<div class="right_content">
+<form id="writeForm" name="writeForm" action="menu_write_proc.jsp" method="post">
+	<input type="hidden" name="redirectUrl" value="menu_mng_list.jsp?$!searchParam.searchParamUrl"/>
+	<input type="hidden" name="mode" value="add"/>
+	<input type="hidden" name="brdType" value="$!searchParam.brdType"/>
+
+	<input type="hidden" name="brdRegId" value="$!SessionUtils.getAdminId($request)" />
+	<input type="hidden" name="brdRegNm" value="$!SessionUtils.getAdminName($request)" />
+	<input type="hidden" name="brdRegIdReply" value="$!SessionUtils.getAdminId($request)" />
+	
+	<input type="hidden" name="adStaffNo" 		value="$!info.adStaffNo" />
+	<input type="hidden" name="adUpdId" 		value="$!SessionUtils.getAdminId($request)" />
+	<input type="hidden" name="adStaffLevel" 	value="" />
+	<input type="hidden" name="adOpenYn" 		value="Y" />
+	<input type="hidden" name="adStaffDuty" 	value="" />
+	
+	##<input type="hidden" name="adStaffTelNo" id="adStaffTelNo" value=""/>
+	##<input type="hidden" name="adStaffEmail" id="adStaffEmail" value=""/>
+	<input type="hidden" name="managerIdUseYn" 	value="" />
+	
+	<input type="hidden" name="brdOpenYn" value="Y" />
+
+	<div class="t_icon">$!searchParam.brdTypeNm 등록<div class="r_txt"><div class="navi">Home &gt; 관리자 &gt; <strong>$!searchParam.brdTypeNm</strong></div></div></div>
+	<table cellpadding="0" cellspacing="0" class="write_table02" width="100%">
+		<col width="15%" />
+		<col width="35%" />
+		<col width="15%" />
+		<col width="35%" />
+		<tr>
+			<th>권한(부서)</th>
+			<td>
+				<input type="text" name="adMenuNm" value="$!info.adMenuNm" required alt="권한" class="login02_input" style="width:90%; height:18px;ime-mode:active" />
+				##<a href="javascript:f_idcheck();"><img src="/admin/img/join02_btn02.gif" alt="중복체크" /></a>
+			</td>
+			<th>메뉴키</th>
+			<td>
+				<input type="text"  name="adMenuMemo" value="$!info.adMenuMemo" required alt="메뉴키" class="login02_input" style="width:50%; height:18px;ime-mode:active" />
+				<a href="javascript:f_popMenu();"><img src="/admin/img/btn_find.gif" alt="메뉴찾기" /></a>
+			</td>
+		</tr>
+		<tr>
+			<th>등록권한</th>
+			<td>
+				<input type="text"  name="adMenuUrl" value="$!info.adMenuUrl" required alt="등록권한" class="login02_input" style="width:90%; height:18px;ime-mode:active" />
+			</td>
+			<th>수정권한</th>
+			<td >
+				<input type="text"  name="adMenuDiv" value="$!info.adMenuDiv" required alt="수정권한" class="login02_input" style="width:90%; height:18px;ime-mode:active" />
+			</td>
+		</tr>
+		<tr>
+			<th>삭제권한</th>
+			<td>
+				<input type="text" name="adMenuOrd" required alt="삭제권한" class="login02_input" style="width:90%; height:18px;ime-mode:active" />
+			</td>
+			<th>조회권한</th>
+			<td >
+				<input type="text" name="adStaffJobtitl"  required alt="조회권한" class="login02_input" style="width:90%; height:18px;ime-mode:active" />
+			</td>
+		</tr>
+		<tr>
+			<th>입력자</th>
+			<td>
+				<input type="text" name="adRegId" value="$!info.adRegId" required alt="입력자" class="login02_input" style="width:90%; height:18px;ime-mode:active" />
+			</td>
+			<th>입력일</th>
+			<td>
+				<input type="text" name="adRegDt" value="$!info.adRegDt" required alt="입력일" class="login02_input" style="width:90%; height:18px;ime-mode:active" />
+			</td>
+        </tr>
+		<tr>
+			<th>수정자</th>
+			<td>
+				<input type="text" name="adUptId" value="$!info.adUptId" required alt="수정자" class="login02_input" style="width:90%; height:18px;ime-mode:active" />
+			</td>
+			<th>수정일</th>
+			<td>
+				<input type="text" name="adUptDt" value="$!info.adUptDt" required alt="수정일" class="login02_input" style="width:90%; height:18px;ime-mode:active" />
+			</td>
+        </tr>
+	</table>
+	<div class="sys_btn">
+		<a href="auth_menu_mng_list.jsp?$!searchParam.searchParamUrl"><img src="/admin/img/btn_cancel.gif" alt="취소" /></a>
+		<a href="javascript:f_insert();"><img src="/admin/img/btn_save.gif" alt="저장" /></a>
+	</div>
+</form>
+</div>

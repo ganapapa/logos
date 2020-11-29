@@ -1,0 +1,92 @@
+## 저자관리 - 선택 팝업
+
+<script>
+<!--
+function f_chk(num,title)
+{
+	var p_cTitle = opener.document.getElementById("brdRefNM");
+	var p_contNum = opener.document.getElementById("brdRefNum");
+	
+	p_cTitle.value = title;
+	p_contNum.value = num;
+	
+	window.close();
+}
+
+$(document).ready(function(){
+	$(".submit").keydown(function(e) {
+		if (e.keyCode == 13) {
+			e.preventDefault();
+			f_search();
+		}
+	});
+});
+
+function goPage(p) {
+	$("#searchForm input[name=page]").val(p);
+	$("#searchForm").submit();
+}
+
+// 조회
+function f_search() {
+	$("#searchForm input[name=searchType]").val($("#tmpForm select[name=searchType]").val());
+	$("#searchForm input[name=searchKeyword]").val($("#tmpForm input[name=searchKeyword]").val());
+	$("#searchForm input[name=page]").val(1);
+	$("#searchForm").submit();
+}
+//-->
+</script>	
+<form id="searchForm" action="author_list.jsp" method="post">
+	<input type="hidden" name="searchType" value="$!searchParam.searchType"/>
+	<input type="hidden" name="searchKeyword" value="$!searchParam.searchKeyword"/>
+	<input type="hidden" name="page" value="$!searchParam.page"/>
+	<input type="hidden" name="pageSize" value="$!searchParam.pageSize"/>
+</form>
+<form id="tmpForm">
+	<input type="hidden" name="page" value="$!searchParam.page"/>
+	<input type="hidden" name="pageSize" value="$!searchParam.pageSize"/>
+	
+	<div class="pop_title">저자 선택 팝업 </div>
+	<BR><BR>
+	<table cellpadding="0" cellspacing="0"  class="line_type02" width="100%" border='0'>
+		
+		<col width="5%" />
+		<col width="30%" />
+		<col width="*%" />
+		<tr>
+			<th>번호</th>
+			<th>제목</th>
+			<th>내용</th>
+		</tr>
+		
+#set ($__term = 7)
+#foreach($__info in $infos)
+	#set ($__tmpNo = $pageInfo.totalCount - ($pageInfo.page - 1) * $pageInfo.pageSize - $velocityCount + 1)
+	#if ($velocityCount % 2 == 1)
+		<tr class="g_td">##</tr>
+	#else
+		<tr>
+	#end
+	
+			<td>$!__tmpNo</td>
+			
+			## 제목
+			<td>
+				<a href="javascript:f_chk($!__info.brdNum,'$!__info.brdTitle');">
+					$!__info.brdTitle  
+				</a>
+			</td>			
+			
+			<td>
+				$!__info.brdMemo
+			</td>	## 내용
+	
+		</tr>
+#end
+	</table>
+	<div class="paging_box">
+		#makePaging1($pageInfo)
+		<div class="pr_btn"><a href="javascript:window.close();"><img src="/images/common/pop_btn_close.gif" alt="닫기" /></a></div>
+	</div>
+</form>
+		

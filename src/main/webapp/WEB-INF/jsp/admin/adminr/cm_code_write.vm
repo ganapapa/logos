@@ -1,0 +1,79 @@
+﻿#set ($searchParamUrl = "searchParamUrl=$!esc.url($searchParam.searchParamUrl)")
+<script language="javascript" type="text/javascript">
+
+// id 중복확인
+function f_popMenu() {
+    alert("공사 중 입니다.");
+	
+	
+}
+// 이메일선택시
+function f_selEmail(aData) {
+	document.getElementById("tmpStaffEmailA").value = aData;
+}
+
+// 등록
+function f_insert() {
+    var oForm = document.forms["writeForm"];
+
+	if(!gf_validation(oForm)) {
+		return;
+	}
+
+	if(confirm("$!searchParam.brdTypeNm정보를 등록하시겠습니까?")) {
+		//gSubmitPost("writeForm",true);
+		gSubmitPost("writeForm");
+	}
+}
+</script>
+<div class="right_content">
+<form id="writeForm" name="writeForm" action="cm_code_write_proc.jsp" method="post">
+	<input type="hidden" name="redirectUrl" value="cm_code_mng_list.jsp?$!searchParam.searchParamUrl"/>
+	<input type="hidden" name="mode" value="add"/>
+	<input type="hidden" name="brdType" value="$!searchParam.brdType"/>
+	<input type="hidden" name="brdRegId" value="$!SessionUtils.getAdminId($request)" />
+	<input type="hidden" name="brdRegNm" value="$!SessionUtils.getAdminName($request)" />
+	<input type="hidden" name="managerIdUseYn" 	value="" />
+	##<input type="hidden" name="brdOpenYn" value="Y" />
+	<input type="hidden" name="codeType" value="code_type"/>
+
+	<div class="t_icon">상위공통코드등록<div class="r_txt"><div class="navi">Home &gt; 관리자 &gt; <strong>$!searchParam.brdTypeNm</strong></div></div></div>
+	<table cellpadding="0" cellspacing="0" class="write_table02" width="100%">
+		<col width="15%" />
+		<col width="35%" />
+		<col width="15%" />
+		<col width="35%" />
+		<tr>
+			<th>코드명</th>
+			<td colspan="3">
+				<input type="text"  name="name" value="$!info.name" required alt="코드명" class="login02_input" style="width:95%; height:18px;ime-mode:active" />
+			</td>
+		</tr>
+		<tr>
+			<th>코드</th>
+			<td>
+				<input type="text"  name="code" value="$!info.code" required alt="코드" class="login02_input" style="width:90%; height:18px;ime-mode:active" maxlength="10" />
+			</td>
+			<th>코드순번</th>
+			<td >
+				<input type="text"  name="codeOdr" value="$!info.codeOdr" required alt="코드순번" class="login02_input" style="width:90%; height:18px;ime-mode:active" onkeydown="gf_num_only();" maxlength="2"/>
+			</td>
+		</tr>
+		<tr>
+			<th>사용유무</th>
+			<td>
+				<input type="radio" name="useYn" value="Y" #setChecked("$!info.useYn", "Y") id="lab01" checked/> <label for="lab01">Y</label>&nbsp;&nbsp;
+				<input type="radio" name="useYn" value="N" #setChecked("$!info.useYn", "N") id="lab02"/> <label for="lab02">N</label>
+			</td>
+			<th>메모</th>
+			<td >
+				<input type="text" name="codeRmk"  required alt="메모" class="login02_input" style="width:90%; height:18px;ime-mode:active" />
+			</td>
+		</tr>
+	</table>
+	<div class="sys_btn">
+		<a href="cm_code_mng_list.jsp?$!searchParam.searchParamUrl"><img src="/admin/img/btn_cancel.gif" alt="취소" /></a>
+		<a href="javascript:f_insert();"><img src="/admin/img/btn_save.gif" alt="저장" /></a>
+	</div>
+</form>
+</div>

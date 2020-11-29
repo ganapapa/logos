@@ -1,0 +1,37 @@
+@charset "utf-8";
+@import url("default.css");
+@import url("layout.css");
+@import url("common.css");
+@import url("board.css");
+
+/* 사업 common */
+/* .titContents */
+.titContents {background:url("../images/sub01/bg_tit.gif") left bottom no-repeat;}
+.titContents h2 {color:#47b08e;}
+/* .calendar 월별주요일정 */
+.calendar .titTxtBox {width:710px; height:132px; border:solid 1px #eaeaea; background:#f8f8f8 url("../images/sub03/bg_calendar_tit.gif") 164px 22px no-repeat; }
+.calendar .titTxtBox h3 {float:left; font-size:1.333em; font-weight:bold; color:#aa8c53; padding:52px 0 0 30px;}
+.calendar .titTxtBox .right {float:right; width:520px; padding-top:15px; height:117px; overflow:auto; color:#333;}
+.calendar .titTxtBox .right h4 {font-weight:bold; float:left; padding-right:18px;}
+.calendar .titTxtBox .right ul li ul {float:left;}
+.calendar .titTxtBox .right ul li.clearFix {padding-bottom:5px;}
+.calendar .titTxtBox .right ul li .time {padding-right:8px;}
+.calendar .calendarTit {height:31px; padding-top:7px; background:url("../images/sub03/bg_cal_tit.gif") repeat-x; border:solid 1px #d5d5d5; border-bottom:none; margin-top:9px;}
+.calendar .calendarTit ul {margin:0 auto; width:175px; }
+.calendar .calendarTit li {float:left;}
+.calendar .calendarTit li.ac {font-size:20px; font-family:"Arial"; font-weight:bold; margin:-2px 23px 0 23px;}
+/* 달력css */
+.calendar .calendarArea th {color:#fff; background:#c2a573; height:29px; font-weight:bold; border-right:solid 1px #d5d5d5;}
+.calendar .calendarArea th.sun {background:#c15a5c; border-left:solid 1px #c15a5c;}
+.calendar .calendarArea th.sat {background:#7d7d7d; border-right:solid 1px #7d7d7d;}
+.calendar .calendarArea td {color:#333; height:84px; background:#fafafa; border-bottom:solid 1px #d5d5d5; border-right:solid 1px #d5d5d5; text-align:right; vertical-align:top; padding:4px 8px 0 6px;}
+.calendar .calendarArea td.inActive {color:#999;}
+.calendar .calendarArea td.active {font-weight:bold; background:#efefef;}
+.calendar .calendarArea td.first {border-left:solid 1px #d5d5d5;}
+.calendar .calendarArea td div {text-align:left; font-size:0.92em;}
+.calendar .calendarArea td div.num {color:#c4600d;}
+/* clearFix */
+.clearFix:after {content: "."; display: block; clear: both; visibility: hidden; line-height: 0; height: 0;}
+.clearFix {display: inline-block;}
+html[xmlns] .clearFix {display: block;}
+* html .clearFix {height: 1%;}

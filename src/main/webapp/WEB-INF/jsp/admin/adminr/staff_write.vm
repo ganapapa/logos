@@ -1,0 +1,192 @@
+﻿#set ($searchParamUrl = "searchParamUrl=$!esc.url($searchParam.searchParamUrl)")
+<script language="javascript" type="text/javascript">
+
+// id 중복확인
+function f_idcheck() {
+    var oForm = document.forms["writeForm"];
+	var managerId = oForm.adStaffId;
+
+    //if(gf_checkValidManagerId(managerId) && gf_checkProhibitManagerId(managerId)) {
+		var url = "staff_mng_id_pop01.jsp?checkManagerId=" + managerId.value;
+			url += "&form=writeForm";
+			url += "&managerId=adStaffId";
+			url += "&managerIdUseYn=managerIdUseYn"
+			;
+
+		gf_openDialog(url, "500", "300", "no", "no");
+	//}
+	
+	
+}
+// 이메일선택시
+function f_selEmail(aData) {
+	document.getElementById("tmpStaffEmailA").value = aData;
+}
+
+// 등록
+function f_insert() {
+    var oForm = document.forms["writeForm"];
+
+	if(!gf_validation(oForm)) {
+		return;
+	}
+
+// 주요일정
+#if ($!searchParam.brdType=="SCH")
+	var brdStartDt = oForm.brdStartDt.value;
+	var brdEndDt = oForm.brdEndDt.value;
+
+	if(brdEndDt != "") {
+		if(!gf_ranageData(brdStartDt, brdEndDt)) {
+			alert("일정종료일자가 일정시작일자보다 이전입니다.");
+			oForm.brdStartDt.focus();
+			return;
+		}
+	}
+#end
+	// 아이디 중복 확인
+	if(oForm.managerIdUseYn.value !="Y") {
+        alert("아이디 중복 확인이 되지않았습니다..");
+        oForm.adStaffId.select();
+        return;
+	}
+
+
+	// 비밀번호검증
+	if(oForm.adStaffPwd.value != oForm.tempAdStaffPwd.value) {
+        alert("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+        oForm.adStaffPwd.select();
+        return;
+	}
+// 메일주소체크
+	var staffEmail = joinInputArr(oForm.tmpStaffEmail, "@");
+	//var staffAuth  = 
+
+	if(staffEmail =="@") {
+		staffEmail = "";
+	}
+
+	if(staffEmail != "") {
+		if(!gf_validEmail(staffEmail )) {
+			alert("올바른 메일 형식으로 입력해주세요. (예:koddi@koddi.com)");
+			oForm.tmpStaffEmail[0].focus();
+			return;
+		}
+	}
+	
+	
+	oForm.adStaffTelNo.value = joinInputArr(oForm.tmpStaffTelNo, "-");
+	oForm.adStaffEmail.value = staffEmail ;
+	
+	
+	#if ($!searchParam.brdType=="QNA" || $!searchParam.brdType=="PUB")
+		oForm.brdOpenYn.value = getRadioValue(oForm.tmpBrdOpenYn);
+	#end
+
+	if(confirm("$!searchParam.brdTypeNm정보를 등록하시겠습니까?")) {
+		gSubmitPost("writeForm",true);
+	}
+}
+</script>
+<div class="right_content">
+<form id="writeForm" name="writeForm" action="staff_write_proc.jsp" method="post">
+	<input type="hidden" name="redirectUrl" value="staff_mng_list.jsp?$!searchParam.searchParamUrl"/>
+	<input type="hidden" name="mode" value="add"/>
+	<input type="hidden" name="brdType" value="$!searchParam.brdType"/>
+#**	
+	<input type="hidden" name="brdRegId" value="$!SessionUtils.getUserSeq($request)" />
+	<input type="hidden" name="brdRegNm" value="$!SessionUtils.getUserName($request)" />
+	<input type="hidden" name="brdRegIdReply" value="$!SessionUtils.getUserSeq($request)" />
+*#
+	<input type="hidden" name="brdRegId" value="$!SessionUtils.getAdminId($request)" />
+	<input type="hidden" name="brdRegNm" value="$!SessionUtils.getAdminName($request)" />
+	<input type="hidden" name="brdRegIdReply" value="$!SessionUtils.getAdminId($request)" />
+	
+	<input type="hidden" name="adStaffNo" 		value="$!info.adStaffNo" />
+	<input type="hidden" name="adUpdId" 		value="$!SessionUtils.getAdminId($request)" />
+	<input type="hidden" name="adStaffLevel" 	value="" />
+	<input type="hidden" name="adOpenYn" 		value="Y" />
+	<input type="hidden" name="adStaffDuty" 	value="" />
+	
+	<input type="hidden" name="adStaffTelNo" id="adStaffTelNo" value=""/>
+	<input type="hidden" name="adStaffEmail" id="adStaffEmail" value=""/>
+	<input type="hidden" name="managerIdUseYn" 	value="" />
+	
+	<input type="hidden" name="brdOpenYn" value="Y" />
+
+	<div class="t_icon">$!searchParam.brdTypeNm 등록<div class="r_txt"><div class="navi">Home &gt; 관리자 &gt; <strong>$!searchParam.brdTypeNm</strong></div></div></div>
+	<table cellpadding="0" cellspacing="0" class="write_table02" width="100%">
+		<col width="15%" />
+		<col width="35%" />
+		<col width="15%" />
+		<col width="35%" />
+		<tr>
+			<th>아이디</th>
+			<td colspan="3">
+				<input type="text" name="adStaffId" value="$!info.adStaffId" class="login02_input" style="width:100px; height:18px;ime-mode:active" />   
+				
+				<a href="javascript:f_idcheck();"><img src="/admin/img/join02_btn02.gif" alt="중복체크" /></a>
+
+			</td>
+		</tr>
+		<tr>
+			<th>비밀번호</th>
+			<td>
+				<input type="password"  name="adStaffPwd" value="$!info.adStaffPwd" required alt="비밀번호" class="login02_input" style="width:80%; height:18px;ime-mode:active" />
+			</td>
+			<th>비밀번호 확인</th>
+			<td >
+				<input type="password"  name="tempAdStaffPwd" value="" class="login02_input" style="width:80%; height:18px;ime-mode:active" />
+			</td>
+		</tr>
+		<tr>
+			<th>부서</th>
+			<td>
+				<input type="text" name="adStaffDept" value="$!info.adStaffDept" class="login02_input" style="width:80%; height:18px;ime-mode:active" />
+			</td>
+			<th>직급</th>
+			<td >
+				<input type="text" name="adStaffJobtitl" value="$!info.adStaffJobtitl" class="login02_input" style="width:80%; height:18px;ime-mode:active" />
+			</td>
+		</tr>
+		<tr>
+			<th>이름</th>
+			<td>
+				<input type="text" name="adStaffNm" value="$!info.adStaffNm" required alt="이름" class="login02_input" style="width:80%; height:18px;ime-mode:active" />
+			</td>
+			<th>전화번호</th>
+			<td >
+#set ($__tmp = "")
+#set ($__tmp = $StringUtils.split($!info.adStaffTelNo, "-"))
+				#genCodeSelect("C017", "", "tmpStaffTelNo", "$!list.get($__tmp, 0)", "required title='전화번호' class='select' style='width:120px; height:23px;'", "전화번호선택")
+				<input type="text" name="tmpStaffTelNo" value="$!list.get($__tmp, 1)" maxlength="4" onkeydown="gf_num_only();" required alt="전화번호" class="login02_input" style="width:80px; height:18px;ime-mode:disabled" />
+				<input type="text" name="tmpStaffTelNo" value="$!list.get($__tmp, 2)" maxlength="4" onkeydown="gf_num_only();" required alt="전화번호" class="login02_input" style="width:80px; height:18px;ime-mode:disabled" />
+			</td>
+		</tr>
+		<tr>
+			<th>E-mail</th>
+			<td colspan="3">
+#set ($__tmp = "")
+#set ($__tmp = $StringUtils.split($!info.adStaffEmail, "@"))
+				<input type="text" name="tmpStaffEmail" maxlength="20" alt="이메일" value="$!list.get($__tmp, 0)" class="login02_input" style="width:150px; height:18px;ime-mode:disabled" /> @
+				<input type="text" name="tmpStaffEmail" id="tmpStaffEmailA" maxlength="30" alt="이메일" value="$!list.get($__tmp, 1)" class="login02_input" style="width:150px; height:18px;ime-mode:disabled" />
+				#genCodeSelect("C005", "", "selEmail", "", "onchange='f_selEmail(this.value)' class='select' style='width:150px; height:23px;'", "이메일선택")
+
+				<!--
+				<input type="text" name="adStaffEmail" value="$!info.adStaffEmail" required alt="E-mail" class="login02_input" style="width:80%; height:18px;ime-mode:active" />
+				--> 
+			</td>
+		</tr>
+		<tr>
+			<th>권한</th>
+			<td colspan="3">
+				#genCodeSelect("ORG_DEPTH", "", "adStaffAuth", "$!info.orgDepth", "id='orgDepth' required title='권한선택' class='select' style='width:200px; height:23px;'", "권한선택")
+			</td>
+        </tr>
+	</table>
+	<div class="sys_btn">
+		<a href="staff_mng_list.jsp?$!searchParam.searchParamUrl"><img src="/admin/img/btn_cancel.gif" alt="취소" /></a>
+		<a href="javascript:f_insert();"><img src="/admin/img/btn_save.gif" alt="저장" /></a>
+	</div>
+</form>
+</div>

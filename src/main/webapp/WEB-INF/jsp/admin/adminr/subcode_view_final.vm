@@ -1,0 +1,91 @@
+#set ($searchParamUrl = "searchParamUrl=$!esc.url($searchParam.searchParamUrl)")
+#set ($__brdTypeNm = $!CodeUtils.getCodeValue("MENU", $!searchParam.brdType))
+<script language="javascript">
+<!--
+//하위코드수정
+function f_update() {
+	$("#writeForm").attr("action","subcode_update.jsp?seq=$!info.seq&pcode=$!info.pcode&pseq=$!searchParam.pseq&$!searchParamUrl").submit();
+/*
+    var oForm = document.forms["writeForm"];
+	if(!gf_validation(oForm)) {
+		return;
+	}
+	if(confirm("$!info.brdTypeNm정보를 수정하시겠습니까?")) {
+		$("#writeForm").attr("action","subcode_update_proc.jsp");
+		$("#writeForm input[name=redirectUrl]").val("subcode_view.jsp?seq=$!info.seq&code=$!searchParam.pcode&brdType=&$!searchParamUrl");
+		gSubmitPost("writeForm",true);
+	}
+*/
+}
+
+// 삭제
+function f_delete() {
+	if(confirm("$!info.brdTypeNm정보를 삭제하시겠습니까?")) {
+		//if(f_pwd_confirm()) {
+			gSubmitPost("writeForm");
+		//}
+	}
+}
+
+$(document).ready(function(){
+	$(".submit").keydown(function(e) {
+		if (e.keyCode == 13) {
+			e.preventDefault();
+			f_search();
+		}
+	});
+});
+
+function goPage(p) {
+	$("#searchForm input[name=page]").val(p);
+	$("#searchForm").submit();
+}
+-->
+</script>
+<div class="right_content">
+<form id="writeForm" name="writeForm" action="subcode_delete_proc.jsp" method="post">
+	<input type="hidden" name="redirectUrl" value="cm_code_view_and_subcode_list.jsp?seq=$!searchParam.pseq&code=$!searchParam.pcode&brdType=32"/>
+	<input type="hidden" name="brdNum" id="brdNum" value="$!info.brdNum"/>
+	##<input type="hidden" name="seq" id="seq" value="$!info.seq"/>
+	<input type="hidden" name="seq" id="seq" value="$!searchParam.seq"/>
+	<input type="hidden" name="pseq" id="pseq" value="$!searchParam.pseq"/>
+	<input type="hidden" name="pcode" id="pcode" value="$!searchParam.pcode" />
+	<input type="hidden" name="attFileNo" id="attFileNo" value="$!attFileInfos.ATT1.attFileNo"/>
+	<input type="hidden" name="brdType" value="$!searchParam.brdType"/>
+	
+	
+	<div class="t_icon">$__brdTypeNm <div class="r_txt"><div class="navi">Home &gt; 관리자 &gt; <strong>$__brdTypeNm</strong></div></div></div>
+	<table cellpadding="0" cellspacing="0" width="1060" class="write_table">
+	<col width="15%" />
+	<col width="35%" />
+	<col width="15%" />
+	<col width="35%" />
+		
+		<tr>
+			<th class="c_th">코드명</th>
+			<td>$!info.name</td>
+			<th class="c_th">코드</th>
+			<td>$!info.code</td>
+		</tr>
+		<tr>
+			<th class="c_th">메모</th>
+			<td>$!info.codeRmk</td>
+			<th class="c_th">코드순번</th>
+			<td>$!info.codeOdr</td>
+		</tr>
+		<tr>
+			<th class="c_th">사용유무</th>
+			<td>$!info.useYn</td>
+			<th class="c_th"></th>
+			<td><div style="margin-right:10px; float:left;"></div></td>
+		</tr>
+
+	</table>
+	
+	<div class="paging_box">
+		<div class="pr_btn">
+			<a href="cm_code_view_and_subcode_list.jsp?seq=$!searchParam.pseq&code=$!searchParam.pcode&brdType=32&$!searchParam.searchParamUrl"><img src="/admin/img/btn_list.gif" alt="목록" /></a>
+			<a href="javascript:f_delete();"><img src="/admin/img/btn_del.gif" alt="삭제" /></a>
+			<a href="javascript:f_update();"><img src="/admin/img/btn_modi.gif" alt="수정" /></a>
+		</div>
+	</div>

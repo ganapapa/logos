@@ -1,0 +1,263 @@
+<%@ page pageEncoding="utf-8"%>
+
+<div id="main">
+	<div class="row">
+	    <!-- 
+		<c:choose>
+			<c:when test="${fn:length(list) > 0}">
+				<c:forEach items="${list}" var="row" varStatus="status">
+					<input type="hidden" id="idx${status.count}" value="${row.FXCD}" />
+				</c:forEach>
+			</c:when>
+			<c:otherwise>
+				<input type="hidden" value="조회된 결과가 없습니다.">
+			</c:otherwise>
+		</c:choose>
+
+		<c:choose>
+			<c:when test="${fn:length(machineList) > 0}">
+				<input type="text" id="idx_test" value="${machineList}" />
+			</c:when>
+			<c:otherwise>
+				<input type="text" value="조회된 결과가 없습니다.">
+			</c:otherwise>
+		</c:choose>
+        -->
+		<a href="#ACE-V65" class="col-1"> <i class="iconbox"></i>
+			<p class="textbox" id="ACE_V65"></p>
+			<!-- ACE-V65 -->
+		</a> <a class="col-1" onclick="colorChange();" id="machine1"> <i
+			class="iconbox"></i>
+			<p class="textbox">ACE-M65</p>
+		</a> <a href="#" class="col-1"> <i class="iconbox"></i>
+			<p class="textbox">DMU70E</p>
+		</a> <a href="#" class="col-2"> <i class="iconbox"></i>
+			<p class="textbox">ZS-500 #2</p>
+		</a> <a href="#" class="col-2"> <i class="iconbox"></i>
+			<p class="textbox">ZS-500 #1</p>
+		</a> <a href="#" class="col-2 warning"> <i class="iconbox"></i>
+			<p class="textbox">H5-800</p>
+		</a> <a href="#" class="col-2"> <i class="iconbox"></i>
+			<p class="textbox">MULTI MILL 4500</p>
+		</a> <a href="#" class="col-2"> <i class="iconbox"></i>
+			<p class="textbox">MULTI MILL 2600</p>
+		</a> <a href="#" class="col-1"> <i class="iconbox"></i>
+			<p class="textbox">KT #3</p>
+		</a> <a href="#" class="col-1"> <i class="iconbox"></i>
+			<p class="textbox">KT #2</p>
+		</a> <a href="#" class="col-1"> <i class="iconbox"></i>
+			<p class="textbox">KT #1</p>
+		</a>
+	</div>
+
+
+	<div class="row">
+		<a href="#" class="col-1"> <i class="iconbox"></i>
+			<p class="textbox">DMM125P #1</p>
+		</a> <a href="#" class="col-1"> <i class="iconbox"></i>
+			<p class="textbox">DMM125P #2</p>
+		</a> <a href="#" class="col-1"> <i class="iconbox"></i>
+			<p class="textbox">ECOSPEED F1040</p>
+		</a> <a href="#" class="col-2 shift-3"> <i class="iconbox"></i>
+			<p class="textbox">HY80A-5X</p>
+		</a> <a href="#" class="col-4"> <i class="iconbox"></i>
+			<p class="textbox">DMC8000-2H</p>
+		</a> <a href="#" class="col-1 shift-2"> <i class="iconbox"></i>
+			<p class="textbox">H5-1000 4P</p>
+		</a> <a href="#" class="col-1"> <i class="iconbox"></i>
+			<p class="textbox">H5-1000 2P</p>
+		</a>
+	</div>
+
+
+	<div class="row">
+		<div class="col-2 nohref">
+			<div class="info">
+				<p class="title">품질보증팀 실적율</p>
+				<p class="text">00%</p>
+			</div>
+		</div>
+		<a href="#" class="col-1"> <i class="iconbox"></i>
+			<p class="textbox">J-6B</p>
+		</a> <a href="#" class="col-2 shift-1"> <i class="iconbox"></i>
+			<p class="textbox">DOOSAN</p>
+		</a> <a href="#" class="col-2"> <i class="iconbox"></i>
+			<p class="textbox">DMF-8000</p>
+		</a> <a href="#" class="col-2"> <i class="iconbox"></i>
+			<p class="textbox">MVC30</p>
+		</a> <a href="#" class="col-2"> <i class="iconbox"></i>
+			<p class="textbox">30V3S</p>
+		</a>
+		<div class="col-3 shift-1 nohref">
+			<div class="info">
+				<p class="title">사상실 실적율</p>
+				<p class="text">00%</p>
+			</div>
+		</div>
+	</div>
+
+
+	<div class="row">
+		<div class="col-2 nohref">
+			<div class="info">
+				<p class="title">로비</p>
+			</div>
+		</div>
+		<a href="#" class="col-1 shift-2"> <i class="iconbox"></i>
+			<p class="textbox">VC630-5AX #3</p>
+		</a> <a href="#" class="col-1"> <i class="iconbox"></i>
+			<p class="textbox">VC630-5AX #2</p>
+		</a> <a href="#" class="col-1"> <i class="iconbox"></i>
+			<p class="textbox">VC630-5AX #1</p>
+		</a> <a href="#" class="col-1"> <i class="iconbox"></i>
+			<p class="textbox">DMC105V</p>
+		</a> <a href="#" class="col-1"> <i class="iconbox"></i>
+			<p class="textbox">HP5100 #2</p>
+		</a> <a href="#" class="col-1"> <i class="iconbox"></i>
+			<p class="textbox">HP5100 #1</p>
+		</a> <a href="#" class="col-1"> <i class="iconbox"></i>
+			<p class="textbox">PC-60V</p>
+		</a> <a href="#" class="col-1"> <i class="iconbox"></i>
+			<p class="textbox">MAXIM630</p>
+		</a>
+		<div class="col-3 shift-1 nohref">
+			<div class="info">
+				<p class="title">성형실 실적율</p>
+				<p class="text">00%</p>
+			</div>
+		</div>
+	</div>
+
+
+	<div class="row">
+		<div class="col-1 nohref">
+			<div class="info">
+				<p class="title">휴게실</p>
+			</div>
+		</div>
+		<div class="col-1 nohref">
+			<div class="info">
+				<p class="title">화장실</p>
+			</div>
+		</div>
+		<a href="#" class="col-1"> <i class="iconbox"></i>
+			<p class="textbox">KTC-12/15F #2</p>
+		</a> <a href="#" class="col-3 shift-1"> <i class="iconbox"></i>
+			<p class="textbox">BMC-10P</p>
+		</a> <a href="#" class="col-1"> <i class="iconbox"></i>
+			<p class="textbox">ACE-H100</p>
+		</a> <a href="#" class="col-2"> <i class="iconbox"></i>
+			<p class="textbox">BMC80-2P #2</p>
+		</a> <a href="#" class="col-1"> <i class="iconbox"></i>
+			<p class="textbox">VMP8-1P</p>
+		</a> <a href="#" class="col-1"> <i class="iconbox"></i>
+			<p class="textbox">MILLAC-1000HV</p>
+		</a>
+	</div>
+
+
+	<div class="row">
+		<div class="col-1 nohref">
+			<div class="info">
+				<p class="title">
+					외주<br>구매팀
+				</p>
+			</div>
+		</div>
+		<div class="col-1 nohref">
+			<div class="info">
+				<p class="title">공구실</p>
+			</div>
+		</div>
+		<a href="#" class="col-1"> <i class="iconbox"></i>
+			<p class="textbox">KTC-12/15F #1</p>
+		</a> <a href="#" class="col-1 shift-1"> <i class="iconbox"></i>
+			<p class="textbox">NT12/16F #1</p>
+		</a> <a href="#" class="col-1"> <i class="iconbox"></i>
+			<p class="textbox">NT12/16F #2</p>
+		</a> <a href="#" class="col-2"> <i class="iconbox"></i>
+			<p class="textbox">VMP8-6P</p>
+		</a> <a href="#" class="col-3"> <i class="iconbox"></i>
+			<p class="textbox">VMP8-2P</p>
+		</a> <a href="#" class="col-1"> <i class="iconbox"></i>
+			<p class="textbox">BMX80-2P</p>
+		</a>
+	</div>
+
+
+	<div class="row">
+		<div class="col-1 nohref">
+			<div class="info">
+				<p class="title">
+					생산2부<br>사무실
+				</p>
+			</div>
+		</div>
+		<a href="#" class="col-1"> <i class="iconbox"></i>
+			<p class="textbox">PUMA12L</p>
+		</a> <a href="#" class="col-1"> <i class="iconbox"></i>
+			<p class="textbox">PUMA350L</p>
+		</a> <a href="#" class="col-1 shift-2"> <i class="iconbox"></i>
+			<p class="textbox">DMC125U</p>
+		</a> <a href="#" class="col-1"> <i class="iconbox"></i>
+			<p class="textbox">DMC60T #3</p>
+		</a> <a href="#" class="col-1"> <i class="iconbox"></i>
+			<p class="textbox">DMC60T #1</p>
+		</a> <a href="#" class="col-1"> <i class="iconbox"></i>
+			<p class="textbox">DMC60T #2</p>
+		</a> <a href="#" class="col-1"> <i class="iconbox"></i>
+			<p class="textbox">ACE-H40</p>
+		</a> <a href="#" class="col-1"> <i class="iconbox"></i>
+			<p class="textbox">MYNX500 #1</p>
+		</a> <a href="#" class="col-1"> <i class="iconbox"></i>
+			<p class="textbox">MYNX500 #4</p>
+		</a>
+	</div>
+
+
+	<div class="row">
+		<a href="#" class="col-1"> <i class="iconbox"></i>
+			<p class="textbox">P2500LY #1</p>
+		</a> <a href="#" class="col-1"> <i class="iconbox"></i>
+			<p class="textbox">P2500LY #2</p>
+		</a> <a href="#" class="col-1"> <i class="iconbox"></i>
+			<p class="textbox">LT15 #1</p>
+		</a> <a href="#" class="col-1"> <i class="iconbox"></i>
+			<p class="textbox">LT15 #2</p>
+		</a> <a href="#" class="col-1"> <i class="iconbox"></i>
+			<p class="textbox">MAZAK I-200</p>
+		</a> <a href="#" class="col-1"> <i class="iconbox"></i>
+			<p class="textbox">MAZAK I-400</p>
+		</a> <a href="#" class="col-1"> <i class="iconbox"></i>
+			<p class="textbox">DMC 100T</p>
+		</a> <a href="#" class="col-1"> <i class="iconbox"></i>
+			<p class="textbox">DMC60T #1</p>
+		</a> <a href="#" class="col-1 waiting"> <i class="iconbox"></i>
+			<p class="textbox">DMC60T #2</p>
+		</a> <a href="#" class="col-1"> <i class="iconbox"></i>
+			<p class="textbox">VMD-550</p>
+		</a> <a href="#" class="col-1"> <i class="iconbox"></i>
+			<p class="textbox">MYNX500 #2</p>
+		</a> <a href="#" class="col-1"> <i class="iconbox"></i>
+			<p class="textbox">MYNX500 #3</p>
+		</a>
+		<div class="col-3 shift-1 nohref">
+			<dl class="total-info">
+				<dt>
+					<span>가동중</span>
+				</dt>
+				<dd class="status-default">
+					<span>00</span>
+				</dd>
+				<dt>
+					<span>정지/대기</span>
+				</dt>
+				<dd class="status-waiting">
+					<span>00</span>
+				</dd>
+				<!-- <dt><span>고장/수리</span></dt>
+                                <dd class="status-wraning"><span>00</span></dd> -->
+			</dl>
+		</div>
+	</div>
+</div>

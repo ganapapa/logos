@@ -1,0 +1,104 @@
+#makeSearchParams($searchParam, "orgCd,pos,limit,sortOrder", $searchParamUrl)
+#set ($searchParamUrl = "searchParamUrl=$!esc.url($searchParamUrl)")
+<script language="javascript">
+<!--
+$(document).ready(function(){
+	$(".submit").keydown(function(e) {
+		if (e.keyCode == 13) {
+			e.preventDefault();
+			f_search();
+		}
+	});
+});
+
+function goPage(p) {
+	$("#searchForm input[name=page]").val(p);
+	$("#searchForm").submit();
+}
+
+// 조회
+function f_search() {
+
+	$("#searchForm input[name=searchType]").val($("#tmpForm select[name=searchType]").val());
+	$("#searchForm input[name=schOrgDepth]").val($("#tmpForm select[name=schOrgDepth]").val());
+	$("#searchForm input[name=searchKeyword]").val($("#tmpForm input[name=searchKeyword]").val());
+	$("#searchForm input[name=page]").val(1);
+	$("#searchForm").submit();
+}
+-->
+</script>
+<div class="right_content">
+<form id="searchForm" action="organization_list.jsp" method="post">
+	<input type="hidden" name="searchType" value="$!searchParam.searchType"/>
+	<input type="hidden" name="schOrgDepth" value="$!searchParam.schOrgDepth"/>
+	<input type="hidden" name="searchKeyword" value="$!searchParam.searchKeyword"/>
+	<input type="hidden" name="page" value="$!searchParam.page"/>
+	<input type="hidden" name="pageSize" value="$!searchParam.pageSize"/>
+</form>
+<form id="tmpForm">
+	<input type="hidden" name="page" value="$!searchParam.page"/>
+	<input type="hidden" name="pageSize" value="$!searchParam.pageSize"/>
+	<div class="t_icon">조직도관리 <div class="r_txt"><div class="navi">Home &gt; 관리자&gt; <strong>조직도관리</strong></div></div></div>
+	<div class="tc_box02">
+		<div class="l_box">총 <strong>$!pageInfo.totalCount</strong>개의 내용이 등록되어 있습니다.</div>
+		<div class="r_box">
+			<div style=" margin-right:10px; margin-top:2px; float:left;">
+				#genCodeSelect("ORG_DEPTH", "", "schOrgDepth", "$!searchParam.schOrgDepth", "id='OrgDepth' required title='부서' class='select' style='width:120px; height:20px;'", "부서선택")
+				<select name="searchType" class="select" style="width:100px; height:20px;">
+					<option value="BRD_TITLE" #if ($!searchParam.searchType=="BRD_TITLE") selected #end>이름</option>
+				</select>
+			</div>
+			<div >
+				<input type="text" name="searchKeyword" value="$!searchParam.searchKeyword" class="login02_input submit" style="width:150px; height:17px;" />&nbsp;&nbsp;&nbsp;
+				<a href="javascript:f_search();"><img src="/admin/img/sh_s_btn.gif" style="margin-bottom:-6px;" alt="검색" /></a>
+			</div>
+		</div>
+	</div>
+	<table cellpadding="0" cellspacing="0" class="line_type02" width="100%">
+		<col width="5%" />
+		<col width="10%" />
+		<col width="10%" />
+		<col width="10%" />
+		<col width="10%" />
+		<col width="10%" />
+		<col width="5%" />
+		<col width="10%" />
+		<col width="5%" />
+		<tr>
+			<th>번호</th>
+			<th>부서</th>
+			<th>직급</th>			
+			<th>이름</th>
+			<th>전화번호</th>
+			<th>이메일</th>
+			<th>순번</th>
+			<th>ID</th>
+			<th>OPEN</th>
+		</tr>
+#foreach($__info in $infos)
+	#set ($__tmpNo = $pageInfo.totalCount - ($pageInfo.page - 1) * $pageInfo.pageSize - $velocityCount + 1)
+	#if ($velocityCount % 2 == 1)
+		<tr class="g_td">##</tr>
+	#else
+		<tr>
+	#end
+			<td>$!__tmpNo</td>
+			<td ><a href="organization_write.jsp?orgNo=$!__info.orgNo&$!searchParamUrl">$!__info.orgDepthNm</a></td>
+			<td><a href="organization_write.jsp?orgNo=$!__info.orgNo&$!searchParamUrl">$!__info.position</a></td>
+			<td><a href="organization_write.jsp?orgNo=$!__info.orgNo&$!searchParamUrl">$!__info.orgName</a></td>
+			<td>$!__info.telNo</td>
+			<td>$!__info.email</td>
+			<td>$!__info.positionNum</td>
+			<td>$!__info.staffId</td>
+			<td>$!__info.openYn</td>
+		</tr>
+#end
+	</table>
+	<div class="paging_box">
+		#makePaging1($pageInfo)
+#if ($AuthUtils.isAdmin($request))
+		<div class="pr_btn"><a href="organization_write.jsp"><img src="/admin/img/btn_write.gif" alt="등록" /></a></div>
+#end
+	</div>
+</form>
+</div>

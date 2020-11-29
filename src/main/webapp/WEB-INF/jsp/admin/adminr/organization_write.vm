@@ -1,0 +1,186 @@
+﻿#set ($searchParamUrl = "searchParamUrl=$!esc.url($searchParam.searchParamUrl)")
+<script language="javascript" type="text/javascript">
+<!--
+$(document).ready(function(){
+	initSmartEdiotr("Part");
+	if (idx == 0) {
+		addFileBox(); //첨부파일박스 추가
+	}
+});
+
+// 등록
+function f_insert() {
+    var oForm = document.forms["writeForm"];
+
+	if(!gf_validation(oForm)) {
+		return;
+	}
+	
+	updateSmartEditor();
+	
+	$("#writeForm input[name=mode]").val("$!mode");
+	gSubmitPost("writeForm",true);
+}
+
+function f_delete() {
+	if(confirm("정보를 삭제하시겠습니까?")) {
+		gSubmitPost("removeForm");
+	}
+}
+
+var fileid = "";
+// 첨부파일삭제
+function f_del_file(attFileNo , tempfileid) {
+	if(confirm("첨부파일을 삭제하시겠습니까?")) {
+		
+		fileid = tempfileid;
+		gSendPost("hp_board_file_delete_proc.jsp", {attFileNo: attFileNo, callback: "callbackFunc"});
+	}
+	
+}
+
+function callbackFunc() {
+	
+	document.getElementById("attFile"+fileid).style.display="none";
+}
+
+
+//=========================================멀티파일 추가부분=========================================
+//파일 겟수 관련 추가부분
+#multifilecount ($attFileInfos) //파일 겟수 관련 추가부분
+
+//첨부파일 박스추가
+var idx = $idx;
+	function addFileBox() {
+		if(idx >=1){
+		  alert("최대 1개까지만 추가할 수 있습니다");
+		}else{
+		  var html = $("#fileadd tr").parent().html();
+		  html = html.replace(/XXX/g, "" + ++idx);
+		  $("#fileInfos").append(html);
+		}		
+	}
+	
+function removeFileBox(i) {
+		var el = $("#writeForm input[name=record_" + i + "]");
+		if (el.next().val() == "add") {
+			el.parent().parent().remove();
+			idx--;	
+		} else {
+			el.next().val("remove");
+			el.parent().parent().hide();
+		}
+}
+//-->
+</script>
+<div class="right_content">
+<form id="removeForm" name="removeForm" method="post" action="organization_delete_proc.jsp">
+	<input type="hidden" name="mode" value="remove"/>
+	<input type="hidden" name="redirectUrl" value="organization_list.jsp?$!searchParam.searchParamUrl"/>
+	<input type="hidden" name="orgNo" value="$!info.orgNo"/>
+</form>	
+<form id="writeForm" name="writeForm" action="organization_write_proc.jsp" method="post">
+	<input type="hidden" name="redirectUrl" value="organization_list.jsp?$!searchParam.searchParamUrl"/>
+	<input type="hidden" name="mode" />
+	<input type="hidden" name="orgNo" value="$!info.orgNo"/>
+	<div class="t_icon">조직도관리 <div class="r_txt"><div class="navi">Home &gt; 관리 &gt; <strong>조직도관리</strong></div></div></div>
+	<table cellpadding="0" cellspacing="0" class="write_table02" width="100%">
+		<col width="15%" />
+		<col width="85%" />
+		<tr>
+			<th><span>*</span> 부서</th>
+			<td>
+				#genCodeSelect("ORG_ROLE", "", "orgDepth", "$!info.orgDepth", "id='orgDepth' required title='부서' class='select' style='width:200px; height:23px;'", "부서선택")
+			</td>
+		</tr>
+		<tr>
+			<th><span>*</span> 직위</th>
+			<td>
+				<input type="text" name="position" value="$!info.position" required title="직위" class="login02_input" style="width:200px; height:18px;ime-mode:active" />
+			</td>
+		</tr>
+		<tr>
+			<th><span>*</span> 이름</th>
+			<td>
+				<input type="text" name="orgName" value="$!info.orgName" required title="이름" class="login02_input" style="width:200px; height:18px;ime-mode:active" />
+			</td>
+		</tr>
+		<tr>
+			<th><span>*</span> 업무</th>
+			<td>
+				<textarea id="Part" name="part"  style="width:600px;height:140px;">$!info.part</textarea>
+			</td>
+		</tr>
+		<tr>
+			<th>  전화번호</th>
+			<td>
+				<input type="text" name="telNo" value="$!info.telNo" title="전화번호 " class="login02_input" style="width:200px; height:18px;ime-mode:active" />
+			</td>
+		</tr>
+		<tr>
+			<th> 이메일 </th>
+			<td>
+				<input type="text" name="email" value="$!info.email" title="이메일 " class="login02_input" style="width:300px; height:18px;ime-mode:active" />
+			</td>
+		</tr>
+		
+		<tr>
+			<th>순번</th>
+			<td style="padding:10px 0 10px 10px;">
+				<input type="text" name="positionNum" value="$!info.positionNum" onkeydown="gf_num_only();" class="login02_input" maxlength="3" style="width:50px; height:18px;" />
+			</td>
+		</tr>
+		
+      <tr>
+			<th #if ($attFileInfos.ATT1)style="height:40px" #end>첨부파일</th>
+			<td colspan="3">
+				<table id="fileInfos" cellpadding="0" cellspacing="0" style="margin:10px 0;">
+					<col width="10px" />
+					<col width="50px" />
+					<col width="200px" />
+					<tr>
+						<th>No.</th>
+						<th>첨부파일</th>
+						<th><a href="javascript:addFileBox()"><strong class="or_txt">[추가]</strong></a></th>
+					</tr>
+						#multifileupload($attFileInfos)
+				</table>
+			</td>
+        </tr>
+		
+		<tr>
+			<th>오픈여부</th>
+			<td>
+				<input type="radio" name="openYn" required radio value="Y" #setChecked("$!info.openYn", "Y") id="lab01" checked/> <label for="lab01">Y</label>&nbsp;&nbsp;
+				<input type="radio" name="openYn" value="N" #setChecked("$!info.openYn", "N") id="lab02"/> <label for="lab02">N</label>
+			</td>
+		</tr>
+	</table>
+	<div class="sys_btn">
+		<a href="organization_list.jsp?$!searchParam.searchParamUrl"><img src="/admin/img/btn_cancel.gif" alt="취소" /></a>
+#if ($mode == "add")		
+		<a href="javascript:f_insert();"><img src="/admin/img/btn_save.gif" alt="저장" /></a>
+#elseif ($mode == "update")
+		<a href="javascript:f_insert();"><img src="/admin/img/btn_modi.gif" alt="수정" /></a>
+		<a href="javascript:f_delete();"><img src="/admin/img/btn_del.gif" alt="삭제" /></a>
+#end		
+	</div>
+</form>
+
+## 첨부파일 화면 양식
+<table id="fileadd" style="display:none">
+	<tr>
+		<td class="r_line" >
+			<input type="hidden" name="record_XXX" value="" />
+			<input type="hidden" name="action" value="add" />
+			<span>XXX</span>
+		</td>
+		<td><input type="file" name="attachFileXXX_" class="file_board" style="width:500px;" /></td>
+		<td class="align_c">
+			<a href="javascript:removeFileBox(XXX)"><strong class="or_txt">[X]</strong></a>
+		</td>
+	</tr>
+</table>
+## 첨부파일 끝.
+
+</div>

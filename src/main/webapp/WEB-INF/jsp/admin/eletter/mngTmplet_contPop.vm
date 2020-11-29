@@ -1,0 +1,6 @@
+
+	<div class="pop_title">E_Letter 미리보기 팝업</div>
+		메일 제목 : $!eTitle
+		<BR><BR>
+				$!eBody
+	</div>

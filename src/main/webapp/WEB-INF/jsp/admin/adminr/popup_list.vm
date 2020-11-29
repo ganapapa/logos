@@ -1,0 +1,99 @@
+#makeSearchParams($searchParam, "orgCd,pos,limit,sortOrder", $searchParamUrl)
+#set ($searchParamUrl = "searchParamUrl=$!esc.url($searchParamUrl)")
+<script language="javascript">
+<!--
+$(document).ready(function(){
+	$(".submit").keydown(function(e) {
+		if (e.keyCode == 13) {
+			e.preventDefault();
+			f_search();
+		}
+	});
+});
+
+function goPage(p) {
+	$("#searchForm input[name=page]").val(p);
+	$("#searchForm").submit();
+}
+
+// 조회
+function f_search() {
+
+	$("#searchForm input[name=searchType]").val($("#tmpForm select[name=searchType]").val());
+	$("#searchForm input[name=searchKeyword]").val($("#tmpForm input[name=searchKeyword]").val());
+	$("#searchForm input[name=page]").val(1);
+	$("#searchForm").submit();
+}
+-->
+</script>
+<div class="right_content">
+<form id="searchForm" action="popup_list.jsp" method="post">
+	<input type="hidden" name="searchType" value="$!searchParam.searchType"/>
+	<input type="hidden" name="searchKeyword" value="$!searchParam.searchKeyword"/>
+	<input type="hidden" name="page" value="$!searchParam.page"/>
+	<input type="hidden" name="pageSize" value="$!searchParam.pageSize"/>
+</form>
+<form id="tmpForm">
+	<input type="hidden" name="page" value="$!searchParam.page"/>
+	<input type="hidden" name="pageSize" value="$!searchParam.pageSize"/>
+	<div class="t_icon">팝업관리 <div class="r_txt"><div class="navi">Home &gt; 홈페이지관리 &gt; <strong>팝업관리</strong></div></div></div>
+	<div class="tc_box02">
+		<div class="l_box">총 <strong>$!pageInfo.totalCount</strong>개의 내용이 등록되어 있습니다.</div>
+		<div class="r_box">
+			<div style=" margin-right:10px; margin-top:2px; float:left;">
+				<select name="searchType" class="select" style="width:100px; height:20px;">
+					<option value="BRD_TITLE" #if ($!searchParam.searchType=="BRD_TITLE") selected #end>제목</option>
+					<option value="BRD_MEMO" #if ($!searchParam.searchType=="BRD_MEMO") selected #end>이미지설명</option>
+				</select>
+			</div>
+			<div >
+				<input type="text" name="searchKeyword" value="$!searchParam.searchKeyword" class="login02_input submit" style="width:150px; height:17px;" />&nbsp;&nbsp;&nbsp;
+				<a href="javascript:f_search();"><img src="/admin/img/sh_s_btn.gif" style="margin-bottom:-6px;" alt="검색" /></a>
+			</div>
+		</div>
+	</div>
+	<table cellpadding="0" cellspacing="0" class="line_type02" width="100%">
+		<col width="5%" />
+		<col width="40%" />
+		<col width="20%" />
+		<col width="10%" />
+		<col width="10%" />
+		<col width="10%" />
+		<tr>
+			<th>번호</th>
+			<th>제목</th>
+			<th>팝업이미지</th>			
+			<th>순서</th>
+			<th>오픈여부</th>
+			<th>등록일</th>
+		</tr>
+#foreach($__info in $infos)
+	#set ($__tmpNo = $pageInfo.totalCount - ($pageInfo.page - 1) * $pageInfo.pageSize - $velocityCount + 1)
+	#if ($velocityCount % 2 == 1)
+		<tr class="g_td">##</tr>
+	#else
+		<tr>
+	#end
+			<td>$!__tmpNo</td>
+			<td class="subject"><a href="popup_write.jsp?popNo=$!__info.popNo&$!searchParamUrl">$!__info.popTitle</a></td>
+			<td>#if($!__info.popLink)<a href="$!__info.popLink" target="_blank">#end		
+            #if ($!__info.attFileTp=="")
+				&nbsp;
+			#else
+				<img src="/system/download.jsp?type=$!__info.attTableNm&subType=$!__info.attFileTp&fileName=$!__info.attSaveFileNm" height="80" width="80" alt="$__info.popImgAlt"/>
+			#end
+			#if($!__info.popLink)</a>#end</td>			
+			<td>$!__info.popOdr</td>
+			<td>$!__info.popOpenYn</td>
+			<td>$!DateUtils.getTime($!__info.regTm, "yyyyMMddhhmmss", "yyyy-MM-dd")</td>
+		</tr>
+#end
+	</table>
+	<div class="paging_box">
+		#makePaging1($pageInfo)
+#if ($AuthUtils.isAdmin($request))
+		<div class="pr_btn"><a href="popup_write.jsp"><img src="/admin/img/btn_write.gif" alt="등록" /></a></div>
+#end
+	</div>
+</form>
+</div>

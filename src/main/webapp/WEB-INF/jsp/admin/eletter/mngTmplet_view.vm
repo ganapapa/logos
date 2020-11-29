@@ -1,0 +1,161 @@
+## 템플릿 관리 수정
+#makeSearchParams($searchParam, "orgCd,pos,limit,sortOrder", $searchParamUrl)
+#set ($searchParamUrl = "searchParamUrl=$!esc.url($searchParamUrl)")
+
+<div class="right_content">
+<form id="writeForm" name="writeForm" action="mngTmplet_proc.jsp" method="post">
+	<input type="hidden" name="redirectUrl" value="mngTmplet_list.jsp?$!searchParam.searchParamUrl"/>
+	<input type="hidden" name="mode" value="update" />
+	<input type="hidden" name="seq" value="$!info.seq" />
+	
+	<div class="t_icon">E-Letter 템플릿 글쓰기 <div class="r_txt"><div class="navi">Home &gt; 웹진관리 &gt; <strong>E-Letter 템플릿</strong></div></div></div>
+	<table cellpadding="0" cellspacing="0" class="write_table02" width="100%">
+		
+		<col width="10%">
+		<col width="*">
+		
+        <tr>
+            <th>메일 제목</th>
+            <td>
+				<input type='text' name="eTitle" value="$!info.eTitle" maxlength="50" required alt="메일 제목" class='login02_input' style='width:90%; height:18px;ime-mode:active'/>
+			</td>
+		</tr>
+		
+        <tr>
+            <th>템플릿 선택</th>
+            <td>
+                <table border='0' cellspcing='0' cellpadding='0' style="border-top:0px;">
+					
+					<col width="25%">
+					<col width="25%">
+					<col width="25%">
+					<col width="25%">
+					
+                    <tr align="center">
+						#**
+                        <td>	## blue
+							<input type='radio' name='tmpType' value='b' checked/>
+						</td>
+						
+                        <td>	## red
+							<input type='radio' name='tmpType' value='r' />						
+						</td>
+						
+                        <td>	## green
+							<input type='radio' name='tmpType' value='g' />						
+						</td>
+						
+                        <td>	## yellow
+							<input type='radio' name='tmpType' value='y' />						
+						</td>
+						*#
+						<td>
+							<input type='radio' name='tmpType' value='b' checked/>
+						</td>
+					</tr>
+					
+					
+                    <tr align="center">
+						<td><img src="/images/eletter/template1.png" title="blue" /></td>	## blue
+						#**
+                        <td><img src="/images/eletter/blue.gif" title="blue" /></td>	## blue
+                        <td><img src="/images/eletter/red.gif" title="red" /></td>	## red
+                        <td><img src="/images/eletter/green.gif" title="green" /></td>	## green
+                        <td><img src="/images/eletter/yellow.gif" title="yellow" /></td>	## yellow
+						*#
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+	<BR>
+	#set($brdNum = 0)
+	<table id="addTable" cellpadding="0" cellspacing="0" class="write_table02" width="100%" >
+		
+		<col width="5%">
+		## <col width="20%">
+		## <col width="10%">
+		<col width="*">
+		
+        <tr>
+            <th>No.</th>
+            ## <th>구분</th>
+            ## <th>이미지노출</th>
+            <th>제목</th>			
+		</tr>
+		
+		
+#set ($__term = 7)
+#foreach($__info in $infos)
+	#set ($__tmpNo = $pageInfo.totalCount - ($pageInfo.page - 1) * $pageInfo.pageSize - $velocityCount + 1)
+
+	#if ($velocityCount % 2 == 1)
+		<tr class="g_td">	##</tr>
+	#else
+		<tr>
+	#end
+	#set($brdNum = $brdNum + 1)
+			<td>
+				<input type='text' onkeydown="gf_num_only();" maxlength="2" required alt='순서' value="$!__info.dseqOdr" name="dseqOdr$brdNum" class='login02_input' style='width:70%; height:18px;ime-mode:active' />
+			</td>	## No.
+		#**
+			<td>
+				메인 <input type="radio" name="contType$brdNum" id="contType$brdNum" value="M" #if($!__info.contType == "M") checked #end>
+				서브 <input type="radio" name="contType$brdNum" id="contType$brdNum" value="S" #if($!__info.contType == "S") checked #end>
+			</td>	## 구분
+			
+			<td>
+				Y <input type="radio" name="imgShowYn$brdNum" id="imgShowYn$brdNum" value="Y" #if($!__info.imgShowYn == "Y") checked #end>
+				N <input type="radio" name="imgShowYn$brdNum" id="imgShowYn$brdNum" value="N" #if($!__info.imgShowYn == "N") checked #end>
+			</td>	## 이미지노출
+		*#
+			<td>
+				<input type='text' id="cTitle$brdNum" readonly alt='컨텐츠명' value="$!__info.cTitle" name="cTitle$brdNum" class='login02_input' style='width:70%; height:18px;ime-mode:active' />
+				<input type='hidden' id="contNum$brdNum" value="$!__info.contNum" name="contNum$brdNum"  />
+				<input type='hidden' id="dseq$brdNum" value="$!__info.dseq" name="dseq$brdNum"  />
+				<input type='button' value='컨텐츠선택' onClick='f_SelectPop($brdNum);'>
+			</td>	## 제목
+			#**
+			<td>
+				<input type='text' onkeydown="gf_num_only();" maxlength="2" required alt='순서' value="$!__info.dseqOdr" name="dseqOdr$brdNum" class='login02_input' style='width:70%; height:18px;ime-mode:active' />
+			</td>	## 순서
+			*#
+		</tr>
+#end
+    </table>
+	#**
+	<div class="paging_box">
+		#makePaging1($pageInfo)
+	</div>
+	*#
+	<div class="sys_btn">
+		<a href="javascript:history.back(-1);"><img src="/admin/img/btn_cancel.gif" alt="취소" /></a>
+		<a href="javascript:f_update();"><img src="/admin/img/btn_save.gif" alt="수정" /></a>
+	</div>
+	<input type="hidden" name="pageDtlCount" value="$brdNum" />
+</form>
+</div>
+<script>
+<!--
+var brdNum = 0;
+
+// 등록
+function f_update() {
+    var oForm = document.forms["writeForm"];
+	
+	if(!gf_validation(oForm)) {
+		return;
+	}
+	
+	if(confirm("E레터 템플릿 정보를 수정하시겠습니까?")) {
+		gSubmitPost("writeForm",true);
+	}
+}
+
+// 템플릿 컨텐츠 선택 팝업
+function f_SelectPop(brdNum)
+{
+	window.open("mngTmplet_previewPop.jsp?num="+brdNum,"contentPop", "width=620px,height=450px,scrollbars=yes,resizable=no,copyhistory=no,toolbar=no,status=no");
+}
+//-->
+</script>

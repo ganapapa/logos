@@ -1,0 +1,194 @@
+##관리자 페이지 지역맞춤검색
+#makeSearchParams($searchParam, "orgCd,pos,limit,sortOrder", $searchParamUrl)
+#set ($searchParamUrl = "searchParamUrl=$!esc.url($searchParamUrl)")
+<script language="javascript">
+<!--
+$(document).ready(function(){
+	$(".submit").keydown(function(e) {
+		if (e.keyCode == 13) {
+			e.preventDefault();
+			f_search();
+		}
+	});
+});
+
+function goPage(p) {
+	$("#searchForm input[name=page]").val(p);
+	$("#searchForm").submit();
+}
+
+// 조회
+function f_search() {
+	$("#searchForm input[name=searchType]").val($("#tmpForm select[name=searchType]").val());
+	$("#searchForm input[name=searchKeyword]").val($("#tmpForm input[name=searchKeyword]").val());
+	$("#searchForm input[name=selOrgSido]").val($("#tmpForm select[name=selOrgSido]").val());
+	$("#searchForm input[name=selOrgGugun]").val($("#tmpForm select[name=selOrgGugun]").val());
+	$("#searchForm input[name=selInfoType1]").val($("#tmpForm select[name=selInfoType1]").val());
+	
+	$("#searchForm input[name=page]").val(1);
+	$("#searchForm").submit();
+}
+
+// 지역변경시
+function onchangeSido() {
+	var selOrgSido = $("#tmpForm select[name=selOrgSido]").val();
+	if (!selOrgSido || selOrgSido == "") {
+		return;
+	}
+
+	$("#tmpForm select[name=selOrgGugun] option:gt(0)").remove();
+	gSendPost("/system/get_select_option.jsp", {
+			codeType: "GUGUN",
+			pcode: selOrgSido,
+			isAll: "Y",
+			allDesc: "전체",
+			selectedVal: ""
+		}, function(data) {
+			if (defaultSuccessHandler(data)) {
+				return;
+			}
+			$("#tmpForm select[name=selOrgGugun]").html(data);
+		}
+	);
+}
+
+function f_cont_view(c){
+  var cont = document.getElementById(c);
+	if(cont.style.display == "none"){
+		cont.style.display ="table-cell";
+	}else{
+		cont.style.display = "none";
+	}
+}
+
+// 정렬 조회
+function selectSort(orderNm,orderType)
+{
+	$("#searchForm input[name=orderNm]").val(orderNm);
+	$("#searchForm input[name=orderType]").val(orderType);
+	f_search();
+}
+
+-->
+</script>
+<div class="right_content">
+<form id="searchForm" action="loc_srch_list_view.jsp" method="post">
+	<input type="hidden" name="searchType" value="$!searchParam.searchType"/>
+	<input type="hidden" name="searchKeyword" value="$!searchParam.searchKeyword"/>
+	<input type="hidden" name="page" value="$!searchParam.page"/>
+	<input type="hidden" name="pageSize" value="$!searchParam.pageSize"/>
+	<input type="hidden" name="selOrgSido" value="$!searchParam.selOrgSido"/>
+	<input type="hidden" name="selOrgGugun" value="$!searchParam.selOrgGugun"/>
+	<input type="hidden" name="selInfoType1" value="$!searchParam.selInfoType1"/>
+	<input type="hidden" name="orderNm" value="$!searchParam.orderNm"/>
+	<input type="hidden" name="orderType" value="$!searchParam.orderType"/>
+	
+	
+</form>
+<form id="tmpForm">
+	<input type="hidden" name="page" value="$!searchParam.page"/>
+	<input type="hidden" name="pageSize" value="$!searchParam.pageSize"/>
+	<div class="t_icon">지역맞춤검색 <div class="r_txt"><div class="navi">Home &gt; 정보관리 &gt; 지원정보 &gt; <strong>지역맞춤검색</strong></div></div></div>
+	<div class="tc_box02">
+		<div class="l_box">총 <strong>$!pageInfo.totalCount</strong>개의 내용이 등록되어 있습니다.</div>
+		<div class="r_box">
+			<div style=" margin-right:10px; margin-top:2px; float:left;">
+				#genCodeSelect("SIDO", "", "selOrgSido", "$!searchParam.selOrgSido", 'style="width:100px; height:20px;" onchange="onchangeSido()"', "시/도 선택")
+				#genCodeSelect("GUGUN", "$!searchParam.selOrgSido", "selOrgGugun", "$!searchParam.selOrgGugun", 'style="width:150px; height:20px;"', "시/군/구 선택")
+				#genCodeSelect("SPRT_FIELD", "", "selInfoType1", "$!searchParam.selInfoType1", "title='분야선택' class='select' style='width:100px; height:20px;'", "분야선택")
+				<select name="searchType" class="select" style="width:100px; height:20px;">
+					<option value="BRD_TITLE" #if ($!searchParam.searchType=="BRD_TITLE") selected #end>제목</option>
+					<option value="BRD_MEMO" #if ($!searchParam.searchType=="BRD_MEMO") selected #end>내용</option>
+					<option value="BRD_ALL" #if ($!searchParam.searchType=="BRD_ALL") selected #end>제목+내용</option>
+				</select>
+			</div>
+			<div >
+				<input type="text" name="searchKeyword" value="$!searchParam.searchKeyword" class="login02_input submit" style="width:150px; height:17px;" />&nbsp;&nbsp;&nbsp;
+				<a href="javascript:f_search();"><img src="/admin/img/sh_s_btn.gif" style="margin-bottom:-6px;" alt="검색" /></a>
+			</div>
+		</div>
+	</div>
+	<table cellpadding="0" cellspacing="0" class="line_type02" width="100%">
+		<col width="5%" />
+		<col width="15%" />
+		<col width="15%" />
+		<col width="50%" />
+		<col width="10%" />
+		<col width="5%" />
+		<tr>
+			<th>번호</th>
+			<th>구분</th>
+			<th>지역</th>
+			<th>제목</th>
+			<th>#brdOrderBy("t1.reg_tm", $!searchParam.orderType, "등록일")</th>
+			<th>관리</th>
+		</tr>
+#set ($__term = 7)
+#foreach($__info in $infos)
+	#set ($__tmpNo = $pageInfo.totalCount - ($pageInfo.page - 1) * $pageInfo.pageSize - $velocityCount + 1)
+	#if ($velocityCount % 2 == 1)
+		<tr class="g_td">##</tr>
+	#else
+		<tr>
+	#end
+			<td>$!__tmpNo</td>
+			<td>
+				$!__info.infoTypeNm
+			</td>
+			<td>
+				$!__info.infoSidoCode / #if($!__info.infoSikunkuCode =="")전체 #else$!__info.infoSikunkuCode #end 
+			</td>
+			<td class="subject">
+				<a href="#cont$!__tmpNo" onclick="javascript:f_cont_view('cont$!__tmpNo')"><strong>$!__info.infoTitle</strong></a>
+##if ($!__info.infoOpenYn=="N")
+				##<img src="/admin/img/lock_icon.gif" align="absmiddle" />&nbsp;
+##end
+#if ($DateUtils.getDiffDay($!__info.regTm, $DateUtils.getCurrentTime(), "yyyyMMddHHmmss") <= $__term)
+				<img src="/admin/img/icon_new.gif" align="absmiddle" />
+#end
+			</td>
+			<td>$!DateUtils.getTime($!__info.regTm, "yyyyMMddhhmmss", "yyyy-MM-dd")</td>
+			<td><a href="loc_srch_write.jsp?mode=update&infoNum=$!__info.infoNum&$!searchParamUrl">[수정]</a></td>
+		</tr>
+		<tr>
+			<td colspan="6" width="100%" id="cont$!__tmpNo" style="display:none;">
+				<table width="100%" cellpadding="0" cellspacing="0" class="line_type02">
+					<col width="15%" />
+            		<col width="35%" />
+            		<col width="15%" />
+            		<col width="35%" />
+					<tr>
+						<th>지원내용</th>
+						<td colspan="3" class="subject">$!__info.infoMemo</td>
+					</tr>
+					<tr>
+						<th>지원대상</th>
+						<td colspan="3" class="subject">$!__info.infoTarget</td>
+						##<th rowspan="2">지원내용</th>
+						##<td rowspan="2" class="subject">$!__info.infoDtl</td>
+					</tr>
+					<tr>
+						<th>신청서류</th>
+						<td class="subject">$!__info.infoApplyDocs</td>
+						<th>문의(담당부서)</th>
+						<td class="subject">$!__info.infoChargeDep</td>
+					</tr>
+					<tr>
+						<th>신청방법 및 절차</th>
+						<td colspan="3" class="subject">$!__info.infoHowToUse</td>
+					</tr>
+					<tr>
+						<th>바로가기</th>
+						<td colspan="3" class="subject"><a href="$!__info.infoUrl" target="_blank">$!__info.infoUrl</a></td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+#end
+	</table>
+	<div class="paging_box">
+		#makePaging1($pageInfo)
+		<div class="pr_btn"><a href="loc_srch_write.jsp?mode=add&$!searchParamUrl"><img src="/admin/img/btn_write.gif" alt="등록" /></a></div>
+	</div>
+</form>
+</div>

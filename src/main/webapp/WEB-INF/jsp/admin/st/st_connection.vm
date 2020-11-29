@@ -1,0 +1,169 @@
+#makeSearchParams($searchParam, "orgCd,pos,limit,sortOrder", $searchParamUrl)
+#set ($searchParamUrl = "searchParamUrl=$!esc.url($searchParamUrl)")
+#set ($__brdTypeNm = $!CodeUtils.getCodeValue("BRDTP", $!searchParam.brdType))
+<script language="javascript">
+<!--
+$(document).ready(function(){
+	$(".submit").keydown(function(e) {
+		if (e.keyCode == 13) {
+			e.preventDefault();
+			f_search();
+		}
+	});
+});
+
+function goPage(p) {
+	$("#searchForm input[name=page]").val(p);
+	$("#searchForm").submit();
+}
+
+// 조회
+function f_search() {
+	$("#searchForm input[name=selBrdProgSt]").val($("#tmpForm select[name=selBrdProgSt]").val());
+	$("#searchForm input[name=searchType]").val($("#tmpForm select[name=searchType]").val());
+	$("#searchForm input[name=searchKeyword]").val($("#tmpForm input[name=searchKeyword]").val());
+	$("#searchForm input[name=page]").val(1);
+	$("#searchForm").submit();
+}
+-->
+</script>
+<div class="right_content">
+<form id="searchForm" action="hp_board_list.jsp" method="post">
+	<input type="hidden" name="selBrdProgSt" value="$!searchParam.selBrdProgSt"/>
+	<input type="hidden" name="searchType" value="$!searchParam.searchType"/>
+	<input type="hidden" name="searchKeyword" value="$!searchParam.searchKeyword"/>
+	<input type="hidden" name="brdType" value="$!searchParam.brdType"/>
+	<input type="hidden" name="page" value="$!searchParam.page"/>
+	<input type="hidden" name="pageSize" value="$!searchParam.pageSize"/>
+</form>
+<form id="tmpForm">
+	<input type="hidden" name="page" value="$!searchParam.page"/>
+	<input type="hidden" name="pageSize" value="$!searchParam.pageSize"/>
+	<div class="t_icon">$__brdTypeNm <div class="r_txt"><div class="navi">Home &gt; 통계 &gt; <strong>$__brdTypeNm</strong></div></div></div>
+	
+	<table cellpadding="0" cellspacing="0" width="1060" class="write_table">
+	<col width="15%" />
+	<col width="35%" />
+	<col width="15%" />
+	<col width="35%" />
+		
+		<tr>
+			<th class="c_th">총접속자수</th>
+			<td>
+				<div style="float:left; margin-right:10px;">
+				##17892명
+				$dataStt.get(0).total_cnt
+				</div>
+			</td>
+			<th class="c_th">오늘접속자수</th>
+			<td>
+				<div style="margin-right:10px; float:left;">
+					##151명
+					$dataStt.get(0).today_cnt
+				</div>
+			</td>
+		</tr>
+
+		<tr>
+			<td colspan="4" align="center" height='50'>
+				##이달에 가장 많이 접속된 날은 <b>2일[수요일]</b>이고 모두 <b>151명</b> 이 접속하였습니다.
+			이달에 가장 많이 접속된 날은 <b>$sdateMax.get(0).s_day일[$sdateMax.get(0).weekname]</b>이고 모두 <b>$sdateMax.get(0).cnt명</b> 이 접속하였습니다.
+			
+			
+			</td>
+		</tr>
+	</table>
+	<BR><BR>
+	<table cellpadding="0" cellspacing="0" width="1060" class="write_table">
+	<col width="17%" />
+	<col width="17%" />
+	<col width="17%" />
+	<col width="17%" />
+	<col width="16%" />
+	<col width="16%" />
+
+		
+		<tr>
+			
+            <th class="c_th"><center>1일전 접속자수</center></th>
+			
+			<th class="c_th"><center>2일전 접속자수</center></th>
+			
+			<th class="c_th"><center>3일전 접속자수</center></th>
+			
+			<th class="c_th"><center>4일전 접속자수</center></th>
+			
+			<th class="c_th"><center>5일전 접속자수</center></th>
+			
+			<th class="c_th"><center>6일전 접속자수</center></th>
+
+		</tr>
+		
+		<tr height="30" align="center">
+			<td>$dataStt.get(0).pre1_cnt</td>
+			<td>$dataStt.get(0).pre2_cnt</td>
+			<td>$dataStt.get(0).pre3_cnt</td>
+			<td>$dataStt.get(0).pre4_cnt</td>
+			<td>$dataStt.get(0).pre5_cnt</td>
+			<td>$dataStt.get(0).pre6_cnt</td>
+		</tr>
+		
+	</table>
+#*
+	<BR><BR>
+    <div class="t_icon">도매인 TOP10</div>
+	<table cellpadding="0" cellspacing="0" width="1060" class="write_table">
+	<col width="33%" />
+	<col width="33%" />
+	<col width="33%" />
+		
+		<tr>
+			<th class="c_th"><center>오늘접속한 도메인TOP10</center></th>
+            <th class="c_th"><center>어제접속한 도메인TOP10</center></th>
+            <th class="c_th"><center>이달접속한 도메인TOP10</center></th>
+		</tr>
+
+		<tr height="30" align="center">
+			<td></td>
+			<td>직접입력또는 즐겨찾기 148</td>
+			<td>직접입력또는 즐겨찾기 148</td>
+		</tr>
+
+		<tr height="30" align="center">
+			<td></td>
+			<td>직접입력또는 즐겨찾기 148</td>
+			<td>직접입력또는 즐겨찾기 148</td>
+		</tr>
+	</table>
+*#	
+	<BR><BR>
+    <div class="t_icon">아이피 TOP10</div>
+	<table cellpadding="0" cellspacing="0" width="1060" class="write_table">
+	<col width="33%" />
+	<col width="33%" />
+	<col width="33%" />
+		
+		<tr>
+			<th class="c_th"><center>오늘접속한 아이피TOP10</center></th>
+            <th class="c_th"><center>어제접속한 아이피TOP10</center></th>
+            <th class="c_th"><center>이달접속한 아이피TOP10</center></th>
+		</tr>
+		#foreach($IpTop10 in $IpTop10s)
+		
+		<tr height="30" align="center">
+			<td>#if($IpTop10.today 	!= "")  
+					$IpTop10.today  &nbsp;&nbsp;	$IpTop10.cnt 명 
+				#end</td>
+			<td>#if($IpTop10.pre1 	!= "") 
+					$IpTop10.pre1 	&nbsp;&nbsp;	$IpTop10.pre1_cnt 명 
+				#end</td>
+			<td>#if($IpTop10.month 	!= "") 
+					$IpTop10.month 	&nbsp;&nbsp;	$IpTop10.month_cnt 명 
+				#end</td>
+		</tr>
+		#end
+	</table>
+	
+	
+</form>
+</div>

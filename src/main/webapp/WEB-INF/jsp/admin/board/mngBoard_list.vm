@@ -1,0 +1,214 @@
+## 일반문의 게시판
+#set ($searchParamUrl = "searchParamUrl=$!esc.url($searchParamUrl)")
+#set ($__brdTypeNm = $!CodeUtils.getCodeValue("BRDNM", $!searchParam.brdType))
+<script language="javascript">
+<!--
+$(document).ready(function(){
+	$(".submit").keydown(function(e) {
+		if (e.keyCode == 13) {
+			e.preventDefault();
+			f_search();
+		}
+	});
+});
+
+function goPage(p) {
+	$("#searchForm input[name=page]").val(p);
+	$("#searchForm").submit();
+}
+
+// 조회
+function f_search() {
+	$("#searchForm input[name=selBrdProgSt]").val($("#tmpForm select[name=selBrdProgSt]").val());
+	$("#searchForm input[name=searchType]").val($("#tmpForm select[name=searchType]").val());
+	$("#searchForm input[name=selBrdTp]").val($("#tmpForm select[name=selBrdTp]").val());
+	$("#searchForm input[name=searchKeyword]").val($("#tmpForm input[name=searchKeyword]").val());
+	$("#searchForm input[name=page]").val(1);
+	$("#searchForm").submit();
+}
+
+// 정렬 조회
+function selectSort(orderNm,orderType)
+{
+	$("#searchForm input[name=orderNm]").val(orderNm);
+	$("#searchForm input[name=orderType]").val(orderType);
+	f_search();
+}
+
+-->
+</script>
+<div class="right_content">
+<form id="searchForm" action="mngBoard_list.jsp" method="post">
+	<input type="hidden" name="selBrdProgSt" value="$!searchParam.selBrdProgSt"/>
+	<input type="hidden" name="selBrdTp" value="$!searchParam.selBrdTp"/>
+	<input type="hidden" name="searchType" value="$!searchParam.searchType"/>
+	<input type="hidden" name="searchKeyword" value="$!searchParam.searchKeyword"/>
+	<input type="hidden" name="brdType" value="$!searchParam.brdType"/>
+	<input type="hidden" name="brdTp" value="$!searchParam.brdTp"/>
+	<input type="hidden" name="page" value="$!searchParam.page"/>
+	<input type="hidden" name="pageSize" value="$!searchParam.pageSize"/>
+	<input type="hidden" name="orderNm" value="$!searchParam.orderNm"/>
+	<input type="hidden" name="orderType" value="$!searchParam.orderType"/>
+</form>
+<form id="tmpForm">
+	<input type="hidden" name="page" value="$!searchParam.page"/>
+	<input type="hidden" name="pageSize" value="$!searchParam.pageSize"/>
+	<div class="t_icon">$__brdTypeNm <div class="r_txt"><div class="navi">Home &gt; 게시판관리 &gt; <strong>$__brdTypeNm</strong></div></div></div>
+
+	<div class="tc_box02">
+		<div class="l_box">총 <strong>$!pageInfo.totalCount</strong>개의 내용이 등록되어 있습니다.</div>
+		<div class="r_box">
+			<div style=" margin-right:20px; margin-top:2px; float:left;">
+				진행단계 : #genCodeSelect("QNASTEP", "", "selBrdProgSt", "$!searchParam.selBrdProgSt", "id='selBrdProgSt' class='select' style='width:100px; height:20px;'", "전체")&nbsp;
+				<select name="searchType" class="select" style="width:100px; height:20px;">
+					<option value="BRD_TITLE" #if ($!searchParam.searchType=="BRD_TITLE") selected #end>제목</option>
+					<option value="BRD_MEMO" #if ($!searchParam.searchType=="BRD_MEMO") selected #end>내용</option>
+					<option value="BRD_ALL" #if ($!searchParam.searchType=="BRD_ALL") selected #end>제목+내용</option>
+				</select>
+			</div>
+			<div >
+				<input type="text" name="searchKeyword" value="$!searchParam.searchKeyword" class="login02_input submit" style="width:150px; height:17px;" />&nbsp;&nbsp;&nbsp;
+				<a href="javascript:f_search();"><img src="/admin/img/sh_s_btn.gif" style="margin-bottom:-6px;" alt="검색" /></a>
+			</div>
+		</div>
+	</div>
+	<table cellpadding="0" cellspacing="0" class="line_type02" width="100%">
+		<col width="3%" />
+		<col width="5%" />
+		<col width="40%" />
+		<col width="10%" />
+		<col width="10%" />
+		<col width="7%" />
+		<col width="5%" />
+		
+		<tr>
+			<th><input type='checkbox' name="chkAll" onClick="javascript:f_AllChk();"></th>
+			<th>번호</th>
+			<th>제목</th>
+			<th>등록자</th> 
+			<th>등록일</th>	## 등록일 #brdOrderBy("t1.reg_tm", $!searchParam.orderType, "등록일")
+			<th>진행단계</th>
+			<th>조회수</th>	## 조회수 #brdOrderBy("t1.brd_read_cnt", $!searchParam.orderType, "조회수")
+		</tr>
+#set ($brdTempChkCount = 0)
+#set ($__term = 7)
+#foreach($__info in $infos)
+	#set ($__tmpNo = $pageInfo.totalCount - ($pageInfo.page - 1) * $pageInfo.pageSize - $velocityCount + 1)
+	#if ($velocityCount % 2 == 1)
+		<tr class="g_td">##</tr>
+	#else
+		<tr>
+	#end
+	## 답변글이 아닐때 [게시글이동]이 가능하다록 ( 게시글 이동시 답변글 또한 같이 이동된다. )
+	#if($!__info.brdStep < 1)
+		#set ($brdTempChkCount = $brdTempChkCount + 1)
+		<td><input type="checkbox" name="tempChk" id="tempChk" value="$!__info.brdGrpIdx"></td>
+	#else
+		<td></td>
+	#end	
+	## [게시글이동] end
+		<td>$!__tmpNo</td>
+		<td class="subject">
+#if ($!__info.brdStep > 0)
+	#set ($__mLeft = (10 * $!__info.brdStep) + "px")
+				<img src="/admin/img/re_icon.gif" align="absbottom" style="margin-left:$!__mLeft" />
+#end
+				<strong><a href="mngBoard_view.jsp?readCnt=1&brdNum=$!__info.brdNum&$!searchParamUrl">$!__info.brdTitle</a></strong>
+#if ($!__info.replyCnt > 0)
+				<strong class="or_txt">[$!__info.replyCnt]</strong>&nbsp;
+#end
+#if ($!__info.brdOpenYn=="N")
+				<img src="/admin/img/lock_icon.gif" align="absmiddle" />&nbsp;
+#end
+#if ($DateUtils.getDiffDay($!__info.regTm, $DateUtils.getCurrentTime(), "yyyyMMddHHmmss") <= $__term)
+				<img src="/admin/img/icon_new.gif" align="absmiddle" />
+#end
+			</td>
+			<td>$!__info.brdRegNm</td>
+			<td>$!DateUtils.getTime($!__info.regTm, "yyyyMMddhhmmss", "yyyy-MM-dd")</td>
+			<td>$!__info.brdProgStNm</td>
+			<td>$!__info.brdReadCnt</td>
+		</tr>
+#end
+	</table>
+	
+    <input type="hidden" name="brdChkNum" id="brdChkNum" value="">	## 체크 게시판 번호 반환
+    <input type="hidden" name="redirectUrl" id="redirectUrl" value="mngBoard_list.jsp?brdType=$!searchParam.brdType">	## 이동 페이지
+	
+	<div class="paging_box">
+		<div class="pl_btn">
+    		#if($AuthUtils.isAdmin($request))
+                <select name="chkbrdType" width="220px;" required title="게시물이동">
+                    <option value="">선택</option>
+                    <option value="EXPRT">1:1 전문 상담방</option>
+                    ## <option value=""></option>
+				</select>
+    			<a href="javascript:f_brdMove();">게시글 이동</a>
+    		#end			
+        </div>
+		#makePaging1($pageInfo)
+		<div class="pr_btn">
+			<a href="mngBoard_write.jsp?brdType=$!searchParam.brdType&brdTypeNm=$__brdTypeNm&$!searchParamUrl"><img src="/admin/img/btn_write.gif" alt="등록" /></a>
+		</div>
+	</div>
+</form>
+</div>
+<script>
+<!--
+// 게시글 전체선택
+function f_AllChk()
+{
+	var chkAlls = document.getElementsByName("chkAll");		// 전체체크 버튼
+	var tempChks = document.getElementsByName("tempChk");	// 체크버튼
+	var len = tempChks.length;	
+	
+	var result = chkAlls[0].checked;
+	
+	
+	for(var i=0;i<len;i++)
+	{
+		tempChks[i].checked = result;
+	}	
+}
+
+// 게시글 이동
+function f_brdMove() {
+    var oForm = document.forms["tmpForm"];
+	var tempChks = document.getElementsByName("tempChk");
+	var count = 0;
+	
+	var len = tempChks.length;
+	
+	for(var i=0;i<len;i++)
+	{
+		
+		if(tempChks[i].checked)
+		{
+			if(count < 1)
+			{
+				oForm.brdChkNum.value = tempChks[i].value;			
+			}else{
+				oForm.brdChkNum.value += ","+tempChks[i].value;			
+			}
+		
+			count++;
+		}
+	}
+	
+	if(count < 1)
+	{
+		alert("이동할 게시물을 선택해주세요.");
+		return;
+	}	
+	
+	if(oForm.chkbrdType.value == "")
+	{
+		alert('이동할 게시판을 선택해주세요');
+		return;
+	}
+
+	$("#tmpForm").attr("action","board_move.jsp").submit();
+}
+
+//-->
+</script>

@@ -1,0 +1,216 @@
+## 상담 FAQ
+#makeSearchParams($searchParam, "orgCd,pos,limit,sortOrder", $searchParamUrl)
+#set ($searchParamUrl = "searchParamUrl=$!esc.url($searchParamUrl)")
+#set ($__brdTypeNm = $!CodeUtils.getCodeValue("BRDNM", $!searchParam.brdType))
+<script language="javascript">
+<!--
+$(document).ready(function(){
+	$(".submit").keydown(function(e) {
+		if (e.keyCode == 13) {
+			e.preventDefault();
+			f_search();
+		}
+	});
+});
+
+function goPage(p) {
+	$("#searchForm input[name=page]").val(p);
+	$("#searchForm").submit();
+}
+
+// 조회
+function f_search() {
+	$("#searchForm input[name=selBrdProgSt]").val($("#tmpForm select[name=selBrdProgSt]").val());
+	$("#searchForm input[name=searchType]").val($("#tmpForm select[name=searchType]").val());
+	$("#searchForm input[name=selBrdTp]").val($("#tmpForm select[name=selBrdTp]").val());
+	$("#searchForm input[name=searchKeyword]").val($("#tmpForm input[name=searchKeyword]").val());
+	$("#searchForm input[name=page]").val(1);
+	$("#searchForm").submit();
+}
+
+function f_cont_view(c){
+  var cont = document.getElementById(c);
+	if(cont.style.display == "none"){
+		cont.style.display ="table-cell";
+	}else{
+		cont.style.display = "none";
+	}
+}
+
+// 삭제
+function f_delete(brdNum) {
+	if(confirm("$__brdTypeNm 정보를 삭제하시겠습니까?")) {
+		$("#tmpForm").attr("action","hp_board_delete_proc.jsp");
+		$("#tmpForm input[name=redirectUrl]").val("mngCnslFaq_list_view.jsp?brdType=$!searchParam.brdType");
+		$("#tmpForm input[name=brdNum]").val(brdNum);
+		
+		gSubmitPost("tmpForm");
+	}
+}
+
+function callbackFunc() {
+	document.getElementById("attFile").style.display="none";
+}
+
+// 수정
+function f_update(brdNum,brdType) {
+	if(f_pwd_confirm()) {
+		$("#tmpForm").attr("action","mngCnslFaq_update.jsp?brdType="+brdType+"&brdNum="+brdNum+"&$!searchParamUrl").submit();
+	}
+}
+
+
+// 정렬 조회
+function selectSort(orderNm,orderType)
+{
+	$("#searchForm input[name=orderNm]").val(orderNm);
+	$("#searchForm input[name=orderType]").val(orderType);
+	f_search();
+}
+
+-->
+</script>
+<div class="right_content">
+<form id="searchForm" action="mngCnslFaq_list_view.jsp" method="post">
+	<input type="hidden" name="selBrdProgSt" value="$!searchParam.selBrdProgSt"/>
+	<input type="hidden" name="selBrdTp" value="$!searchParam.selBrdTp"/>
+	<input type="hidden" name="searchType" value="$!searchParam.searchType"/>
+	<input type="hidden" name="searchKeyword" value="$!searchParam.searchKeyword"/>
+	<input type="hidden" name="brdType" value="$!searchParam.brdType"/>
+	<input type="hidden" name="brdTp" value="$!searchParam.brdTp"/>
+	<input type="hidden" name="page" value="$!searchParam.page"/>
+	<input type="hidden" name="pageSize" value="$!searchParam.pageSize"/>
+	<input type="hidden" name="orderNm" value="$!searchParam.orderNm"/>
+	<input type="hidden" name="orderType" value="$!searchParam.orderType"/>
+</form>
+<form id="tmpForm">
+	<input type="hidden" name="redirectUrl" value=""/>
+	<input type="hidden" name="brdNum" value=""/>
+	<input type="hidden" name="page" value="$!searchParam.page"/>
+	<input type="hidden" name="pageSize" value="$!searchParam.pageSize"/>
+	<div class="t_icon">$__brdTypeNm <div class="r_txt"><div class="navi">Home &gt; 게시판관리 &gt; <strong>$__brdTypeNm</strong></div></div></div>
+
+	<div class="tc_box02">
+		<div class="l_box">총 <strong>$!pageInfo.totalCount</strong>개의 내용이 등록되어 있습니다.</div>
+		<div class="r_box">
+			<div style=" margin-right:20px; margin-top:2px; float:left;">
+				구분 : 
+				#genCodeSelect("CNSLFAQ01", "", "selBrdTp", "$!searchParam.brdTp", "title='구분' class='select' style='width:80px; height:20px;'", "전체")
+				<select name="searchType" class="select" style="width:100px; height:20px;">
+					<option value="BRD_TITLE" #if ($!searchParam.searchType=="BRD_TITLE") selected #end>제목</option>
+					<option value="BRD_MEMO" #if ($!searchParam.searchType=="BRD_MEMO") selected #end>내용</option>
+					<option value="BRD_ALL" #if ($!searchParam.searchType=="BRD_ALL") selected #end>제목+내용</option>
+				</select>
+			</div>
+			<div >
+				<input type="text" name="searchKeyword" value="$!searchParam.searchKeyword" class="login02_input submit" style="width:150px; height:17px;" />&nbsp;&nbsp;&nbsp;
+				<a href="javascript:f_search();"><img src="/admin/img/sh_s_btn.gif" style="margin-bottom:-6px;" alt="검색" /></a>
+			</div>
+		</div>
+	</div>
+	<table cellpadding="0" cellspacing="0" class="line_type02" width="100%">
+		<col width="5%" />
+		<col width="10%" />
+		<col width="65%" />
+		<col width="10%" />
+		<col width="10%" />
+		
+		<tr>
+			<th>No.</th>
+			<th>분류</th>
+			<th>제목</th>
+			<th>#brdOrderBy("t1.reg_tm", $!searchParam.orderType, "등록일")</th>
+			<th>#brdOrderBy("t1.brd_read_cnt", $!searchParam.orderType, "조회수")</th>
+			## <th>첨부파일</th>
+		</tr>
+#set ($__term = 7)
+#foreach($__info in $infos)
+	#set ($__tmpNo = $pageInfo.totalCount - ($pageInfo.page - 1) * $pageInfo.pageSize - $velocityCount + 1)
+	
+	#if ($velocityCount % 2 == 1)
+		<tr class="g_td">##</tr>
+	#else
+		<tr>
+	#end
+			<td>$!__tmpNo</td>
+			<td class="subject">
+				$!__info.brdTpNm 
+			</td>
+			<td>
+				<strong><a href="#cont$!__tmpNo" onclick="javascript:f_cont_view('cont$!__tmpNo')">$!__info.brdTitle</a></strong>
+                ## N [새로운글 표시]
+                #if ($DateUtils.getDiffDay($!__info.regTm, $DateUtils.getCurrentTime(), "yyyyMMddHHmmss") <= $__term)
+                				<img src="/admin/img/icon_new.gif" align="absmiddle" />
+                #end
+                ## N [새로운글 표시] END
+            </td>
+			<td>$!DateUtils.getTime($!__info.regTm, "yyyyMMddhhmmss", "yyyy-MM-dd")</td>
+			<td>$!__info.brdReadCnt</td>
+			#**
+			<td>
+    			#if ($!__info.attFileTp=="")
+    				&nbsp;
+    			#else
+    				<a href="#downloadPath2($!__info.attTableNm, $!__info.attFileTp, $!__info.attSaveFileNm, $!__info.attOrgFileNm, $!__info.attSaveFilePath)" class="down_file"><img src="/images/board/icon_file.gif" alt="첨부파일다운" /></a>
+    			#end
+			</td>
+			*#
+		</tr>
+		## 상세보기 추가구문
+		<tr>
+			<td colspan="5" width="100%" id="cont$!__tmpNo" style="display:none;">
+            	<table cellpadding="0" cellspacing="0" class="line_type02" width="100%">
+            		<col width="15%" />
+            		<col width="35%" />
+            		<col width="15%" />
+            		<col width="35%" />
+            		<tr>
+            			<th>제목</th>
+            			<td colspan="3">$!__info.brdTitle</td>
+            		</tr>
+            		<tr>
+            			<th>내용</th>
+            			<td colspan="3" style="padding:10px 0 10px 10px;height:100px;">$!__info.brdMemo</td>
+            		</tr>
+            		#**
+                    <tr>
+                        <th>첨부파일</th>
+                        <td colspan="3">
+            				#multifile($attFileInfos) #**	멀티파일  뷰 메크로	*#
+                        </td>
+                    </tr>
+					*#
+            		<tr>
+            			<th>등록일</th>
+            			<td>$!DateUtils.getTime($!__info.regTm, "yyyyMMddhhmmss", "yyyy-MM-dd")</td>
+            			<th>등록자</th>
+            			<td>$!__info.brdRegNm</td>
+            		</tr>
+            		<tr>
+            			<th>최근수정일</th>
+            			<td>$!DateUtils.getTime($!__info.updTm, "yyyyMMddhhmmss", "yyyy-MM-dd")</td>
+            			<th>수정자</th>
+            			<td>$!__info.brdUpdNm</td>
+            		</tr>
+                #if ($!info.brdRegId == $!SessionUtils.getAdminSeq($request) || $!SessionUtils.getAdminSeq($request) == "admin")
+					<tr>
+						<td colspan="4">
+							<div class="pr_btn">
+                    			<a href="mngCnslFaq_update.jsp?brdType=$!__info.brdType&brdNum=$!__info.brdNum&$!searchParamUrl;"><img src="/admin/img/btn_modi.gif" alt="수정" /></a>
+                    			<a href="javascript:f_delete('$!__info.brdNum');"><img src="/admin/img/btn_del.gif" alt="삭제" /></a>
+                            </div>
+						</td>
+					</tr>
+                #end
+                </table>
+			</td>
+		</tr>
+		## 상세보기 추가구문 끝.
+#end
+	</table>
+	<div class="paging_box">
+		#makePaging1($pageInfo)
+		<div class="pr_btn"><a href="mngCnslFaq_write.jsp?brdType=$!searchParam.brdType&brdTypeNm=$__brdTypeNm&$!searchParamUrl"><img src="/admin/img/btn_write.gif" alt="등록" /></a></div>
+	</div>
+</form>
+</div>

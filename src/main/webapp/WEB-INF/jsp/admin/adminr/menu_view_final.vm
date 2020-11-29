@@ -1,0 +1,80 @@
+#set ($searchParamUrl = "searchParamUrl=$!esc.url($searchParam.searchParamUrl)")
+<script language="javascript" type="text/javascript">
+
+// 삭제
+function f_delete() {
+	if(confirm("$!info.brdTypeNm정보를 삭제하시겠습니까?")) {
+		//if(f_pwd_confirm()) {
+			gSubmitPost("writeForm");
+		//}
+	}
+}
+
+
+// 수정
+function f_update() {
+	$("#writeForm").attr("action","finalmenu_mng_update.jsp?pppk=$!searchParam.pppk&ppMenu1=$!searchParam.ppMenu1&ppMenu3=$!searchParam.ppMenu3&ppPcode=$!searchParam.ppPcode&ppk=$!searchParam.ppk&pMenu1=$!searchParam.pMenu1&pMenu3=$!searchParam.pMenu3&pPcode=$!searchParam.pPcode&pk=$!searchParam.pk&menu1=$!searchParam.menu1&menu3=$!searchParam.menu3&pcode=$!searchParam.pcode&").submit();
+}
+
+</script>
+<div class="right_content">
+<form id="writeForm" name="writeForm" action="finalmenu_delete_proc.jsp" method="post">
+	<input type="hidden" name="redirectUrl" value="submenu_view_nFlist.jsp?ppk=$!searchParam.pppk&pMenu1=$!searchParam.ppMenu1&pMenu3=$!searchParam.ppMenu3&pPcode=$!searchParam.ppPcode&pk=$!searchParam.ppk&menu1=$!searchParam.pMenu1&menu3=$!searchParam.pMenu3&pcode=$!searchParam.pPcode&"/>
+	<input type="hidden" name="adMuNum" id="adMuNum" value="$!info.adMuNum"/>
+	
+	<div class="t_icon">$!info.brdTypeNm 소분류보기  <div class="r_txt"><div class="navi">Home &gt; 관리자 &gt; <strong>$!info.brdTypeNm 소분류보기</strong></div></div></div>
+	<table cellpadding="0" cellspacing="0" class="write_table02" width="100%">
+		<col width="15%" />
+		<col width="35%" />
+		<col width="15%" />
+		<col width="35%" />
+		<tr>
+			<th>소메뉴명</th>
+			<td>$!info.adMuTitle</td>
+			<th>메뉴분류</th>
+			<td>$!info.adMuCode</td>
+		</tr>
+		<tr>
+			<th>메뉴순번</th>
+			<td>$!info.adMuOdr</td>
+			<th>메모</th>
+			<td >$!info.adMuMemo</td>
+		</tr>
+		<tr>
+			<th>메뉴URL</th>
+			<td colspan="3">$!info.adMuUrl</td>
+		</tr>
+		<tr>
+			<th>입력자</th>
+			<td>$!info.adUpdId</td>
+            <th>입력일</th>
+			<td>$!info.adRegTm</td>
+			##<td>$!DateUtils.getTime($!info.adRegTm, "yyyyMMddhhmmss", "yyyy-MM-dd")</td>
+		</tr>
+		<tr>
+			<th>수정자</th>
+            <td>$!info.adUpdId</td>
+			<th>수정일</th>
+            <td>$!info.adUpdTm</td>
+		</tr>
+	</table>
+	<div class="paging_box">
+		<div class="pr_btn">
+			<a href="submenu_view_nFlist.jsp?
+						ppk=$!searchParam.pppk&
+						pMenu1=$!searchParam.ppMenu1&
+						pMenu2=$!searchParam.ppMenu2&
+						pMenu3=$!searchParam.ppMenu3&
+						pPcode=$!searchParam.ppPcode&
+						pk=$!searchParam.ppk&
+						menu1=$!searchParam.pMenu1&
+						menu2=$!searchParam.pMenu2&
+						menu3=$!searchParam.pMenu3&
+						pcode=$!searchParam.pPcode&"><img src="/admin/img/btn_list.gif" alt="목록" /></a>
+			<a href="javascript:f_delete();"><img src="/admin/img/btn_del.gif" alt="삭제" /></a>
+			<a href="javascript:f_update();"><img src="/admin/img/btn_modi.gif" alt="수정" /></a>
+		</div>
+	</div>	
+	
+</form>
+</div>

@@ -1,0 +1,86 @@
+﻿#set ($searchParamUrl = "searchParamUrl=$!esc.url($searchParam.searchParamUrl)")
+<script language="javascript" type="text/javascript">
+//상위코드수정
+function f_update() {
+    var oForm = document.forms["writeForm"];
+	if(!gf_validation(oForm)) {
+		return;
+	}
+	
+	if(confirm("$!info.brdTypeNm정보를 수정하시겠습니까?")) {
+		$("#writeForm").attr("action","subcode_update_proc.jsp");
+		$("#writeForm input[name=redirectUrl]").val("subcode_view.jsp?pseq=$!searchParam.pseq&seq=$!searchParam.seq&pcode=$!searchParam.pcode&brdType=33&$!searchParamUrl");
+		
+		gSubmitPost("writeForm",true);
+	}
+}
+
+
+
+// 삭제
+function f_delete() {
+	if(confirm("$!info.brdTypeNm정보를 삭제하시겠습니까?")) {
+		$("#writeForm").attr("action","cm_code_delete_proc.jsp");
+		$("#writeForm input[name=redirectUrl]").val("cm_code_mng_list.jsp?$!searchParam.searchParamUrl");
+
+		gSubmitPost("writeForm");
+	}
+}
+
+function callbackFunc() {
+	document.getElementById("attFile").style.display="none";
+}
+</script>
+<div class="right_content">
+<form id="writeForm" name="writeForm" method="post">
+	<input type="hidden" name="redirectUrl" value=""/>
+	<input type="hidden" name="mode" value="update"/>
+	<input type="hidden" name="brdNum" id="brdNum" value="$!info.brdNum"/>
+	<input type="hidden" name="brdType" value="$!info.brdType" />
+	<input type="hidden" name="seq" 	value="$!info.seq" />
+	<input type="hidden" name="adUpdId" value="$!SessionUtils.getAdminId($request)" />
+	
+	
+	<div class="t_icon"> 하위코드수정 <div class="r_txt"><div class="navi">Home &gt; 홈페이지관리 &gt; <strong>하위코드수정</strong></div></div></div>
+	<table cellpadding="0" cellspacing="0" class="write_table02" width="100%">
+		<col width="15%" />
+		<col width="35%" />
+		<col width="15%" />
+		<col width="35%" />
+		<tr>
+			<th>코드명</th>
+			<td colspan="3">
+				<input type="text"  name="name" value="$!info.name" required alt="코드명" class="login02_input" style="width:95%; height:18px;ime-mode:active" />
+			</td>
+		</tr>
+		<tr>
+			<th>코드</th>
+			<td>
+				<input type="text"  name="code" value="$!info.code" required alt="코드" class="login02_input" style="width:90%; height:18px;ime-mode:active" />
+			</td>
+			<th>코드순번</th>
+			<td >
+				<input type="text"  name="codeOdr" value="$!info.codeOdr" required alt="코드순번" class="login02_input" style="width:90%; height:18px;ime-mode:active" onkeydown="gf_num_only();" maxlength="2"/>
+			</td>
+		</tr>
+		<tr>
+			<th>사용유무</th>
+			<td>
+				<input type="radio" name="useYn" required radio value="Y" #setChecked("$!info.useYn", "Y") id="lab01" checked/> <label for="lab01">Y</label>&nbsp;&nbsp;
+				<input type="radio" name="useYn" value="N" #setChecked("$!info.useYn", "N") id="lab02"/> <label for="lab02">N</label>
+			</td>
+			<th>메모</th>
+			<td >
+				<input type="text" name="codeRmk" value="$!info.codeRmk" required alt="메모" class="login02_input" style="width:90%; height:18px;ime-mode:active" />
+			</td>
+        </tr>
+
+	</table>
+	<div class="sys_btn">
+		<a href="cm_code_view_and_subcode_list.jsp?seq=$!searchParam.pseq&code=$!searchParam.pcode&brdType=32&$!searchParamUrl"><img src="/admin/img/btn_cancel.gif" alt="취소" /></a>
+		<a href="javascript:f_update();"><img src="/admin/img/btn_modi.gif" alt="수정" /></a>
+		##<a href="javascript:f_delete();"><img src="/admin/img/btn_del.gif" alt="삭제" /></a>
+		##<a href="cm_code_mng_list.jsp?$!searchParam.searchParamUrl"><img src="/admin/img/btn_list.gif" alt="목록" /></a>
+	</div>
+</form>
+</div>

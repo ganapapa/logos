@@ -1,0 +1,97 @@
+﻿#set ($searchParamUrl = "searchParamUrl=$!esc.url($searchParam.searchParamUrl)")
+<script language="javascript" type="text/javascript">
+// 수정
+function f_update() {
+    var oForm = document.forms["writeForm"];
+	oForm.adMuCode.value = oForm.adMenu2;
+	if(!gf_validation(oForm)) {
+		return;
+	}
+	
+	if(confirm("$!info.brdTypeNm정보를 수정하시겠습니까?")) {
+		$("#writeForm").attr("action","submenu_mng_update_proc.jsp");
+		$("#writeForm input[name=redirectUrl]").val("submenu_view_nFlist.jsp?ppk=$!searchParam.ppk&pk=$!searchParam.pk&menu3=$!searchParam.menu3&pMenu3=$!searchParam.pMenu3&$!searchParamUrl");
+		gSubmitPost("writeForm",true);
+	}
+}
+
+
+
+// 삭제
+function f_delete() {
+	if(confirm("중메뉴를 삭제하면 연결된 소메뉴가 모두 삭제됩니다!\n\n삭제하시겠습니까?")) {
+		$("#writeForm").attr("action","submenu_delete_proc.jsp");
+		$("#writeForm input[name=redirectUrl]").val("menu_mng_view.jsp?pk=$!searchParam.ppk&menu1=$!searchParam.pMenu1&menu3=$!searchParam.pMenu3&pcode=$!searchParam.pPcode&$!searchParam.searchParamUrl");
+		gSubmitPost("writeForm");
+	}
+}
+
+</script>
+<div class="right_content">
+<form id="writeForm" name="writeForm" method="post">
+	<input type="hidden" name="redirectUrl" value="menu_mng_view.jsp?pk=$!searchParam.ppk&menu1=$!searchParam.pMenu1&menu3=$!searchParam.pMenu3&pcode=$!searchParam.pPcode&$!searchParam.searchParamUrl"/>
+	<input type="hidden" name="mode" value="update"/>
+	<input type="hidden" name="brdNum" id="brdNum" value="$!info.brdNum"/>
+	<input type="hidden" name="brdType" value="$!info.brdType" />
+	<input type="hidden" name="adMuNum" 		value="$!searchParam.pk" />
+	<input type="hidden" name="adUpdId" 		value="$!SessionUtils.getAdminId($request)" />
+	<input type="hidden" name="adMuCode" id="adMuCode" value="" />
+	
+	<input type="hidden" name="ppk" id="ppk" value="$!searchParam.ppk"/>
+	<input type="hidden" name="pMenu1" id="pMenu1" value="$!searchParam.pMenu1"/>
+	<input type="hidden" name="pMenu3" id="pMenu3" value="$!searchParam.pMenu3"/>
+	<input type="hidden" name="pPcode" id="pPcode" value="$!searchParam.pPcode"/>
+	
+	<input type="hidden" name="pk" id="pk" value="$!searchParam.pk"/>
+	<input type="hidden" name="menu1" id="menu1" value="$!searchParam.menu1"/>
+	<input type="hidden" name="menu3" id="menu3" value="$!searchParam.menu3"/>
+	<input type="hidden" name="pcode" id="pcode" value="$!searchParam.pcode"/>
+	
+	<input type="hidden" name="muCode" id="muCode" value="$!searchParam.pcode"/>
+	<input type="hidden" name="delMenu1" id="delMenu1" value="MMM"/>
+	<input type="hidden" name="attFileNo" id="attFileNo" value="$!attFileInfos.ATT1.attFileNo"/>
+	
+	
+	<div class="t_icon">$!info.brdTypeNm 중메뉴수정 <div class="r_txt"><div class="navi">Home &gt; 홈페이지관리 &gt; <strong>$!info.brdTypeNm 중메뉴수정</strong></div></div></div>
+	<table cellpadding="0" cellspacing="0" class="write_table02" width="100%">
+		<col width="15%" />
+		<col width="35%" />
+		<col width="15%" />
+		<col width="35%" />
+		<tr>
+			<th>중메뉴명</th>
+			<td>
+				<input type="text" name="adMuTitle" value="$!info.adMuTitle" class="login02_input" style="width:90%; height:18px;ime-mode:active" />
+			</td>
+			<th>메모</th>
+			<td>
+				<input type="text" name="adMuMemo" value="$!info.adMuMemo" class="login02_input" style="width:90%; height:18px;ime-mode:active" />
+			</td>
+		</tr>
+		<tr>
+			<th>메뉴URL</th>
+			<td colspan="3">
+				<input type="text" name="adMuUrl" value="$!info.adMuUrl" class="login02_input" style="width:96%; height:18px;ime-mode:active" />
+			</td>
+		</tr>
+		<tr>
+			<th>사용유무</th>
+			<td>
+				<input type="radio" name="adUseYn" required radio value="Y" #setChecked("$!info.adUseYn", "Y") id="lab01" checked/> <label for="lab01">Y</label>&nbsp;&nbsp;
+				<input type="radio" name="adUseYn" value="N" #setChecked("$!info.adUseYn", "N") id="lab02"/> <label for="lab02">N</label>
+			</td>
+			<th>순번</th>
+			<td >
+				<input type="text" name="adMuOdr" value="$!info.adMuOdr" required alt="메뉴순번" class="login02_input" style="width:90%; height:18px;ime-mode:active" onkeydown="gf_num_only();" maxlength="2"/>
+			</td>
+        </tr>
+
+	</table>
+	<div class="sys_btn">
+		<a href="submenu_view_nFlist.jsp?ppk=$!searchParam.ppk&pk=$!searchParam.pk&menu3=$!searchParam.menu3&pMenu3=$!searchParam.pMenu3"><img src="/admin/img/btn_cancel.gif" alt="취소" /></a>
+		<a href="javascript:f_update();"><img src="/admin/img/btn_modi.gif" alt="수정" /></a>
+		<a href="javascript:f_delete();"><img src="/admin/img/btn_del.gif" alt="삭제" /></a>
+		##<a href="menu_mng_list.jsp?$!searchParam.searchParamUrl"><img src="/admin/img/btn_list.gif" alt="목록" /></a>
+	</div>
+</form>
+</div>

@@ -1,0 +1,222 @@
+#makeSearchParams($searchParam, "orgCd,pos,limit,sortOrder", $searchParamUrl)
+#set ($searchParamUrl = "searchParamUrl=$!esc.url($searchParamUrl)")
+#set ($__brdTypeNm = $!CodeUtils.getCodeValue("BRDTP", $!searchParam.brdType))
+<script language="javascript">
+<!--
+$(document).ready(function(){
+	$(".submit").keydown(function(e) {
+		if (e.keyCode == 13) {
+			e.preventDefault();
+			f_search();
+		}
+	});
+});
+
+function goPage(p) {
+	$("#searchForm input[name=page]").val(p);
+	$("#searchForm").submit();
+}
+
+//저장관련
+function save(mode) {
+	$("#writeForm input[name=mode]").val(mode);
+	var tempStr = "";
+	if(mode == "add")
+		tempStr = "등록하시겠습니까?";
+	else if(mode == "update")
+		tempStr = "수정하시겠습니까?";
+	else if(mode == "remove")
+		tempStr = "삭제하시겠습니까?";
+		
+	
+	if(confirm(tempStr )) {
+		gSubmitPost("writeForm");
+	
+		//gSubmitPost("writeForm",true);
+	}
+}
+// 조회
+function f_search(seq) {
+	$("#searchForm input[name=selBrdProgSt]").val($("#tmpForm select[name=selBrdProgSt]").val());
+	$("#searchForm input[name=searchType]").val($("#tmpForm select[name=searchType]").val());
+	$("#searchForm input[name=searchKeyword]").val($("#tmpForm input[name=searchKeyword]").val());
+	$("#searchForm input[name=page]").val(1);
+	
+	$("#searchForm input[name=seq]").val(seq);
+
+	$("#searchForm input[name=searchId]").val($("#tmpForm input[name=searchId]").val());
+	$("#searchForm input[name=searchIp]").val($("#tmpForm input[name=searchIp]").val());
+
+	
+	
+	$("#searchForm").submit();
+}
+-->
+</script>
+<div class="right_content">
+<form id="searchForm" action="st_personal_info_conn_mng.jsp" method="post">
+	<input type="hidden" name="selBrdProgSt" value="$!searchParam.selBrdProgSt"/>
+	<input type="hidden" name="searchType" value="$!searchParam.searchType"/>
+	<input type="hidden" name="searchKeyword" value="$!searchParam.searchKeyword"/>
+	<input type="hidden" name="brdType" value="$!searchParam.brdType"/>
+	<input type="hidden" name="page" value="$!searchParam.page"/>
+	<input type="hidden" name="pageSize" value="$!searchParam.pageSize"/>
+	
+	<input type="hidden" name="seq" value=""/>
+	<input type="hidden" name="searchId" value="$!searchParam.searchId"/>
+	<input type="hidden" name="searchIp" value="$!searchParam.searchIp"/>
+	
+</form>
+	<div class="t_icon">$__brdTypeNm <div class="r_txt"><div class="navi">Home &gt; 통계 &gt; <strong>$__brdTypeNm</strong></div></div></div>
+	
+#if($info)
+	<div class="t_icon">상세정보 <div class="r_txt"></div></div>
+<form id="writeForm" name="writeForm" action="st_personal_info_conn_mng_proc.jsp" method="post">
+		<input type="hidden" name="redirectUrl" value="st_personal_info_conn_mng.jsp?seq=$!info.seq&brdType=$!searchParam.brdType&$!searchParam.searchParamUrl"/>
+		<input type="hidden" name="mode" value=""/>
+		
+		<input type="hidden" name="seq" 		value="$!info.seq"/>
+		<input type="hidden" name="userAgent" 	value="$!info.userAgent"/>
+		<input type="hidden" name="pubIp" 		value="$!info.pubIp"/>
+		
+		
+		<table cellpadding="0" cellspacing="0" class="write_table02" width="100%">
+		<col width="15%" />
+		<col width="35%" />
+		<col width="15%" />
+		<col width="35%" />
+		<tr>
+			<th>ID</th>
+			<td>
+				<input type="text" name="userId" value="$!info.userId" required alt="ID" class="login02_input" style="width:90%; height:18px;ime-mode:active" />
+			</td>
+			<th>RegDate</th>
+			<td>
+				##<input type="text"  name="regDate" value="$!info.regDate" required alt="RegDate" class="login02_input" style="width:90%; height:18px;ime-mode:active" />
+				$!DateUtils.getTime($!info.regDate, "yyyyMMddhhmmss", "yyyy-MM-dd hh:mm:ss")
+				<input type="hidden" name="regDate" value="$!info.regDate" class="login02_input" style="width:90%; height:18px;ime-mode:active" />
+
+			</td>
+		</tr>
+		<tr>
+			<th>JobLog</th>
+			<td >
+				<input type="text"  name="jobLog" value="$!info.jobLog" required alt="JobLog" class="login02_input" style="width:96%; height:18px;ime-mode:active" />
+			</td>
+			<th>QueryLog</th>
+			<td>
+				<input type="text"  name="queryLog" value="$!info.queryLog" required alt="queryLog" class="login02_input" style="width:90%; height:18px;ime-mode:active" />
+			</td>
+		</tr>
+		<tr>
+			<th>Url</th>
+			<td>
+				<input type="text" name="url" value="$!info.url" required alt="Url" class="login02_input" style="width:90%; height:18px;ime-mode:active" />
+			</td>
+			<th>UserIP</th>
+			<td >
+				<input type="text" name="userIp" value="$!info.userIp" required alt="userIp" class="login02_input" style="width:90%; height:18px;ime-mode:active" />
+			</td>
+		</tr>
+		<tr>
+			<th>ReferPage</th>
+			<td colspan="3">
+				<input type="text" name="referPage" value="$!info.referPage" required alt="ReferPage" class="login02_input" style="width:90%; height:18px;ime-mode:active" />
+			</td>
+		</tr>
+		<tr>
+			<th>sec No</th>
+			<td>
+				<input type="text" name="secNo" value="$!info.secNo" required alt="secNo" class="login02_input" style="width:90%; height:18px;ime-mode:active" />
+			</td>
+			<th>Sec Desc</th>
+			<td >
+				<input type="text" name="secDesc" value="$!info.secDesc" required alt="secDesc" class="login02_input" style="width:90%; height:18px;ime-mode:active" />
+			</td>
+		</tr>
+		
+	</table>
+	<div class="sys_btn">
+		##<a href="javascript:save('add');"><img src="/admin/img/btn_save.gif" alt="저장" /></a>
+		<a href="javascript:save('update');"><img src="/admin/img/btn_modi.gif" alt="수정" /></a>
+		<a href="javascript:save('remove');"><img src="/admin/img/btn_del.gif" alt="삭제" /></a>
+	</div>
+</form>
+<br /><br/>
+
+
+<div class="t_icon">검색 정보 <div class="r_txt"></div></div>
+#end
+<form id="tmpForm">
+	<input type="hidden" name="page" value="$!searchParam.page"/>
+	<input type="hidden" name="pageSize" value="$!searchParam.pageSize"/>
+
+	<table cellpadding="0" cellspacing="0" width="1060" class="write_table">
+	<col width="15%" />
+	<col width="35%" />
+	<col width="15%" />
+	<col width="35%" />
+		
+		<tr>
+			<th class="c_th">ID</th>
+			<td>
+				<div style="float:left; margin-right:10px;">
+				<input type="text" name="searchId" value="$!searchParam.searchId" class="login02_input submit" style="width:180px; height:17px;" />&nbsp;
+				</div>
+			</td>
+			<th class="c_th">IP</th>
+			<td>
+				<div style="margin-right:10px; float:left;">
+					<input type="text" name="searchIp" value="$!searchParam.searchIp" class="login02_input submit" style="width:180px; height:17px;" />&nbsp;&nbsp;&nbsp;
+				</div>
+			</td>
+		</tr>
+	</table>
+	<div class="c_btn"><a href="javascript:f_search();"><img src="/admin/img/sh_s_btn.gif" alt="검색" /></a></div>
+	
+	
+	<table cellpadding="0" cellspacing="0" class="line_type02" width="100%">
+		<col width="5%" />
+		<col width="10%" />
+		<col width="20%" />
+		<col width="20%" />
+		<col width="35%" />
+		<col width="15%" />
+		
+		<tr>
+			<th>순번</th>
+			<th>ID</th>
+			<th>RegDate</th>
+			<th>JobLog</th>
+			<th>Query</th>
+			<th>ip</th>
+		</tr>
+#set ($__term = 7)
+#foreach($__info in $personals)
+	#set ($__tmpNo = $pageInfo.totalCount - ($pageInfo.page - 1) * $pageInfo.pageSize - $velocityCount + 1)
+	#if ($velocityCount % 2 == 1)
+		<tr class="g_td">
+	#else
+		<tr>
+	#end
+			<td>$!__tmpNo</td>
+			<td>
+				<strong><a href="javascript:f_search($__info.seq);">$!__info.userId</a></strong>
+			
+			</td>
+			<td>
+				##<strong><a href="/">$!__info.regDate</a></strong>
+				$!DateUtils.getTime($!__info.regDate, "yyyyMMddhhmmss", "yyyy-MM-dd hh:mm:ss")
+			</td>
+			<td>$!__info.jobLog</td>
+			<td>$!__info.queryLog</td>
+			<td>$!__info.userIp</td>
+		</tr>
+#end
+	</table>
+	<div class="paging_box">
+		#makePaging1($pageInfo)
+		##<div class="pr_btn"><a href="st_personal_view_mng.jsp"><img src="/admin/img/btn_write.gif" alt="등록" /></a></div>
+	</div>
+</form>
+</div>

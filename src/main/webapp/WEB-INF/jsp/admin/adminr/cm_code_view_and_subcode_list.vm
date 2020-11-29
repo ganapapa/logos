@@ -1,0 +1,301 @@
+#set ($searchParamUrl = "searchParamUrl=$!esc.url($searchParam.searchParamUrl)")
+#set ($__brdTypeNm = $!CodeUtils.getCodeValue("MENU", $!searchParam.brdType))
+<script language="javascript">
+<!--
+$(document).ready(function(){
+	$(".submit").keydown(function(e) {
+		if (e.keyCode == 13) {
+			e.preventDefault();
+			f_search();
+		}
+	});
+});
+
+function goPage(p) {
+	$("#searchForm input[name=page]").val(p);
+	$("#searchForm").submit();
+}
+
+//수정
+function f_update() {
+	$("#mainForm input[name=mode]").val("update");
+	if (confirm("수정하시겠습니까?") == false) {
+		return;
+    }
+	gSubmitPost("mainForm");
+}
+
+// 삭제
+function f_delete() {
+	$("#mainForm input[name=mode]").val("remove");
+	if(confirm("코드를 삭제하면 연결된 하위코드까지 모두 삭제됩니다!\n\n삭제하시겠습니까?")) {
+		$("#mainForm input[name=redirectUrl]").val("cm_code_mng_list.jsp?brdType=31");
+		gSubmitPost("mainForm");
+	}
+}
+
+function view(i ){
+	i = i - 1;
+	$("#subForm input[name=seq]").val($("#subForm input[name=subSeq]:eq(" + i + ")").val());
+	$("#subForm input[name=code]").val($("#subForm input[name=subCode]:eq(" + i + ")").val());
+	$("#subForm input[name=csdeType]").val($("#subForm input[name=subCsdeType]:eq(" + i + ")").val());
+	$("#subForm input[name=name]").val($("#subForm input[name=subName]:eq(" + i + ")").val());
+
+	$("#subForm input[name=useYn]").each(function(){
+		if ($(this).val() == $("#subForm input[name=subUseYn]:eq(" + i + ")").val()) {
+			$(this).attr("checked", true);
+		}
+	});
+		
+	$("#subForm input[name=codeRmk]").val($("#subForm input[name=subCodeRmk]:eq(" + i + ")").val());
+
+	$("#subForm input[name=codeOdr]").val($("#subForm input[name=subCodeOdr]:eq(" + i + ")").val());
+
+	$("#tempForm input[name=codeOdr]").val($("#subForm input[name=subCodeOdr]:eq(" + i + ")").val());
+}
+function cancel(){
+	$("#subForm input[name=seq]").val("");
+	$("#subForm input[name=code]").val("");
+	$("#subForm input[name=name]").val("");
+
+	$("#subForm input[name=useYn]").each(function(){
+		if ($(this).val() == "Y") {
+			$(this).attr("checked", true);
+		}
+	});
+		
+	$("#subForm input[name=codeRmk]").val("");
+
+	$("#subForm input[name=codeOdr]").val("");
+
+	$("#tempForm input[name=codeOdr]").val("");
+}
+
+function save( mode ){
+	if((mode == "remove" ||  mode == "update") && ($("#subForm input[name=seq]").val() == "")){
+		alert("선택해주세요.");
+		return;
+	}
+	
+	var oForm = document.forms["subForm"];
+
+	if(!gf_validation(oForm)) {
+		return;
+	}	
+	
+	var str = "" ;
+	if(mode == "add" ) {
+		str = "등록 하시겠습니까?";
+	}else if(mode == "update" ){
+		str = "수정 하시겠습니까?";
+	}
+	else if(mode == "remove" ){
+		str = "삭제 하시겠습니까?";
+	}
+	
+	if (confirm(str) == false) {
+		return;
+    }
+
+	$("#subForm input[name=mode]").val(mode);
+	gSubmitPost("subForm");
+
+}
+
+
+
+-->
+</script>
+<div class="right_content">
+<form id="mainForm" name="mainForm" method="post" action="cm_code_write_proc.jsp">
+	<input type="hidden" name="redirectUrl" value="cm_code_view_and_subcode_list.jsp?code=$!info.code&brdType=$!searchParam.brdType&seq=$!info.seq&!searchParam.searchParamUrl"/>
+	<input type="hidden" name="brdNum" id="brdNum" value="$!info.brdNum"/>
+	##<input type="hidden" name="seq" id="seq" value="$!info.seq"/>
+	<input type="hidden" name="codeType" id="codeType" value="$!info.codeType"/>
+	<input type="hidden" name="brdType" value="$!searchParam.brdType"/>
+	<input type="hidden" name="mode" value=""/>
+	
+	
+	<div class="t_icon">$__brdTypeNm <div class="r_txt"><div class="navi">Home &gt; 관리자 &gt; <strong>$__brdTypeNm</strong></div></div></div>
+	<table cellpadding="0" cellspacing="0" width="1060" class="write_table">
+	<col width="15%" />
+	<col width="35%" />
+	<col width="15%" />
+	<col width="35%" />
+		<input type="hidden" name="seq" id="seq" value="$!info.seq"/>
+		<input type="hidden" name="codeType" id="codeType" value="$!info.codeType"/>
+		<tr>
+			<th>코드명</th>
+			<td colspan="3">
+				<input type="text"  name="name" value="$!info.name" required alt="코드명" class="login02_input" style="width:95%; height:18px;ime-mode:active" />
+			</td>
+		</tr>
+		<tr>
+			<th>코드</th>
+			<td>
+				<input type="text"  name="code" value="$!info.code" required alt="코드" class="login02_input" style="width:90%; height:18px;ime-mode:active" />
+			</td>
+			<th>코드순번</th>
+			<td >
+				<input type="text"  name="codeOdr" value="$!info.codeOdr" required alt="코드순번" class="login02_input" style="width:90%; height:18px;ime-mode:active" onkeydown="gf_num_only();" maxlength="2"/>
+			</td>
+		</tr>
+		<tr>
+			<th>사용유무</th>
+			<td>
+				##<input type="text" name="useYn" required alt="사용유무" class="login02_input" style="width:90%; height:18px;ime-mode:active" maxlength="1"/>
+				<input type="radio" name="useYn" required radio value="Y" #setChecked("$!info.useYn", "Y") id="lab01" checked/> <label for="lab01">Y</label>&nbsp;&nbsp;
+				<input type="radio" name="useYn" value="N" #setChecked("$!info.useYn", "N") id="lab02"/> <label for="lab02">N</label>
+			</td>
+			<th>메모</th>
+			<td >
+				<input type="text" name="codeRmk" value="$!info.codeRmk" required alt="메모" class="login02_input" style="width:90%; height:18px;ime-mode:active" />
+			</td>
+		</tr>
+
+	</table>
+	
+	<div class="paging_box">
+		<div class="pr_btn">
+			##<a href="cm_code_mng_list.jsp?brdType=31&$!searchParam.searchParamUrl"><img src="/admin/img/btn_list.gif" alt="목록" /></a>
+			<a href="javascript:f_delete();"><img src="/admin/img/btn_del.gif" alt="삭제" /></a>
+			<a href="javascript:f_update();"><img src="/admin/img/btn_modi.gif" alt="수정" /></a>
+		</div>
+	</div>
+</form>	
+	<br/><br/>
+	<div class="tc_box02">
+		<div class="l_box">총 <strong>$!pageInfo.totalCount</strong>개의 내용이 등록되어 있습니다.</div>
+		<div class="r_box">
+			<div style=" margin-right:10px; margin-top:2px; float:left;">
+					##<a href="#"><img src="/admin/img/btn_ch_xls.gif" alt="엑셀 전환" /></a>
+			</div>
+		</div>
+	</div>
+	
+	
+<form id="subForm" name="subForm" method="post" action="cm_code_write_proc.jsp">
+	 <table border="0" width="100%" height="100%" cellpadding="0" cellspacing="0" >
+		<col width="60%">
+		<col width="40%">
+		<TR height="100%" valign="top">
+			<TD rowspan="2">
+				
+	<table cellpadding="0" cellspacing="0" class="line_type02" width="99%">
+		<col width="3%" />
+		##<col width="10%" />
+		<col width="10%" />
+		<col width="20%" />
+		<col width="8%" />
+		<col width="8%" />
+		
+		<tr>
+			<th>번호</th>
+			##<th>상위코드</th>
+			<th>코드</th>
+			<th>코드명</th>
+			<th>코드순번</th>
+			<th>사용유무</th>
+		</tr>
+#set ($__term = 7)
+#foreach($__info in $infos)
+	#set($mixedCode = $!searchParam.code+"_"+$!__info.code)
+	#set ($__tmpNo = $pageInfo.totalCount - ($pageInfo.page - 1) * $pageInfo.pageSize - $velocityCount + 1)
+	#if ($velocityCount % 2 == 1)
+		<tr class="g_td">
+	#else
+		<tr>
+	#end
+		    <input type="hidden" name="subSeq" value="$!__info.seq"/>
+			<input type="hidden" name="subCodeType" value="$!__info.codeType"/>
+			<input type="hidden" name="subCode" value="$!__info.code"/>
+		    <input type="hidden" name="subName" value="$!__info.name"/>
+		    <input type="hidden" name="subPcode" value="$!__info.pcode"/>
+		    <input type="hidden" name="subCodeRmk" value="$!__info.codeRmk"/>
+			
+			<input type="hidden" name="subCodeOdr" value="$!__info.codeOdr"/>
+			<input type="hidden" name="subUseYn" value="$!__info.useYn"/>
+	
+			<td>$!__tmpNo</td>
+			##<td>$!__info.pcode</td>
+			<td>$!__info.code</td>
+			<td>
+				<strong>
+					<a href="javascript:view($velocityCount)">$!__info.name</a>
+				</strong>
+			</td>
+			<td>$!__info.codeOdr</td>
+			<td>$!__info.useYn</td>
+			##<input type="text" name="mixedCode" value="$!mixedCode "/>
+		</tr>
+#end
+	</table>
+				</TD>
+			<TD rowspan="2">
+            	<table cellpadding="0" cellspacing="0" class="write_table02" width="100%">
+            		<col width="15%" />
+            		<col width="35%" />
+            		<col width="15%" />
+            		<col width="35%" />
+            		<input type="hidden" name="seq" value="" />
+            		<input type="hidden" name="codeType" value="$!info.code" />
+					<input type="hidden" name="redirectUrl" value="cm_code_view_and_subcode_list.jsp?code=$!info.code&brdType=$!searchParam.brdType&seq=$!info.seq"/>
+					<input type="hidden" name="mode" value=""/>
+							    
+					<tr>
+            			<th>코드명</th>
+            			<td>
+            				<input type="text" name="name" value="" required alt="코드명"  class="login02_input" style="width:90%; height:18px;ime-mode:active" />
+            			</td>
+            			<th>코드</th>
+            			<td>
+            				<input type="text" name="code" value=""  required alt="코드"  class="login02_input" style="width:90%; height:18px;ime-mode:active" />
+            			</td>
+            		</tr>
+            		<tr>
+            			<th>메모</th>
+            			<td colspan="3">
+            				<input type="text" name="codeRmk" value=""  alt="메모"   class="login02_input" style="width:96%; height:18px;ime-mode:active" />
+            			</td>
+            		</tr>
+            		<tr>
+            			<th>사용유무</th>
+            			<td>
+            				<input type="radio" name="useYn" required radio value="Y" id="lab01" checked/> <label for="lab01">Y</label>&nbsp;&nbsp;
+            				<input type="radio" name="useYn" value="N" id="lab02"/> <label for="lab02">N</label>
+            			</td>
+            			<th>순번</th>
+            			<td >
+            				<input type="text" name="codeOdr" value="" required alt="메뉴순번" class="login02_input" style="width:90%; height:18px;ime-mode:active" onkeydown="gf_num_only();" maxlength="2"/>
+            			</td>
+                    </tr>
+
+            	</table>
+            		<div class="paging_box">
+                		<div class="pr_btn">
+    						<a href="javascript:save('add')">
+    							<img src="/admin/img/btn_write.gif" alt="등록" />
+    						</a>
+    						<a href="javascript:save('update')">
+    							<img src="/admin/img/pop_btn_modi.gif" alt="수정" />
+							</a>
+    						<a href="javascript:save('remove')">
+    							<img src="/admin/img/btn_del.gif" alt="삭제" />
+							</a>
+    						<a href="javascript:cancel()">
+    							<img src="/admin/img/btn_cancel.gif" alt="취소" />
+							</a>
+    							
+								
+						</div>
+                	</div>
+			</TD>
+		</tr>
+	</table>	
+#*	
+	<div class="paging_box">
+		#makePaging1($pageInfo)
+		<div class="pr_btn"><a href="subcode_write.jsp?pseq=$!searchParam.seq&pcode=$!searchParam.code&$!searchParamUrl"><img src="/admin/img/btn_write.gif" alt="등록" /></a></div>
+	</div>
+*#
+</div>

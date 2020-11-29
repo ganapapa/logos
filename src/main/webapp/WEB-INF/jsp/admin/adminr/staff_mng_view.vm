@@ -1,0 +1,126 @@
+#set ($searchParamUrl = "searchParamUrl=$!esc.url($searchParam.searchParamUrl)")
+<script language="javascript" type="text/javascript">
+// 비밀번호확인
+function f_pwd_confirm() {
+	var url = "hp_board_pwd_pop01.jsp?brdNum=$!info.brdNum";
+
+	if(gf_openModalDialog(url, self, "330", "200", "no")=="OK") {
+		return true;
+	}
+
+	return false;
+}
+
+// 삭제
+function f_delete() {
+	if(confirm("$!info.brdTypeNm정보를 삭제하시겠습니까?")) {
+		//if(f_pwd_confirm()) {
+			gSubmitPost("writeForm");
+		//}
+	}
+}
+
+// 첨부파일삭제
+function f_del_file(attFileNo) {
+	if(confirm("첨부파일을 삭제하시겠습니까?")) {
+		if(f_pwd_confirm()) {
+			gSendPost("hp_board_file_delete_proc.jsp", {attFileNo: attFileNo, callback: "callbackFunc"});
+		}
+	}
+}
+
+function callbackFunc() {
+	document.getElementById("attFile").style.display="none";
+}
+
+// 댓글저장
+function f_commant_insert() {
+	if ($("#writeForm input[name=brdCommentMemo]").val() == "") {
+		$("#writeForm input[name=brdCommentMemo]").focus();
+		alert("댓글을 입력하십시요.");
+		return;
+	}
+
+	if(confirm("$!info.brdTypeNm 댓글정보를 등록하시겠습니까?")) {
+		gSendPost("hp_board_comment_write_proc.jsp", {mode: "add", brdNum: $("#brdNum").val(), brdCommentMemo: $("#brdCommentMemo").val(), callback: "callbackCommentFunc"});
+	}
+}
+
+// 댓글삭제
+function f_commant_delete(pBrdCommentNum) {
+	if(confirm("$!info.brdTypeNm 댓글정보를 삭제하시겠습니까?")) {
+		gSendPost("hp_board_comment_write_proc.jsp", {mode: "delete", brdCommentNum: pBrdCommentNum, callback: "callbackCommentFunc"});
+	}
+}
+
+function callbackCommentFunc() {
+	$("#writeForm").attr("action","hp_board_view.jsp?brdNum=$!info.brdNum&$!searchParamUrl").submit();
+}
+
+// 수정
+function f_update() {
+	$("#writeForm").attr("action","staff_mng_update.jsp?adStaffNo=$!info.adStaffNo&$!searchParamUrl").submit();
+}
+function f_update_old() {
+	if(f_pwd_confirm()) {
+		$("#writeForm").attr("action","user_mng_update.jsp?adStaffNo=$!info.adStaffNo&$!searchParamUrl").submit();
+	}
+}
+</script>
+<div class="right_content">
+<form id="writeForm" name="writeForm" action="staff_delete_proc.jsp" method="post">
+	<input type="hidden" name="redirectUrl" value="staff_mng_list.jsp?$!searchParam.searchParamUrl"/>
+	<input type="hidden" name="brdNum" id="brdNum" value="$!info.brdNum"/>
+	<input type="hidden" name="adStaffNo" id="adStaffNo" value="$!info.adStaffNo"/>
+	<input type="hidden" name="attFileNo" id="attFileNo" value="$!attFileInfos.ATT1.attFileNo"/>
+	<input type="hidden" name="adStaffNo" id="adStaffNo" value="$!info.adStaffNo"/>
+	
+	
+	<div class="t_icon">$!info.brdTypeNm 상세보기 <div class="r_txt"><div class="navi">Home &gt; 관리자 &gt; <strong>$!info.brdTypeNm</strong></div></div></div>
+	<table cellpadding="0" cellspacing="0" class="write_table02" width="100%">
+		<col width="15%" />
+		<col width="35%" />
+		<col width="15%" />
+		<col width="35%" />
+		<tr>
+			<th>아이디</th>
+			<td colspan="3">$!info.adStaffId</td>
+		</tr>
+		<tr>
+			<th>부서</th>
+			<td>
+				$!info.orgDepthNm
+			</td>
+			<th>직급</th>
+			<td >$!info.adStaffJobtitl</td>
+		</tr>
+		<tr>
+			<th>이름</th>
+			<td>
+				$!info.adStaffNm
+			</td>
+			<th>전화번호</th>
+			<td >$!info.adStaffTelNo</td>
+		</tr>
+		<tr>
+			<th>E-mail</th>
+			<td colspan="3">
+				$!info.adStaffEmail
+			</td>
+		</tr>
+		<tr>
+			<th>권한</th>
+			<td colspan="3">
+				$!info.orgDepthNm
+			</td>
+		</tr>
+	</table>
+	<div class="paging_box">
+		<div class="pr_btn">
+			<a href="javascript:f_delete();"><img src="/admin/img/btn_del.gif" alt="삭제" /></a>
+			<a href="javascript:f_update();"><img src="/admin/img/btn_modi.gif" alt="수정" /></a>
+		</div>
+	</div>	
+	
+</form>
+</div>

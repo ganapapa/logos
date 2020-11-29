@@ -1,0 +1,245 @@
+## 컨텐츠 관리 작성
+#makeSearchParams($searchParam, "orgCd,pos,limit,sortOrder", $searchParamUrl)
+#set ($searchParamUrl = "searchParamUrl=$!esc.url($searchParamUrl)")
+#set ($__brdTypeNm = $!CodeUtils.getCodeValue("BRDNM", $!searchParam.brdType))
+
+<script language="javascript" type="text/javascript">
+<!--
+$(document).ready(function(){
+	var target = document.getElementById("brdElposition");
+	target.value = "";
+	target.disabled = true;
+	
+	f_Disabled();
+	
+	initSmartEdiotr("brdMemo");
+	addFileBox(); //첨부파일박스 추가
+});
+
+// 등록
+function f_insert() {
+    var oForm = document.forms["writeForm"];
+
+	if(!gf_validation(oForm)) {
+		return;
+	}
+	 
+	oForm.brdElmainYn.value = getRadioValue(oForm.brdElmainYns);
+	
+	if(confirm("$__brdTypeNm 정보를 등록하시겠습니까?")) {
+		updateSmartEditor();
+		gSubmitPost("writeForm",true);
+	}
+}
+
+//첨부파일 박스추가
+
+var idx = 0;
+	function addFileBox() {
+		if(idx >=1){
+		  alert("최대 1개까지만 추가할 수 있습니다");
+		}else{
+		  var html = $("#fileadd tr").parent().html();
+		  html = html.replace(/XXX/g, "" + ++idx);
+		  $("#fileInfos").append(html);
+		}		
+	}
+	
+function removeFileBox(i) {
+		var el = $("#writeForm input[name=record_" + i + "]");
+		if (el.next().val() == "add") {
+			el.parent().parent().remove();
+			idx--;		
+		} else {
+			el.next().val("remove");
+			el.parent().parent().hide();
+		}
+}	
+
+
+// 메인표출여부에 따른 -> 메인표출영역선택 변화
+function f_Elposition(str)
+{
+	var target = document.getElementById("brdElposition");
+	
+	if(str == "Y")
+	{
+		target.disabled = false;
+		target.value = "S";
+	}else if(str == "N")
+	{
+		target.disabled = true;
+		target.value = "";
+	}else{
+		alert('잘못된 접근입니다.');
+	}
+}
+
+// 메인표출영역선택 (메인 : M) 선택 할경우 
+function f_MainPrintChk()
+{
+	var target = document.getElementById("brdElposition");
+	
+	if(target.value == "M"){
+    	if($!flogCount.brdElpositionCount > 0)
+    	{
+    		alert('메인에 표출될수 있는 컨텐츠가 초과되었습니다.\n( 최대 1개 )\n현재 표출되고 있는 컨텐츠를 서브로 지정하시고,\n다시 작업해주시기 바랍니다.');
+    		target.value = "S";
+    	}
+	}
+}
+
+// 메인 표출여부 disabled 처리
+function f_Disabled()
+{
+	var chk = document.getElementsByName("brdElmainYns");
+	var chkSize = chk.length;
+	
+	if( $!flogCount.brdElmainCount > 3 )
+	{
+		for(var i=0;i<chkSize;i++)
+		{
+			chk[i].disabled = true;
+		}
+	}
+}
+
+// 저자관리 - 저자선택
+function f_SelectPop()
+{
+	window.open("author_Popup.jsp?","authorPop", "width=620px,height=450px,scrollbars=yes,resizable=no,copyhistory=no,toolbar=no,status=no");
+}
+
+//-->
+</script>
+<div class="right_content">
+<form id="writeForm" name="writeForm" action="mngContents_write_proc.jsp" method="post">
+	<input type="hidden" name="redirectUrl" value="mngContents_list.jsp?$!searchParam.searchParamUrl"/>
+	<input type="hidden" name="mode" value="add"/>
+	<input type="hidden" name="brdType" value="$!searchParam.brdType"/>
+	<input type="hidden" name="brdRegId" value="$!SessionUtils.getAdminId($request)" />
+	<input type="hidden" name="brdRegNm" value="$!SessionUtils.getAdminName($request)" />
+	<input type="hidden" name="brdRegIdReply" value="$!SessionUtils.getAdminId($request)" />
+	<input type="hidden" name="brdOpenYn" value="Y" />
+	<input type="hidden" name="brdElmainYn" value="N" />
+	
+	<div class="t_icon">$__brdTypeNm E-Letter 글쓰기 <div class="r_txt"><div class="navi">Home &gt; 웹진관리 &gt; <strong>$__brdTypeNm</strong></div></div></div>
+	<table cellpadding="0" cellspacing="0" class="write_table02" width="100%">
+		<col width="15%" />
+		<col width="35%" />
+		<col width="15%" />
+		<col width="35%" />
+		
+
+#if ($!searchParam.brdType=="CONTENT")
+		<tr>
+			<th><span>*</span>메뉴선택</th>
+			<td>#genCodeSelect("ELMENU", "", "brdMenuSel", "", "id='brdMenuSel' required title='메뉴선택' class='select' style='width:200px; height:23px;'", "메뉴선택")</td>
+			#if ($!searchParam.brdType=="CONTENT")
+			<th>홈페이지 공지여부</th>
+			<td>
+				<input type="radio"  name="brdNoticeYn" value="Y" title="메인 홈페이지 공지여부" checked /> Y
+				<input type="radio"	name="brdNoticeYn" value="N" alt="메인 홈페이지 공지여부"> N
+			</td>
+			#end
+		</tr>
+#end
+
+#if ($!searchParam.brdType=="CONTENT")
+		<tr>
+			<th>주제선택</th>	## <span>*</span>
+			<td>#genCodeSelect("ELTHEME", "", "brdThemeSel", "", "id='brdThemeSel' required title='주제선택' class='select' style='width:200px; height:23px;'", "주제선택")</td>
+			<th>$!CodeUtils.getCodeValue("BRDNM", "AUTHOR")</th>	## 저자 관리
+			<td>
+				<input type="hidden" value="" id="brdRefNum" name="brdRefNum" disabled />
+				<input type="text" value="" id="brdRefNM" name="brdRefNM" disabled />
+				<input type="button" value="$!StringUtils.cutString($!CodeUtils.getCodeValue("BRDNM", "AUTHOR"), 4, "") 선택" onClick="f_SelectPop();" />
+			</td>
+		</tr>
+#end
+
+
+#if ($!searchParam.brdType=="CONTENT")
+		<tr>
+			<th>메인 표출여부선택</th>
+			<td colspan="3">	## #if($!flogCount.brdElmainCount > 3) disabled #end
+				<input type="radio"  name="brdElmainYns" value="Y" alt="메인표출여부"   onClick="f_Elposition('Y');"/> Y
+				<input type="radio"	name="brdElmainYns" value="N" checked alt="메인표출여부" onClick="f_Elposition('N');"> N	
+			</td>
+		</tr>
+#end
+
+#if ($!searchParam.brdType=="CONTENT")
+		<tr>
+			<th>메인 표출영역선택</th>
+			<td>
+				##genCodeSelect("ELMENU", "", "brdElposition", "", "id='brdElposition' required title='메인 표출영역선택' class='select' style='width:200px; height:23px;'", "메인 표출영역선택")
+				<select	name="brdElposition" id="brdElposition" title='메인 표출영역선택' class='select' style="width:200px; height:23px;" onChange="javascript:f_MainPrintChk();";>
+                    <option value="S">서브</option>
+                    <option value="M">메인</option>
+                </select>
+			</td>
+            <th>
+				이미지 표출여부
+			</th>
+            <td>
+				<input type="radio" value="Y" name="brdProgSt" /> Y
+				<input type="radio" value="N" name="brdProgSt" checked /> N
+			</td>
+		</tr>
+#end
+	    <tr>
+			<th><span>*</span> 제목</th>
+			<td colspan="3">
+				<input type="text" name="brdTitle" required alt="제목" class="login02_input" style="width:98%; height:18px;ime-mode:active" />
+			</td>
+		</tr>
+		<tr>
+			<th><span>*</span> 내용</th>
+			<td style="padding:10px 0 10px 10px;" colspan="3">
+				<textarea name="brdMemo" id="brdMemo" alt="내용" style="width:98%; height:350px;ime-mode:active"></textarea>
+			</td>
+		</tr>
+		<tr>
+			<th>첨부파일</th>
+			<td colspan="3">
+				 <!-- <input type="file" name="attachFile1_" class="file_board" style="width:500px;" />  //-->
+				<table id="fileInfos" cellpadding="0" cellspacing="0" style="margin:10px 0;">
+					<col width="10%" />
+					<col width="80%" />
+					<col width="10%" />
+					<tr>
+						<th>No.</th>
+						<th>첨부파일</th>
+						<th><a href="javascript:addFileBox()"><strong class="or_txt">[추가]</strong></a></th>
+					</tr>
+				</table>
+			</td>
+		</tr>	
+		<tr>
+			<th>등록자명</th>
+			<td colspan="3">$!SessionUtils.getAdminName($request)</td>
+		</tr>
+	</table>
+	<div class="sys_btn">
+		<a href="mngContents_list.jsp?$!searchParam.searchParamUrl"><img src="/admin/img/btn_cancel.gif" alt="취소" /></a>
+		<a href="javascript:f_insert();"><img src="/admin/img/btn_save.gif" alt="저장" /></a>
+	</div>
+</form>
+
+## 첨부파일 화면 양식
+<table id="fileadd" style="display:none">
+	<tr>
+		<td class="r_line" >
+			<input type="hidden" name="record_XXX" value="" />
+			<input type="hidden" name="action" value="add" />
+			<span>XXX</span>
+		</td>
+		<td><input type="file" name="attachFileXXX_" class="file_board" style="width:500px;" /></td>
+		<td class="align_c">
+			<a href="javascript:removeFileBox(XXX)"><strong class="or_txt">[X]</strong></a>
+		</td>
+	</tr>
+</table>
+## 첨부파일 끝.
+</div>

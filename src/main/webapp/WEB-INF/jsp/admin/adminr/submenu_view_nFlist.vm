@@ -1,0 +1,168 @@
+#set ($searchParamUrl = "searchParamUrl=$!esc.url($searchParam.searchParamUrl)")
+<script language="javascript" type="text/javascript">
+
+// 삭제
+function f_delete() {
+	if(confirm("중메뉴를 삭제하면 연결된 소메뉴가 모두 삭제됩니다!\n\n삭제하시겠습니까?")) {
+		//if(f_pwd_confirm()) {
+			gSubmitPost("writeForm");
+		//}
+	}
+}
+
+
+// 수정
+function f_update() {
+	$("#writeForm").attr("action","submenu_mng_update.jsp?ppk=$!searchParam.ppk&pMenu1=$!searchParam.pMenu1&pMenu3=$!searchParam.pMenu3&pPcode=$!searchParam.pPcode&pk=$!searchParam.pk&menu1=$!searchParam.menu1&menu3=$!searchParam.menu3&pcode=$!searchParam.pcode").submit();
+}
+
+</script>
+<div class="right_content">
+<form id="writeForm" name="writeForm" action="submenu_delete_proc.jsp" method="post">
+	<input type="hidden" name="redirectUrl" value="menu_mng_view.jsp?pk=$!searchParam.ppk&menu1=$!searchParam.pMenu1&menu3=$!searchParam.pMenu3&pcode=$!searchParam.pPcode&$!searchParam.searchParamUrl"/>
+	<input type="hidden" name="brdNum" id="brdNum" value="$!info.brdNum"/>
+	<input type="hidden" name="ppk" id="ppk" value="$!searchParam.ppk"/>
+	<input type="hidden" name="pMenu1" id="pMenu1" value="$!searchParam.pMenu1"/>
+	<input type="hidden" name="pMenu3" id="pMenu3" value="$!searchParam.pMenu3"/>
+	<input type="hidden" name="pPcode" id="pPcode" value="$!searchParam.pPcode"/>
+	
+	<input type="hidden" name="pk" id="pk" value="$!searchParam.pk"/>
+	<input type="hidden" name="menu1" id="menu1" value="$!searchParam.menu1"/>
+	<input type="hidden" name="menu3" id="menu3" value="$!searchParam.menu3"/>
+	<input type="hidden" name="pcode" id="pcode" value="$!searchParam.pcode"/>
+	
+	<input type="hidden" name="muCode" id="muCode" value="$!searchParam.pcode"/>
+	<input type="hidden" name="delMenu1" id="delMenu1" value="MMM"/>
+	<input type="hidden" name="attFileNo" id="attFileNo" value="$!attFileInfos.ATT1.attFileNo"/>
+	
+	
+	<div class="t_icon">$!info.brdTypeNm 중분류보기 및 소분류목록 <div class="r_txt"><div class="navi">Home &gt; 관리자 &gt; <strong>$!info.brdTypeNm 중분류보기 및 소분류목록</strong></div></div></div>
+	<table cellpadding="0" cellspacing="0" class="write_table02" width="100%">
+		<col width="15%" />
+		<col width="35%" />
+		<col width="15%" />
+		<col width="35%" />
+		<tr>
+			<th>중메뉴명</th>
+			<td>$!info.adMuTitle</td>
+			<th>메뉴분류</th>
+			<td>$!info.adMuCode</td>
+		</tr>
+		<tr>
+			<th>메뉴순번</th>
+			<td>$!info.adMuOdr</td>
+			<th>메모</th>
+			<td >$!info.adMuMemo</td>
+		</tr>
+		<tr>
+			<th>메뉴URL</th>
+			<td colspan="3">$!info.adMuUrl</td>
+		</tr>
+		<tr>
+			<th>입력자</th>
+			<td>$!info.adUpdId</td>
+            <th>입력일</th>
+			<td>$!info.adRegTm</td>
+			##<td>$!DateUtils.getTime($!info.adRegTm, "yyyyMMddhhmmss", "yyyy-MM-dd")</td>
+		</tr>
+		<tr>
+			<th>수정자</th>
+            <td>$!info.adUpdId</td>
+			<th>수정일</th>
+            <td>$!info.adUpdTm</td>
+		</tr>
+	</table>
+	<div class="paging_box">
+		<div class="pr_btn">
+			<a href="menu_mng_view.jsp?
+				pk=$!searchParam.ppk&
+				menu1=$!searchParam.pMenu1&
+				menu2=$!searchParam.pMenu2&
+				menu3=$!searchParam.pMenu3&
+				pcode=$!searchParam.pPcode&
+				$!searchParam.searchParamUrl"><img src="/admin/img/btn_list.gif" alt="목록" /></a>
+			<a href="javascript:f_delete();"><img src="/admin/img/btn_del.gif" alt="삭제" /></a>
+			<a href="javascript:f_update();"><img src="/admin/img/btn_modi.gif" alt="수정" /></a>
+		</div>
+	</div>	
+	
+	<br/><br/>
+	<div class="tc_box02">
+		<div class="l_box">총 <strong>$!pageInfo.totalCount</strong>개의 내용이 등록되어 있습니다.</div>
+		<div class="r_box">
+			<div style=" margin-right:10px; margin-top:2px; float:left;">
+			</div>
+		</div>
+	</div>
+	
+	<table cellpadding="0" cellspacing="0" class="line_type02" width="100%">
+		<col width="3%" />
+		<col width="10%" />
+		<col width="10%" />
+		<col width="20%" />
+		<col width="8%" />
+		<col width="8%" />
+		
+		<tr>
+			<th>번호</th>
+			<th>상위메뉴</th>
+			<th>소메뉴명</th>
+			<th>URL</th>
+			<th>메뉴순번</th>
+			<th>사용유무</th>
+		</tr>
+		
+		#if ($infos.size() ==0)
+		<tr><td colspan="6"> ※ 조회된 내용이 없습니다. </td></tr>
+		#end
+#set ($__term = 7)
+#foreach($__info in $infos)
+	#set ($__tmpNo = $pageInfo.totalCount - ($pageInfo.page - 1) * $pageInfo.pageSize - $velocityCount + 1)
+	#if ($velocityCount % 2 == 1)
+		<tr class="g_td">
+	#else
+		<tr>
+	#end
+			<td>$!__tmpNo</td>
+			<td>$!__info.adPcode</td>
+			<td>$!__info.adMuTitle</td>
+			<td>
+				<strong>
+					<a href="menu_view_final.jsp?
+						pppk=$!searchParam.ppk&
+						ppMenu1=$!searchParam.pMenu1&
+						ppMenu2=$!searchParam.pMenu2&
+						ppMenu3=$!searchParam.pMenu3&
+						ppPcode=$!searchParam.pPcode&
+						ppk=$!searchParam.pk&
+						pMenu1=$!searchParam.menu1&
+						pMenu2=$!searchParam.menu2&
+						pMenu3=$!searchParam.menu3&
+						pPcode=$!searchParam.pcode&
+						pk=$!__info.adMuNum&
+						menu1=$!__info.adMenu1&
+						menu2=$!__info.adMenu2&
+						menu3=$!__info.adMenu3&
+						pcode=$!__info.adPcode&">$!__info.adMuUrl</a>
+				</strong>
+			</td>
+			<td>$!__info.adMuOdr</td>
+			<td>$!__info.adUseYn</td>
+		</tr>
+#end
+	</table>
+	
+	<div class="paging_box">
+		#makePaging1($pageInfo)
+		<div class="pr_btn"><a href="final_menu_write.jsp?
+			pppk=$!searchParam.ppk&
+			ppMenu1=$!searchParam.pMenu1&
+			ppMenu3=$!searchParam.pMenu3&
+			ppPcode=$!searchParam.pPcode&
+			ppk=$!searchParam.pk&
+			pMenu1=$!searchParam.menu1&
+			pMenu3=$!searchParam.menu3&
+			pPcode=$!searchParam.pcode&"><img src="/admin/img/btn_write.gif" alt="등록" /></a></div>
+	</div>
+</form>
+</div>

@@ -1,0 +1,133 @@
+#makeSearchParams($searchParam, "orgCd,pos,limit,sortOrder", $searchParamUrl)
+#set ($searchParamUrl = "searchParamUrl=$!esc.url($searchParamUrl)")
+<script language="javascript">
+<!--
+$(document).ready(function(){
+	$(".submit").keydown(function(e) {
+		if (e.keyCode == 13) {
+			e.preventDefault();
+			f_search();
+		}
+	});
+});
+
+function goPage(p) {
+	$("#searchForm input[name=page]").val(p);
+	$("#searchForm").submit();
+}
+
+// 조회
+function f_search() {
+	$("#searchForm input[name=searchType]").val($("#tmpForm select[name=searchType]").val());
+	$("#searchForm input[name=searchKeyword]").val($("#tmpForm input[name=searchKeyword]").val());
+	$("#searchForm input[name=selOrgSido]").val($("#tmpForm select[name=selOrgSido]").val());
+	$("#searchForm input[name=selFaType]").val($("#tmpForm select[name=selFaType]").val());
+	
+	$("#searchForm input[name=page]").val(1);
+	$("#searchForm").submit();
+}
+
+function f_cont_view(c){
+  var cont = document.getElementById(c);
+	if(cont.style.display == "none"){
+		cont.style.display ="table-cell";
+	}else{
+		cont.style.display = "none";
+	}
+}
+
+// 정렬 조회
+function selectSort(orderNm,orderType)
+{
+	$("#searchForm input[name=orderNm]").val(orderNm);
+	$("#searchForm input[name=orderType]").val(orderType);
+	f_search();
+}
+-->
+</script>
+<div class="right_content">
+<form id="searchForm" action="facil02_list.jsp" method="post">
+	<input type="hidden" name="searchType" value="$!searchParam.searchType"/>
+	<input type="hidden" name="searchKeyword" value="$!searchParam.searchKeyword"/>
+	<input type="hidden" name="page" value="$!searchParam.page"/>
+	<input type="hidden" name="pageSize" value="$!searchParam.pageSize"/>
+	<input type="hidden" name="selOrgSido" value="$!searchParam.selOrgSido"/>
+	<input type="hidden" name="selFaType" value="$!searchParam.selFaType"/>
+	<input type="hidden" name="orderNm" value="$!searchParam.orderNm"/>
+	<input type="hidden" name="orderType" value="$!searchParam.orderType"/>
+	
+	
+</form>
+<form id="tmpForm">
+	<input type="hidden" name="page" value="$!searchParam.page"/>
+	<input type="hidden" name="pageSize" value="$!searchParam.pageSize"/>
+	<div class="t_icon">시설검색관리 <div class="r_txt"><div class="navi">Home &gt; 정보관리 &gt; 시설정보 &gt; <strong>시설검색관리 </strong></div></div></div>
+	<div class="tc_box02">
+		<div class="l_box">총 <strong>$!pageInfo.totalCount</strong>개의 내용이 등록되어 있습니다.</div>
+		<div class="r_box">
+			<div style=" margin-right:10px; margin-top:2px; float:left;">
+				#genCodeSelect("SIDO", "", "selOrgSido", "$!searchParam.selOrgSido", 'style="width:100px; height:20px;" onchange="onchangeSido()"', "지역선택")
+				#genCodeSelect("FA_FIELD", "", "selFaType", "$!searchParam.selFaType", "title='분류선택' class='select' style='width:100px; height:20px;'", "분류선택")
+				<select name="searchType" class="select" style="width:100px; height:20px;">
+					<option value="BRD_TITLE" #if ($!searchParam.searchType=="BRD_TITLE") selected #end>제목</option>
+					<option value="BRD_MEMO" #if ($!searchParam.searchType=="BRD_MEMO") selected #end>내용</option>
+					<option value="BRD_ALL" #if ($!searchParam.searchType=="BRD_ALL") selected #end>제목+내용</option>
+				</select>
+			</div>
+			<div >
+				<input type="text" name="searchKeyword" value="$!searchParam.searchKeyword" class="login02_input submit" style="width:150px; height:17px;" />&nbsp;&nbsp;&nbsp;
+				<a href="javascript:f_search();"><img src="/admin/img/sh_s_btn.gif" style="margin-bottom:-6px;" alt="검색" /></a>
+			</div>
+		</div>
+	</div>
+	<table cellpadding="0" cellspacing="0" class="line_type02" width="100%">
+		<col width="5%" />
+		<col width="15%" />
+		<col width="15%" />
+		<col width="50%" />
+		<col width="10%" />
+		<col width="5%" />
+		<tr>
+			<th>번호</th>
+			<th>지역</th>
+			<th>분류</th>
+			<th>기관명</th>
+			<th>#brdOrderBy("t1.reg_tm", $!searchParam.orderType, "등록일")</th>
+			<th>#brdOrderBy("t1.brd_read_cnt", $!searchParam.orderType, "조회수")</th>
+		</tr>
+#set ($__term = 7)
+#foreach($__info in $infos)
+	#set ($__tmpNo = $pageInfo.totalCount - ($pageInfo.page - 1) * $pageInfo.pageSize - $velocityCount + 1)
+	#if ($velocityCount % 2 == 1)
+		<tr class="g_td">##</tr>
+	#else
+		<tr>
+	#end
+			<td>$!__tmpNo</td>
+			<td>
+				$!__info.faLocal
+			</td>
+			<td>
+				$!__info.faTypeNm
+			</td>
+			</td>
+			<td class="subject">
+				<a href="facil02_write.jsp?mode=update&faNum=$!__info.faNum&$!searchParamUrl"><strong>$!__info.faName</strong></a>
+#if ($!__info.faOpenYn=="N")
+				<img src="/admin/img/lock_icon.gif" align="absmiddle" />&nbsp;
+#end
+#if ($DateUtils.getDiffDay($!__info.regTm, $DateUtils.getCurrentTime(), "yyyyMMddHHmmss") <= $__term)
+				<img src="/admin/img/icon_new.gif" align="absmiddle" />
+#end
+			</td>
+			<td>$!DateUtils.getTime($!__info.regTm, "yyyyMMddhhmmss", "yyyy-MM-dd")</td>
+			<td>$!__info.readCnt</td>
+		</tr>
+#end
+	</table>
+	<div class="paging_box">
+		#makePaging1($pageInfo)
+		<div class="pr_btn"><a href="facil02_write.jsp?mode=add&$!searchParamUrl"><img src="/admin/img/btn_write.gif" alt="등록" /></a></div>
+	</div>
+</form>
+</div>

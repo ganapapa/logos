@@ -1,0 +1,744 @@
+#makeSearchParams($searchParam, "orgCd,pos,limit,sortOrder", $searchParamUrl)
+#set ($searchParamUrl = "searchParamUrl=$!esc.url($searchParamUrl)")
+#set ($__brdTypeNm = $!CodeUtils.getCodeValue4list("SUBCODE", "MENU_MGR",$!searchParam.brdType))
+<script language="javascript">
+<!--
+$(document).ready(function(){
+	$(".submit").keydown(function(e) {
+		if (e.keyCode == 13) {
+			e.preventDefault();
+			f_search();
+		}
+	});
+});
+
+
+function onchangeBox(Val){
+	var adMuCode = $("#finalForm select[name=adMuCode]").val();
+	if (!adMuCode|| adMuCode == "") {
+		return;
+	}
+	$("#finalForm select[name=adPcode] option:gt(0)").remove();
+	gSendPost("/system/get_select_menu_option.jsp", {
+			menu_1 : "MM",
+			pcode: adMuCode ,
+			all: "선택",
+			selectedVal: Val
+		}, function(data) {
+			if (defaultSuccessHandler(data)) {
+				return;
+			}
+			$("#finalForm select[name=adPcode]").html(data);
+		}
+	);
+}
+function view(i , div){
+	if( div  == "main"){
+		i = i - 1;
+		$("#mainForm input[name=adMuNum]").val($("#mainForm input[name=mainMuNum]:eq(" + i + ")").val());
+		
+		$("#mainForm input[name=adMuTitle]").val($("#mainForm input[name=mainTitle]:eq(" + i + ")").val());
+		$("#mainForm input[name=adMuUrl]").val($("#mainForm input[name=mainMuUrl]:eq(" + i + ")").val());
+		$("#mainForm input[name=adMuMemo]").val($("#mainForm input[name=mainMuMemo]:eq(" + i + ")").val());
+
+		$("#mainForm input[name=adUseYn]").each(function(){
+			if ($(this).val() == $("#mainForm input[name=mainUseYn]:eq(" + i + ")").val()) {
+				$(this).attr("checked", true);
+			}
+		});
+			
+		$("#mainForm input[name=adMuCode]").val($("#mainForm input[name=mainMuCode]:eq(" + i + ")").val());
+		//$("#mainForm input[name=adMenu1]").val($("#mainForm input[name=mainMenu1]:eq(" + i + ")").val());
+		$("#mainForm input[name=adMenu2]").val($("#mainForm input[name=mainMenu2]:eq(" + i + ")").val());
+		$("#mainForm input[name=adMenu3]").val($("#mainForm input[name=mainMenu3]:eq(" + i + ")").val());
+		//$("#mainForm input[name=adPcode]").val($("#mainForm input[name=mainPcode]:eq(" + i + ")").val());
+		$("#mainForm input[name=adMuOdr]").val($("#mainForm input[name=mainMuOdr]:eq(" + i + ")").val());
+
+		$("#mainForm input[name=layoutMenu]").val($("#mainForm input[name=mainLayoutMenu]:eq(" + i + ")").val());
+
+	}
+	else if( div  == "sub"){
+		i = i - 1;
+		$("#subForm input[name=adMuNum]").val($("#subForm input[name=subMuNum]:eq(" + i + ")").val());
+		
+		$("#subForm input[name=adMuTitle]").val($("#subForm input[name=subTitle]:eq(" + i + ")").val());
+		$("#subForm input[name=adMuUrl]").val($("#subForm input[name=subMuUrl]:eq(" + i + ")").val());
+		$("#subForm input[name=adMuMemo]").val($("#subForm input[name=subMuMemo]:eq(" + i + ")").val());
+
+		$("#subForm input[name=adUseYn]").each(function(){
+			if ($(this).val() == $("#subForm input[name=subUseYn]:eq(" + i + ")").val()) {
+				$(this).attr("checked", true);
+			}
+		});
+			
+			
+		//$("#subForm input[name=adMenu1]").val($("#subForm input[name=subMenu1]:eq(" + i + ")").val());
+		$("#subForm input[name=adMenu2]").val($("#subForm input[name=subMenu2]:eq(" + i + ")").val());
+		$("#subForm input[name=adMenu3]").val($("#subForm input[name=subMenu3]:eq(" + i + ")").val());
+
+		$("#subForm input[name=adMuCode]").val($("#subForm input[name=subMuCode]:eq(" + i + ")").val());
+		$("#subForm select[name=adPcode]").val($("#subForm input[name=subPcode]:eq(" + i + ")").val());
+		
+		$("#subForm input[name=adMuOdr]").val($("#subForm input[name=subMuOdr]:eq(" + i + ")").val());
+		//$("#subForm input[name=layoutMenu]").val($("#subForm input[name=subLayoutMenu]:eq(" + i + ")").val());
+
+	}
+	else if( div  == "final"){
+		i = i - 1;
+		$("#finalForm input[name=adMuNum]").val($("#finalForm input[name=finalMuNum]:eq(" + i + ")").val());
+		
+		$("#finalForm input[name=adMuTitle]").val($("#finalForm input[name=finalTitle]:eq(" + i + ")").val());
+		$("#finalForm input[name=adMuUrl]").val($("#finalForm input[name=finalMuUrl]:eq(" + i + ")").val());
+		$("#finalForm input[name=adMuMemo]").val($("#finalForm input[name=finalMuMemo]:eq(" + i + ")").val());
+
+		$("#finalForm input[name=adUseYn]").each(function(){
+			if ($(this).val() == $("#finalForm input[name=finalUseYn]:eq(" + i + ")").val()) {
+				$(this).attr("checked", true);
+			}
+		});
+			
+			
+		//$("#finalForm input[name=adMenu1]").val($("#finalForm input[name=finalMenu1]:eq(" + i + ")").val());
+		$("#finalForm input[name=adMenu2]").val($("#finalForm input[name=finalMenu2]:eq(" + i + ")").val());
+		$("#finalForm input[name=adMenu3]").val($("#finalForm input[name=finalMenu3]:eq(" + i + ")").val());
+
+		$("#finalForm select[name=adMuCode]").val($("#finalForm input[name=finalMuCode]:eq(" + i + ")").val());
+		onchangeBox($("#finalForm input[name=finalPcode]:eq(" + i + ")").val());
+		//$("#finalForm select[name=adPcode]").val($("#finalForm input[name=finalPcode]:eq(" + i + ")").val());
+		
+		$("#finalForm input[name=adMuOdr]").val($("#finalForm input[name=finalMuOdr]:eq(" + i + ")").val());
+
+		$("#finalForm input[name=layoutMenu]").val($("#finalForm input[name=finalLayoutMenu]:eq(" + i + ")").val());
+
+	}
+
+
+
+}
+function save( mode , div ){
+	
+	if((mode == "remove" ||  mode == "update") 
+	&& ((div == "main"  && $("#mainForm input[name=adMuNum]").val() == "")
+		|| (div == "sub"  && $("#subForm input[name=adMuNum]").val() == "")
+		|| (div == "final"  && $("#finalForm input[name=adMuNum]").val() == ""))
+	   ){
+		alert("선택해주세요.");
+		return;
+	}
+	
+	if(div  == "main") {
+		var oForm = document.forms["mainForm"];
+	}else if(div  == "sub"){
+		var oForm = document.forms["subForm"];
+	}
+	else if(div  == "final"){
+		var oForm = document.forms["finalForm"];
+	
+	}
+
+	if(!gf_validation(oForm)) {
+		return;
+	}	
+	
+	var str = "" ;
+	if(mode == "add" ) {
+		str = "등록 하시겠습니까?";
+	}else if(mode == "update" ){
+		str = "수정 하시겠습니까?";
+	}
+	else if(mode == "remove" ){
+		str = "삭제 하시겠습니까?";
+	}
+	
+	if (confirm(str) == false) {
+		return;
+    }
+	
+	
+	
+	if(div  == "main") {
+		$("#mainForm input[name=mode]").val(mode);
+		gSubmitPost("mainForm");
+	}else if(div  == "sub"){
+		$("#subForm input[name=mode]").val(mode);
+		gSubmitPost("subForm");
+	}
+	else if(div  == "final"){
+		$("#finalForm input[name=mode]").val(mode);
+		gSubmitPost("finalForm");
+	}else {
+		alert("잘못된 구분입니다.");
+		return;
+	}
+
+
+}
+
+function cancel(div){
+	if(div  == "main") {
+		$("#mainForm input[name=adMuNum]").val("");
+		
+		$("#mainForm input[name=adMuTitle]").val("");
+		$("#mainForm input[name=adMuUrl]").val("");
+		$("#mainForm input[name=adMuMemo]").val("");
+
+		$("#mainForm input[name=adUseYn]").each(function(){
+			if ($(this).val() == "Y") {
+				$(this).attr("checked", true);
+			}
+		});
+			
+			
+		$("#mainForm input[name=adMuCode]").val("");
+		//$("#mainForm input[name=adMenu1]").val("");
+		$("#mainForm input[name=adMenu2]").val("");
+		$("#mainForm input[name=adMenu3]").val("");
+		//$("#mainForm input[name=adPcode]").val("");
+		$("#mainForm input[name=adMuOdr]").val("");
+	}else if(div  == "sub"){
+
+		$("#subForm input[name=adMuNum]").val("");
+		
+		$("#subForm input[name=adMuTitle]").val("");
+		$("#subForm input[name=adMuUrl]").val("");
+		$("#subForm input[name=adMuMemo]").val("");
+
+		$("#subForm input[name=adUseYn]").each(function(){
+			if ($(this).val() == "Y") {
+				$(this).attr("checked", true);
+			}
+		});
+			
+			
+		$("#subForm input[name=adMuCode]").val("");
+		//$("#subForm input[name=adMenu1]").val("");
+		$("#subForm input[name=adMenu2]").val("");
+		$("#subForm input[name=adMenu3]").val("");
+		$("#subForm select[name=adPcode]").val("");
+		$("#subForm input[name=adMuOdr]").val("");
+	
+	}
+	else if(div  == "final"){
+
+		$("#finalForm input[name=adMuNum]").val("");
+		
+		$("#finalForm input[name=adMuTitle]").val("");
+		$("#finalForm input[name=adMuUrl]").val("");
+		$("#finalForm input[name=adMuMemo]").val("");
+
+		$("#finalForm input[name=adUseYn]").each(function(){
+			if ($(this).val() == "Y") {
+				$(this).attr("checked", true);
+			}
+		});
+			
+			
+		$("#finalForm select[name=adMuCode]").val("");
+		//$("#finalForm input[name=adMenu1]").val("");
+		$("#finalForm input[name=adMenu2]").val("");
+		$("#finalForm input[name=adMenu3]").val("");
+		$("#finalForm select[name=adPcode] option:gt(0)").remove();
+		//$("#finalForm select[name=adPcode]").val("");
+		$("#finalForm input[name=adMuOdr]").val("");
+	
+
+
+	
+	}
+
+
+}
+
+
+
+function goPage(p) {
+	$("#searchForm input[name=page]").val(p);
+	$("#searchForm").submit();
+}
+
+// 조회
+function f_search() {
+	$("#searchForm input[name=selBrdProgSt]").val($("#tmpForm select[name=selBrdProgSt]").val());
+	$("#searchForm input[name=searchType]").val($("#tmpForm select[name=searchType]").val());
+	$("#searchForm input[name=searchKeyword]").val($("#tmpForm input[name=searchKeyword]").val());
+	
+	$("#searchForm input[name=searchMenuNm]").val($("#tmpForm input[name=searchMenuNm]").val());
+	$("#searchForm input[name=searchMemo]").val($("#tmpForm input[name=searchMemo]").val());
+	$("#searchForm input[name=searchCode]").val($("#tmpForm input[name=searchCode]").val());
+	$("#searchForm input[name=searchURL]").val($("#tmpForm input[name=searchURL]").val());
+	
+	$("#searchForm input[name=searchType]").val($("#tmpForm select[name=searchType]").val());
+	$("#searchForm input[name=page]").val(1);
+	$("#searchForm").submit();
+}
+-->
+</script>
+<div class="right_content">
+<form id="searchForm" action="menu_mng_list.jsp" method="post">
+	<input type="hidden" name="selBrdProgSt" value="$!searchParam.selBrdProgSt"/>
+	<input type="hidden" name="searchType" value="$!searchParam.searchType"/>
+	<input type="hidden" name="searchKeyword" value="$!searchParam.searchKeyword"/>
+	
+	<input type="hidden" name="searchMenuNm" value="$!searchParam.searchMenuNm"/>
+	<input type="hidden" name="searchMemo" value="$!searchParam.searchMemo"/>
+	<input type="hidden" name="searchCode" value="$!searchParam.searchCode"/>
+	<input type="hidden" name="searchURL" value="$!searchParam.searchURL"/>
+	<input type="hidden" name="searchPcode" value="n"/>
+	
+	<input type="hidden" name="brdType" value="$!searchParam.brdType"/>
+	<input type="hidden" name="page" value="$!searchParam.page"/>
+	<input type="hidden" name="pageSize" value="$!searchParam.pageSize"/>
+</form>
+
+
+
+	<div class="t_icon">$__brdTypeNm 메뉴관리<div class="r_txt"><div class="navi">Home &gt; 관리자 &gt; <strong>$__brdTypeNm 대메뉴목록</strong></div></div></div>
+	<br/>
+	<div class="t_icon">대메뉴</div>
+
+#*
+	<div class="tc_box02">
+		<div class="l_box">대매뉴 총 <strong>$!pageInfo.totalCount</strong>개의 내용이 등록되어 있습니다.  </div>
+		<div class="r_box">
+##			<div style=" margin-right:10px; margin-top:2px; float:left;">
+##					<a href="#"><img src="/admin/img/btn_ch_xls.gif" alt="엑셀 전환" /></a>
+##			</div>
+		</div>
+	</div>
+*#		
+<form id="mainForm" name="mainForm" method="post" action="menu_write_proc.jsp">
+	###genSelectBox($infos ,"adMuCode","adMuTitle" , "mainMenu","",'style="width:182px; height:20px;',"선택")
+
+	 <table border="0" width="100%" height="100%" cellpadding="0" cellspacing="0" >
+		<col width="60%">
+		<col width="40%">
+		<TR height="100%" valign="top">
+			<TD rowspan="2">
+            	<table cellpadding="0" cellspacing="0" class="line_type02" width="99%">
+            		<col width="3%" />
+            		<col width="10%" />
+            		<col width="15%" />
+            		
+            		<tr>
+            			<th>번호</th>
+            			<th>대메뉴명</th>
+            			<th>URL</th>
+            		</tr>
+            		
+            		#if ($infos.size() ==0)
+            		<tr><td colspan="5"> ※ 조회된 내용이 없습니다. </td></tr>
+            		#end
+            		
+            #set ($__term = 7)
+            #foreach($__info in $infos)
+            	#set ($__tmpNo = $pageInfo.totalCount - ($pageInfo.page - 1) * $pageInfo.pageSize - $velocityCount + 1)
+            	#if ($velocityCount % 2 == 1)
+            		<tr class="g_td">
+            	#else
+            		<tr>
+				#end
+					
+				
+						<input type="hidden" name="mainMuNum" value="$!__info.adMuNum"/>
+					    <input type="hidden" name="mainTitle" value="$!__info.adMuTitle"/>
+					    <input type="hidden" name="mainMuUrl" value="$!__info.adMuUrl"/>
+					    <input type="hidden" name="mainMuMemo" value="$!__info.adMuMemo"/>
+					    <input type="hidden" name="mainUseYn" value="$!__info.adUseYn"/>
+					    <input type="hidden" name="mainMuCode" value="$!__info.adMuCode"/>
+						
+						<input type="hidden" name="mainMenu1" value="$!__info.adMenu1"/>
+						<input type="hidden" name="mainMenu2" value="$!__info.adMenu2"/>
+						<input type="hidden" name="mainMenu3" value="$!__info.adMenu3"/>
+						
+						<input type="hidden" name="mainPcode" value="$!__info.adPcode"/>
+						<input type="hidden" name="mainMuOdr" value="$!__info.adMuOdr"/>
+						<input type="hidden" name="mainLayoutMenu" value="$!__info.layoutMenu"/>
+
+						
+						##<td>$!__tmpNo </td>
+            			<td >$velocityCount </td>
+            			<td>
+            				<strong><a href="javascript:view($velocityCount , 'main')">$!__info.adMuTitle</a>
+            				</strong>
+            			</td>
+                        ##<td><a href="javascript:test($!__info.adMuNum)">$!__info.adMuMemo</a> </td>
+            			<td class="subject">$!__info.adMuUrl</td>
+            		</tr>
+            #end
+            	</table>
+				
+			</TD>
+			<TD rowspan="2">
+            	<table cellpadding="0" cellspacing="0" class="write_table02" width="100%">
+            		<col width="15%" />
+            		<col width="35%" />
+            		<col width="15%" />
+            		<col width="35%" />
+            		<input type="hidden" name="adMuNum" value="" />
+            		<input type="hidden" name="adMenu1" value="M" />
+            		<input type="hidden" name="adMenu2" value="" />
+            		<input type="hidden" name="adMenu3" value="" />
+            		<input type="hidden" name="adMuCode" value="" />
+					<input type="hidden" name="adPcode" value="n" />
+					<input type="hidden" name="mode" value=""/>
+					<input type="hidden" name="redirectUrl" value="menu_mng_list.jsp"/>
+					
+							    
+					<tr>
+            			<th>대메뉴명</th>
+            			<td>
+            				<input type="text" name="adMuTitle" value="" required alt="대메뉴명"  class="login02_input" style="width:90%; height:18px;ime-mode:active" />
+            			</td>
+            			<th>메모</th>
+            			<td>
+            				<input type="text" name="adMuMemo" value=""  class="login02_input" style="width:90%; height:18px;ime-mode:active" />
+            			</td>
+            		</tr>
+            		<tr>
+            			<th>메뉴URL</th>
+            			<td colspan="3">
+            				<input type="text" name="adMuUrl" value="" required alt="메뉴URL"   class="login02_input" style="width:96%; height:18px;ime-mode:active" />
+            			</td>
+            		</tr>
+            		<tr>
+            			<th>레이아웃</th>
+            			<td colspan="3">
+            				<input type="text" name="layoutMenu" value="" required alt="레이아웃 메뉴"   class="login02_input" style="width:96%; height:18px;ime-mode:active" />
+            			</td>
+            		</tr>
+            		<tr>
+            			<th>사용유무</th>
+            			<td>
+            				<input type="radio" name="adUseYn" required radio value="Y" #setChecked("$!info.adUseYn", "Y") id="lab01" checked/> <label for="lab01">Y</label>&nbsp;&nbsp;
+            				<input type="radio" name="adUseYn" value="N" #setChecked("$!info.adUseYn", "N") id="lab02"/> <label for="lab02">N</label>
+            			</td>
+            			<th>순번</th>
+            			<td >
+            				<input type="text" name="adMuOdr" value="" required alt="메뉴순번" class="login02_input" style="width:90%; height:18px;ime-mode:active" onkeydown="gf_num_only();" maxlength="2"/>
+            			</td>
+                    </tr>
+
+            	</table>
+            		<div class="paging_box">
+                		<div class="pr_btn">
+    						<a href="javascript:save('add','main')">
+    							<img src="/admin/img/btn_write.gif" alt="등록" />
+    						</a>
+    						<a href="javascript:save('update','main')">
+    							<img src="/admin/img/pop_btn_modi.gif" alt="수정" />
+							</a>
+    						<a href="javascript:save('remove','main')">
+    							<img src="/admin/img/btn_del.gif" alt="삭제" />
+							</a>
+    						<a href="javascript:cancel('main')">
+    							<img src="/admin/img/btn_cancel.gif" alt="취소" />
+							</a>
+    							
+								
+						</div>
+                	</div>
+			</TD>
+		</tr>
+	</table>	
+</form>
+	
+<br/><br/>
+<div class="t_icon">중메뉴</div>
+
+##genMenuSelect($infos , "subMenu", "" ,"style='width:182px; height:20px;' onchange='onchangeSub()' ","선택")
+
+<form id="subForm" name="subForm" method="post" action="submenu_write_proc.jsp">
+	 <table border="0" width="100%" height="100%" cellpadding="0" cellspacing="0" >
+		<col width="60%">
+		<col width="40%">
+		<TR height="100%" valign="top">
+			<TD rowspan="2">
+            	<table cellpadding="0" cellspacing="0" class="line_type02" width="99%">
+            		<col width="3%" />
+            		<col width="10%" />
+            		<col width="20%" />
+            		##<col width="15%" />
+            		
+            		<tr>
+            			<th>번호</th>
+            			<th>상위 메뉴</th>
+            			<th>중메뉴명</th>
+            			##<th>URL</th>
+            		</tr>
+            		
+            		#if ($infos.size() ==0)
+            		<tr><td colspan="5"> ※ 조회된 내용이 없습니다. </td></tr>
+            		#end
+            		
+            #set ($__term = 7)
+            #foreach($__info in $subinfos)
+            	#set ($__tmpNo = $pageInfo.totalCount - ($pageInfo.page - 1) * $pageInfo.pageSize - $velocityCount + 1)
+            	#if ($velocityCount % 2 == 1)
+            		<tr class="g_td">
+            	#else
+            		<tr>
+            	#end
+
+						
+						<input type="hidden" name="subMuNum" value="$!__info.adMuNum"/>
+					    <input type="hidden" name="subTitle" value="$!__info.adMuTitle"/>
+					    <input type="hidden" name="subMuUrl" value="$!__info.adMuUrl"/>
+					    <input type="hidden" name="subMuMemo" value="$!__info.adMuMemo"/>
+					    <input type="hidden" name="subUseYn" value="$!__info.adUseYn"/>
+					    <input type="hidden" name="subMuCode" value="$!__info.adMuCode"/>
+						
+						<input type="hidden" name="subMenu1" value="$!__info.adMenu1"/>
+						<input type="hidden" name="subMenu2" value="$!__info.adMenu2"/>
+						<input type="hidden" name="subMenu3" value="$!__info.adMenu3"/>
+						
+						<input type="hidden" name="subPcode" value="$!__info.adPcode"/>
+						<input type="hidden" name="subMuOdr" value="$!__info.adMuOdr"/>
+						<input type="hidden" name="subLayoutMenu" value="$!__info.layoutMenu"/>
+
+						
+						
+						##<td>$!__tmpNo </td>
+            			<td >$velocityCount </td>
+                        <td class="subject">$!__info.mainNm</td>
+            			<td>
+            				<strong><a href="javascript:view($velocityCount , 'sub')">$!__info.adMuTitle</a>
+            				</strong>
+            			</td>
+            			##<td class="subject">$!__info.adMuUrl</td>
+            		</tr>
+            #end
+            	</table>
+				
+			</TD>
+			<TD rowspan="2">
+            	<table cellpadding="0" cellspacing="0" class="write_table02" width="100%">
+            		<col width="15%" />
+            		<col width="35%" />
+            		<col width="15%" />
+            		<col width="35%" />
+            		<input type="hidden" name="adMuNum" value="" />
+            		<input type="hidden" name="adMenu1" value="MM" />
+            		<input type="hidden" name="adMenu2" value="" />
+            		<input type="hidden" name="adMenu3" value="" />
+            		<input type="hidden" name="adMuCode" value="" />
+					<input type="hidden" name="mode" value=""/>
+					<input type="hidden" name="redirectUrl" value="menu_mng_list.jsp"/>
+            		<input type="hidden" name="adMuUrl" value="" />
+					
+							    
+					<tr>
+						<th>대메뉴</th>
+            			<td colspan="3">
+            				#genMenuSelect($infos , "adPcode", "" ,"style='width:182px; height:20px;' required title='대메뉴'   ","선택")
+            			</td>
+            		</tr>
+					<tr>
+						<th>중메뉴명</th>
+            			<td>
+            				<input type="text" name="adMuTitle" value="" required alt="중메뉴명"  class="login02_input" style="width:90%; height:18px;ime-mode:active" />
+            			</td>
+            			<th>메모</th>
+            			<td>
+            				<input type="text" name="adMuMemo" value=""  class="login02_input" style="width:90%; height:18px;ime-mode:active" />
+            			</td>
+            		</tr>
+            		<tr>
+            			<th>사용유무</th>
+            			<td>
+            				<input type="radio" name="adUseYn" required radio value="Y" #setChecked("$!info.adUseYn", "Y") id="lab01" checked/> <label for="lab01">Y</label>&nbsp;&nbsp;
+            				<input type="radio" name="adUseYn" value="N" #setChecked("$!info.adUseYn", "N") id="lab02"/> <label for="lab02">N</label>
+            			</td>
+            			<th>순번</th>
+            			<td >
+            				<input type="text" name="adMuOdr" value="$!info.adMuOdr" required alt="메뉴순번" class="login02_input" style="width:90%; height:18px;ime-mode:active" onkeydown="gf_num_only();" maxlength="2"/>
+            			</td>
+                    </tr>
+
+            	</table>
+            		<div class="paging_box">
+                		<div class="pr_btn">
+    						<a href="javascript:save('add','sub')">
+    							<img src="/admin/img/btn_write.gif" alt="등록" />
+    						</a>
+    						<a href="javascript:save('update','sub')">
+    							<img src="/admin/img/pop_btn_modi.gif" alt="수정" />
+							</a>
+    						<a href="javascript:save('remove','sub')">
+    							<img src="/admin/img/btn_del.gif" alt="삭제" />
+							</a>
+    						<a href="javascript:cancel('sub')">
+    							<img src="/admin/img/btn_cancel.gif" alt="취소" />
+							</a>
+    							
+								
+						</div>
+                	</div>
+			</TD>
+		</tr>
+	</table>	
+</form>
+	
+<br/><br/>
+<div class="t_icon">소메뉴</div>
+	
+<form id="finalForm" name="finalForm" method="post" action="finalmenu_write_proc.jsp">
+	##genMenuSelect($subinfos , "finalMenu", "" ,"style='width:182px; height:20px;'","선택")
+
+	 <table border="0" width="100%" height="100%" cellpadding="0" cellspacing="0" >
+		<col width="60%">
+		<col width="40%">
+		<TR height="100%" valign="top">
+			<TD rowspan="2">
+            	<table cellpadding="0" cellspacing="0" class="line_type02" width="99%">
+            		<col width="3%" />
+            		<col width="10%" />
+            		<col width="10%" />
+            		<col width="15%" />
+            		
+            		<tr>
+            			<th>번호</th>
+            			<th>상위 메뉴</th>
+            			<th>소메뉴명</th>
+            			<th>URL</th>
+            		</tr>
+            		
+            		#if ($infos.size() ==0)
+            		<tr><td colspan="5"> ※ 조회된 내용이 없습니다. </td></tr>
+            		#end
+                </table>
+				<div style="overflow-y:scroll; overflow-x:hidden; width:99%; height:600px; margin:0 auto; margin-left:0px">
+				<table cellpadding="0" cellspacing="0" class="line_type02" width="99%">
+            		<col width="3%" />
+            		<col width="10%" />
+            		<col width="10%" />
+            		<col width="15%" />
+            #set ($__term = 7)
+            #foreach($__info in $finalinfos)
+            	#set ($__tmpNo = $pageInfo.totalCount - ($pageInfo.page - 1) * $pageInfo.pageSize - $velocityCount + 1)
+            	#if ($velocityCount % 2 == 1)
+            		<tr class="g_td">
+            	#else
+            		<tr>
+            	#end
+						<input type="hidden" name="finalMuNum" value="$!__info.adMuNum"/>
+					    <input type="hidden" name="finalTitle" value="$!__info.adMuTitle"/>
+					    <input type="hidden" name="finalMuUrl" value="$!__info.adMuUrl"/>
+					    <input type="hidden" name="finalMuMemo" value="$!__info.adMuMemo"/>
+					    <input type="hidden" name="finalUseYn" value="$!__info.adUseYn"/>
+					    <input type="hidden" name="finalMuCode" value="$!__info.adMuCode"/>
+						
+						<input type="hidden" name="finalMenu1" value="$!__info.adMenu1"/>
+						<input type="hidden" name="finalMenu2" value="$!__info.adMenu2"/>
+						<input type="hidden" name="finalMenu3" value="$!__info.adMenu3"/>
+						
+						<input type="hidden" name="finalPcode" value="$!__info.adPcode"/>
+						<input type="hidden" name="finalMuOdr" value="$!__info.adMuOdr"/>
+						<input type="hidden" name="finalLayoutMenu" value="$!__info.layoutMenu"/>
+
+						
+						
+						##<td>$!__tmpNo </td>
+            			<td >$velocityCount </td>
+                        <td class="subject">$!__info.mainNm / $!__info.subNm</td>
+            			<td>
+            				<strong><a href="javascript:view($velocityCount , 'final')">$!__info.adMuTitle</a>
+            				</strong>
+            			</td>
+            			<td class="subject">$!__info.adMuUrl</td>
+            		</tr>
+            #end
+            	</table>
+			</div >
+			</TD>
+			<TD rowspan="2">
+            	<table cellpadding="0" cellspacing="0" class="write_table02" width="100%">
+            		<col width="15%" />
+            		<col width="35%" />
+            		<col width="15%" />
+            		<col width="35%" />
+            		<input type="hidden" name="adMuNum" value="" />
+            		<input type="hidden" name="adMenu1" value="MMM" />
+            		<input type="hidden" name="adMenu2" value="" />
+            		<input type="hidden" name="adMenu3" value="" />
+            		##<input type="hidden" name="adMuCode" value="" />
+					##<input type="hidden" name="adPcode" value="" />
+					<input type="hidden" name="mode" value=""/>
+					<input type="hidden" name="redirectUrl" value="menu_mng_list.jsp"/>
+					
+							    
+					<tr>
+						<th>대메뉴</th>
+            			<td colspan="3">
+            				###genMenuSelect($infos , "adPcode", "" ,"style='width:182px; height:20px;' onchange='onchangeSub()' ","선택")
+							#genMenuSelect($infos , "adMuCode", "" ,"style='width:182px; height:20px;' onchange='onchangeBox()' required title='대메뉴' ","선택")
+            			</td>
+            		</tr>
+					<tr>
+						<th>중메뉴</th>
+            			<td colspan="3">
+            				###genMenuSelect($infos , "adPcode", "" ,"style='width:182px; height:20px;' onchange='onchangeSub()' ","선택")
+							###genMenuSelect($subinfos , "adPcode", "" ,"style='width:182px; height:20px;'  ","선택")
+							#genMenuSelect($temp , "adPcode", "" ,"style='width:182px; height:20px;' required title='중메뉴' ","선택")
+            			</td>
+            		</tr>
+					<tr>
+						<th>소메뉴명</th>
+            			<td>
+            				<input type="text" name="adMuTitle" value="" required alt="소메뉴명"  class="login02_input" style="width:90%; height:18px;ime-mode:active" />
+            			</td>
+            			<th>메모</th>
+            			<td>
+            				<input type="text" name="adMuMemo" value=""  class="login02_input" style="width:90%; height:18px;ime-mode:active" />
+            			</td>
+            		</tr>
+            		<tr>
+            			<th>메뉴URL</th>
+            			<td colspan="3">
+            				<input type="text" name="adMuUrl" value="" required alt="메뉴URL"   class="login02_input" style="width:96%; height:18px;ime-mode:active" />
+            			</td>
+            		</tr>
+					<tr>
+            			<th>레이아웃</th>
+            			<td colspan="3">
+            				<input type="text" name="layoutMenu" value="" required alt="레이아웃 메뉴"   class="login02_input" style="width:96%; height:18px;ime-mode:active" />
+            			</td>
+            		</tr>
+            		<tr>
+            			<th>사용유무</th>
+            			<td>
+            				<input type="radio" name="adUseYn" required radio value="Y" #setChecked("$!info.adUseYn", "Y") id="lab01" checked/> <label for="lab01">Y</label>&nbsp;&nbsp;
+            				<input type="radio" name="adUseYn" value="N" #setChecked("$!info.adUseYn", "N") id="lab02"/> <label for="lab02">N</label>
+            			</td>
+            			<th>순번</th>
+            			<td >
+            				<input type="text" name="adMuOdr" value="$!info.adMuOdr" required alt="메뉴순번" class="login02_input" style="width:90%; height:18px;ime-mode:active" onkeydown="gf_num_only();" maxlength="2"/>
+            			</td>
+                    </tr>
+
+            	</table>
+            		<div class="paging_box">
+                		<div class="pr_btn">
+    						<a href="javascript:save('add','final')">
+    							<img src="/admin/img/btn_write.gif" alt="등록" />
+    						</a>
+    						<a href="javascript:save('update','final')">
+    							<img src="/admin/img/pop_btn_modi.gif" alt="수정" />
+							</a>
+    						<a href="javascript:save('remove','final')">
+    							<img src="/admin/img/btn_del.gif" alt="삭제" />
+							</a>
+    						<a href="javascript:cancel('final')">
+    							<img src="/admin/img/btn_cancel.gif" alt="취소" />
+							</a>
+    							
+								
+						</div>
+                	</div>
+			</TD>
+		</tr>
+	</table>	
+</form>
+	
+	
+	
+</div>

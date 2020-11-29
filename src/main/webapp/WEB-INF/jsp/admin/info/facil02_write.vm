@@ -1,0 +1,149 @@
+## 일반문의 게시판
+#set ($searchParamUrl = "searchParamUrl=$!esc.url($searchParamUrl)")
+#set ($__brdTypeNm = $!CodeUtils.getCodeValue("BRDNM", $!searchParam.brdType))
+#set ($_openYn ="Y")
+#if($!info.faOpenYn) #set ($_openYn = $!info.faOpenYn) #end
+<script language="javascript" type="text/javascript">
+<!--
+//$(document).ready(function(){
+//	initSmartEdiotr("infoMemo");
+//});
+
+// 등록
+function f_insert() {
+    var oForm = document.forms["writeForm"];
+
+	if(!gf_validation(oForm)) {
+		return;
+	}
+
+	updateSmartEditor();
+	oForm.faOpenYn.value = getRadioValue(oForm.tmpFaOpenYn);
+
+	if(confirm("정보를 등록하시겠습니까?")) {
+		gSubmitPost("writeForm",true);
+	}
+}
+
+// 삭제
+function f_delete() {
+	if(confirm("정보를 삭제하시겠습니까?")) {
+			gSubmitPost("delForm");
+	}
+}
+
+// 지역변경시
+function onchangeSido() {
+	var infoSidoCode = $("#writeForm select[name=infoSidoCode]").val();
+	if (!infoSidoCode || infoSidoCode == "") {
+		return;
+	}
+
+	$("#writeForm select[name=infoSikunkuCode] option:gt(0)").remove();
+	gSendPost("/system/get_select_option.jsp", {
+			codeType: "GUGUN",
+			pcode: infoSidoCode,
+			isAll: "Y",
+			allDesc: "전체",
+			selectedVal: ""
+		}, function(data) {
+			if (defaultSuccessHandler(data)) {
+				return;
+			}
+			$("#writeForm select[name=infoSikunkuCode]").html(data);
+		}
+	);
+}
+//-->
+</script>
+<div class="right_content">
+<form id="delForm" name="delForm" action="hp_facil_delete_proc.jsp" method="post">
+	<input type="hidden" name="redirectUrl" value="facil02_list.jsp?$!searchParam.searchParamUrl"/>
+	<input type="hidden" name="faNum" value="$!info.faNum" />
+</form>
+<form id="writeForm" name="writeForm" action="hp_facil_write_proc.jsp" method="post">
+	<input type="hidden" name="redirectUrl" value="facil02_list.jsp?$!searchParam.searchParamUrl"/>
+	<input type="hidden" name="mode" value="$!searchParam.mode"/>
+	<input type="hidden" name="infoRegId" value="$!SessionUtils.getAdminId($request)" />
+	<input type="hidden" name="infoRegNm" value="$!SessionUtils.getAdminName($request)" />
+	<input type="hidden" name="faOpenYn" value="Y" />
+	<input type="hidden" name="faNum" value="$!info.faNum" />
+	<input type="hidden" name="cateType" value="S" />
+	<div class="t_icon">시설검색관리 글쓰기 <div class="r_txt"><div class="navi">Home &gt; 시설정보 &gt; <strong>시설검색관리</strong></div></div></div>
+	<table cellpadding="0" cellspacing="0" class="write_table02" width="100%">
+		<col width="15%" />
+		<col width="35%" />
+		<col width="15%" />
+		<col width="35%" />
+		<tr>
+			<th><span>*</span> 지역</th>
+			<td colspan="3">
+				#genCodeSelect("SIDO", "", "faLocal", "$!info.faLocal", 'required title="지역선택" style="width:150px; height:20px;"', "지역선택")				
+			</td>
+		</tr>
+		<tr>
+        <th><span>*</span> 분류</th>
+			<td colspan="3">
+				#genCodeSelect("FA_FIELD", "", "faType", "$!info.faType", 'required title="분류선택" style="width:150px; height:20px;"', "분류선택")				
+			</td>
+		</tr>
+		<tr>
+			<th><span>*</span> 기관명</th>
+			<td colspan="3">
+				<input type="text" name="faName" required title="기관명" class="login02_input" style="width:98%; height:18px;ime-mode:active" value="$!info.faName"/>
+			</td>
+		</tr>
+		<tr>
+			<th><span>*</span> 소재지</th>
+			<td colspan="3">
+				<input type="text" name="faAddr" required title="소재지" class="login02_input" style="width:98%; height:18px;ime-mode:active" value="$!info.faAddr"/>
+			</td>
+		</tr>
+		<tr>
+			<th> 전화번호</th>
+			<td colspan="3">
+				<input type="text" name="faTel" title="전화번호" class="login02_input" style="width:98%; height:18px;ime-mode:active" value="$!info.faTel"/>
+			</td>
+		</tr>
+		<tr>
+			<th> 팩스</th>
+			<td colspan="3">
+				<input type="text" name="faFax" title="팩스" class="login02_input" style="width:98%; height:18px;ime-mode:active" value="$!info.faFax"/>
+			</td>
+		</tr>
+		<tr>
+			<th>홈페이지</th>
+			<td colspan="3">
+				<input type="text" name="faHomeurl" title="홈페이지" class="login02_input" style="width:98%; height:18px;ime-mode:active"  value="$!info.faHomeurl" />
+			</td>
+		</tr>
+		<tr>
+			<th>비고</th>
+			<td colspan="3">
+				<input type="text" name="faMemo" title="비고" class="login02_input" style="width:98%; height:18px;ime-mode:active"  value="$!info.faMemo" />
+			</td>
+		</tr>
+		<tr>
+			<th>등록자명</th>
+			<td colspan="3">$!SessionUtils.getAdminName($request)</td>
+		</tr>
+		<tr>
+			<th><span>*</span> 공개여부</th>
+			<td colspan="3">
+				<input type="radio" name="tmpFaOpenYn" #setChecked($_openYn, "Y") title="공개여부" value="Y" id="FaOpenY" /> <label for="FaOpenY">공개</label>&nbsp;&nbsp;
+				<input type="radio" name="tmpFaOpenYn" #setChecked($_openYn, "N") title="공개여부" value="N" id="FaOpenN" /> <label for="FaOpenN">비공개</label>
+			</td>
+		</tr>
+	</table>
+	
+	<div class="sys_btn">
+#if ($!info.faNum != "")
+			<a href="javascript:f_delete();"><img src="/admin/img/btn_del.gif" alt="삭제" /></a>
+#end
+		<a href="facil02_list.jsp?$!searchParam.searchParamUrl"><img src="/admin/img/btn_cancel.gif" alt="취소" /></a>
+		<a href="javascript:f_insert();"><img src="/admin/img/btn_save.gif" alt="저장" /></a>
+	</div>
+</form>
+</div>
+
+

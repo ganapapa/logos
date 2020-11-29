@@ -1,0 +1,93 @@
+﻿#set ($searchParamUrl = "searchParamUrl=$!esc.url($searchParam.searchParamUrl)")
+<script language="javascript" type="text/javascript">
+
+// 등록
+function f_insert() {
+    var oForm = document.forms["writeForm"];
+	if(!gf_validation(oForm)) {
+		return;
+	}
+	//oForm.adMuCode.value = oForm.adMenu2;
+	if(confirm("$!searchParam.brdTypeNm정보를 등록하시겠습니까?")) {
+		gSubmitPost("writeForm",true);
+	}
+}
+</script>
+<div class="right_content">
+<form id="writeForm" name="writeForm" action="menu_write_proc.jsp" method="post">
+	<input type="hidden" name="redirectUrl" value="menu_mng_list.jsp?$!searchParam.searchParamUrl"/>
+	<input type="hidden" name="mode" value="add"/>
+	<input type="hidden" name="brdType" value="$!searchParam.brdType"/>
+	<input type="hidden" name="brdRegId" value="$!SessionUtils.getAdminId($request)" />
+	<input type="hidden" name="brdRegNm" value="$!SessionUtils.getAdminName($request)" />
+	<input type="hidden" name="adMuCode" id="adMuCode" value="" />
+	<input type="hidden" name="adMenu1" id="adMenu1" value="M" />
+	<input type="hidden" name="adPcode" id="adPcode" value="n" />
+	<input type="hidden" name="adUpdId" 	value="$!SessionUtils.getAdminId($request)" />
+	##<input type="hidden" name="adOpenYn" 		value="Y" />
+
+	<div class="t_icon">$!searchParam.brdTypeNm 대메뉴등록<div class="r_txt"><div class="navi">Home &gt; 관리자 &gt; <strong>$!searchParam.brdTypeNm 대메뉴등록</strong></div></div></div>
+	<table cellpadding="0" cellspacing="0" class="write_table02" width="100%">
+		<col width="15%" />
+		<col width="35%" />
+		<col width="15%" />
+		<col width="35%" />
+		<tr>
+			<th>대메뉴명</th>
+			<td>
+				<input type="text" name="adMuTitle" value="$!info.adMuTitle" required alt="메뉴명" class="login02_input" style="width:90%; height:18px;ime-mode:active" />
+				##<a href="javascript:f_idcheck();"><img src="/admin/img/join02_btn02.gif" alt="중복체크" /></a>
+			</td>
+			<th>메모</th>
+			<td>
+				<input type="text"  name="adMuMemo" value="$!info.adMuMemo" required alt="메모" class="login02_input" style="width:90%; height:18px;ime-mode:active" />
+			</td>
+		</tr>
+		<tr>
+			<th>대메뉴URL</th>
+			<td>
+				<input type="text"  name="adMuUrl" value="$!info.adMuUrl" required alt="메뉴URL" class="login02_input" style="width:90%; height:18px;ime-mode:active" />
+			</td>
+			<th>순번</th>
+			<td>
+				<input type="text" name="adMuOdr" value="$!info.adMuOdr" required alt="메뉴순번" class="login02_input" style="width:90%; height:18px;ime-mode:active" onkeydown="gf_num_only();" maxlength="2"/>
+			</td>
+		</tr>
+#*
+		<tr>
+			<th>메뉴분류</th>
+			<td colspan="3">
+				##<input type="text"  name="adMuCode" value="$!info.adMuCode" required alt="메뉴분류" class="login02_input" style="width:90%; height:18px;ime-mode:active" />
+				#genCodeSelect("M1", "", "adMenu1", "$!info.code", "id='adMenu1' required title='대분류' class='select' style='width:200px; height:23px;'", "---")
+				#genCodeSelect("M2", "", "adMenu2", "$!info.code", "id='adMenu2' required title='중분류' class='select' style='width:200px; height:23px;'", "---")
+			</td>
+		</tr>
+
+		<tr>
+			<th>입력자</th>
+			<td>
+				<input type="text" name="adUpdId" value="$!info.adRegId" required alt="입력자" class="login02_input" style="width:90%; height:18px;ime-mode:active" />
+			</td>
+			<th>입력일</th>
+			<td>
+				<input type="text" name="adRegDt" value="$!info.adRegDt" required alt="입력일" class="login02_input" style="width:90%; height:18px;ime-mode:active" />
+			</td>
+        </tr>
+		<tr>
+			<th>수정자</th>
+			<td>
+				<input type="text" name="adUpdId" value="$!info.adUptId" required alt="수정자" class="login02_input" style="width:90%; height:18px;ime-mode:active" />
+			</td>
+			<th>수정일</th>
+			<td>
+				<input type="text" name="adUptDt" value="$!info.adUptDt" required alt="수정일" class="login02_input" style="width:90%; height:18px;ime-mode:active" />
+			</td>
+        </tr>
+*#
+	</table>
+	<div class="sys_btn">
+		<a href="menu_mng_list.jsp?$!searchParam.searchParamUrl"><img src="/admin/img/btn_cancel.gif" alt="취소" /></a>
+		<a href="javascript:f_insert();"><img src="/admin/img/btn_save.gif" alt="저장" /></a>
+	</div>
+</form>
+</div>

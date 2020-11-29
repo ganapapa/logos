@@ -1,0 +1,180 @@
+## 알림소식 | 새소식 수정
+#set ($searchParamUrl = "searchParamUrl=$!esc.url($searchParamUrl)")
+
+<script language="javascript" type="text/javascript">
+<!--
+$(document).ready(function(){
+	initSmartEdiotr("brdMemo");
+	if (idx == 0) {
+		addFileBox(); //첨부파일박스 추가
+	}
+});
+
+// 수정
+function f_update() {
+    var oForm = document.forms["writeForm"];
+
+	if(!gf_validation(oForm)) {
+		return;
+	}
+	
+	updateSmartEditor();
+	
+	if(!confirm("$!info.brdTypeNm 정보를수정하시겠습니까?")) {
+		return;
+	}
+	
+	
+	$("#writeForm").attr("action","ref_lib_write_proc.jsp");
+	$("#writeForm input[name=redirectUrl]").val("ref_lib_view.jsp?readCnt=1&brdNum=$!info.brdNum&brdType=$!info.brdType&$!searchParam.searchParamUrl");
+		
+	gSubmitPost("writeForm",true);
+}
+
+// 삭제
+function f_delete() {
+	if(confirm("$!info.brdTypeNm 정보를 삭제하시겠습니까?")) {
+		$("#writeForm").attr("action","ref_lib_delete_proc.jsp");
+		$("#writeForm input[name=redirectUrl]").val("ref_lib_list.jsp?brdType=$!info.brdType&$!searchParam.searchParamUrl");
+
+		gSubmitPost("writeForm");
+	}
+}
+
+var fileid = "";
+// 첨부파일삭제
+function f_del_file(attFileNo , tempfileid) {
+	if(confirm("첨부파일을 삭제하시겠습니까?")) {
+		
+		fileid = tempfileid;
+		gSendPost("../board/board_file_delete_proc.jsp", {attFileNo: attFileNo, callback: "callbackFunc"});
+	}
+	
+}
+
+function callbackFunc() {
+	
+	document.getElementById("attFile"+fileid).style.display="none";
+}
+
+
+//=========================================멀티파일 추가부분=========================================
+//파일 겟수 관련 추가부분
+#multifilecount ($attFileInfos) //파일 겟수 관련 추가부분
+
+//첨부파일 박스추가
+var idx = $idx;
+	function addFileBox() {
+		if(idx >=10){
+		  alert("최대 10개까지만 추가할 수 있습니다");
+		}else{
+		  var html = $("#fileadd tr").parent().html();
+		  html = html.replace(/XXX/g, "" + ++idx);
+		  $("#fileInfos").append(html);
+		}		
+	}
+	
+function removeFileBox(i) {
+		var el = $("#writeForm input[name=record_" + i + "]");
+		if (el.next().val() == "add") {
+			el.parent().parent().remove();
+			idx--;	
+		} else {
+			el.next().val("remove");
+			el.parent().parent().hide();
+		}
+}
+//-->
+</script>
+<div class="right_content">
+<form id="writeForm" name="writeForm" method="post">
+	<input type="hidden" name="redirectUrl" value=""/>
+	<input type="hidden" name="mode" value="update"/>
+	<input type="hidden" name="brdNum" id="brdNum" value="$!info.brdNum"/>
+	<input type="hidden" name="brdType" value="$!info.brdType" />
+	<input type="hidden" name="attFileNo" id="attFileNo" value="$!attFileInfos.ATT1.attFileNo"/>
+	<input type="hidden" name="brdUpdId" value="$!SessionUtils.getAdminId($request)" />
+	<input type="hidden" name="brdUpdNm" value="$!SessionUtils.getAdminName($request)" />
+	<input type="hidden" name="brdOpenYn" value="$!info.brdOpenYn" />
+	
+	<div class="t_icon">$!info.brdTypeNm 수정 <div class="r_txt"><div class="navi">Home &gt; 게시판관리 &gt; <strong>$!info.brdTypeNm</strong></div></div></div>
+	<table cellpadding="0" cellspacing="0" class="write_table02" width="100%">
+		<col width="15%" />
+		<col width="35%" />
+		<col width="15%" />
+		<col width="35%" />
+		
+		<tr>
+			<th><span>*</span> 제목</th>
+			<td colspan="3">
+				<input type="text" name="brdTitle" value="$!info.brdTitle" required alt="제목" class="login02_input" style="width:98%; height:18px;ime-mode:active" />
+			</td>
+		</tr>
+		#if($!info.brdType != "RL02")
+		<tr>
+            <th><span>*</span> 구분</th>
+			<td colspan="3">
+				#genCodeSelect("REFLIB", "", "brdTp", "$!info.brdTp", "required title='구분' class='select' style='width:220px; height:20px;'", "선택")
+			</td>
+		</tr>
+		#end
+		<tr>
+			<th><span>*</span> 내용</th>
+			<td style="padding:10px 0 10px 10px;" colspan="3">
+				<textarea name="brdMemo" id="brdMemo" alt="내용" style="width:98%; height:350px;ime-mode:active">$!info.brdMemo</textarea>
+			</td>
+		</tr>
+		<tr>
+			<th>등록자명</th>
+			<td colspan="3">$!SessionUtils.getAdminName($request)</td>
+			#**
+			<th><span>*</span> 비밀번호</th>
+			<td>
+				<input type="password" id="brdRegPwd" name="brdRegPwd" required alt="비밀번호" class="login02_input" style="width:120px; height:18px;ime-mode:active" />
+				&nbsp;확인 : <input type="password" id="brdRegPwdCnf" name="brdRegPwdCnf" required alt="비밀번호확인" class="login02_input" style="width:120px; height:18px;ime-mode:active" />
+			</td>
+			*#
+		</tr>
+		#if($!info.brdType != "RL02")
+       <tr>
+			<th #if ($attFileInfos.ATT1)style="height:40px" #end>첨부파일</th>
+			<td colspan="3">
+				<table id="fileInfos" cellpadding="0" cellspacing="0" style="margin:10px 0;">
+					<col width="10px" />
+					<col width="50px" />
+					<col width="200px" />
+					<tr>
+						<th>No.</th>
+						<th>첨부파일</th>
+						<th><a href="javascript:addFileBox()"><strong class="or_txt">[추가]</strong></a></th>
+					</tr>
+						#multifileupload($attFileInfos)
+				</table>
+			</td>
+        </tr>
+		#end
+	</table>
+	
+	<div class="sys_btn">
+		<a href="javascript:history.back(-1);"><img src="/admin/img/btn_cancel.gif" alt="취소" /></a>
+		<a href="javascript:f_update();"><img src="/admin/img/btn_save.gif" alt="수정" /></a>
+	</div>
+</form>
+## 첨부파일 화면 양식
+<table id="fileadd" style="display:none">
+	<tr>
+		<td class="r_line" >
+			<input type="hidden" name="record_XXX" value="" />
+			<input type="hidden" name="action" value="add" />
+			<span>XXX</span>
+		</td>
+		<td><input type="file" name="attachFileXXX_" class="file_board" style="width:500px;" /></td>
+		<td class="align_c">
+			<a href="javascript:removeFileBox(XXX)"><strong class="or_txt">[X]</strong></a>
+		</td>
+	</tr>
+</table>
+## 첨부파일 끝.
+</div>
+
+

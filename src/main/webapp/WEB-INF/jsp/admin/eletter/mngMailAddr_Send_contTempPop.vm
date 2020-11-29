@@ -1,0 +1,141 @@
+
+<script>
+<!--
+function f_chk(num,title)
+{
+	var p_cTitle = opener.document.getElementById("cTitle$!searchParam.num");
+	var p_contNum = opener.document.getElementById("contNum$!searchParam.num");
+	
+	p_cTitle.value = title;
+	p_contNum.value = num;
+	
+	window.close();
+}
+
+$(document).ready(function(){
+	$(".submit").keydown(function(e) {
+		if (e.keyCode == 13) {
+			e.preventDefault();
+			f_search();
+		}
+	});
+});
+
+function goPage(p) {
+	$("#searchForm input[name=page]").val(p);
+	$("#searchForm").submit();
+}
+
+// 조회
+function f_search() {
+	$("#searchForm input[name=searchType]").val($("#tmpForm select[name=searchType]").val());
+	$("#searchForm input[name=selBrdTp]").val($("#tmpForm select[name=selBrdTp]").val());
+	$("#searchForm input[name=searchKeyword]").val($("#tmpForm input[name=searchKeyword]").val());
+	$("#searchForm input[name=page]").val(1);
+	$("#searchForm").submit();
+}
+
+// 메일전송
+function f_mailSend() {
+    var oForm = document.forms["tmpForm"];
+	var chkRadio = document.getElementsByName("eSeq");
+	var chkFlug = false;
+	
+	for(var i=0;i<chkRadio.length;i++)
+	{
+		if(chkRadio[i].checked == true)
+		{
+			chkFlug = true;
+		}
+	}
+
+	if(!chkFlug)
+	{
+		alert('메일 템플릿을 선택해주세요.');
+		return;
+	}	
+
+	if(!gf_validation(oForm)) {
+		return;
+	}
+	
+	if(!confirm("선택된 양식대로 메일을 전송하시겠습니까?")) {
+		return;
+	}
+	
+	$("#tmpForm").attr("action","mngContents_write_proc.jsp");
+		
+	gSubmitPost("tmpForm",true);
+}
+//-->
+</script>	
+<form id="searchForm" action="mngMailAddr_Send_contTempPop.jsp" method="post">
+	<input type="hidden" name="page" value="$!searchParam.page"/>
+	<input type="hidden" name="pageSize" value="$!searchParam.pageSize"/>
+	## 메일전송에 필요한 파라미터
+	<input type="hidden" name="All" value="$!searchParam.All"/>
+	<input type="hidden" name="selectSeq" value="$!searchParam.selectSeq"/>
+</form>
+<form id="tmpForm">
+	<input type="hidden" name="page" value="$!searchParam.page"/>
+	<input type="hidden" name="pageSize" value="$!searchParam.pageSize"/>
+	## 메일전송에 필요한 파라미터
+	<input type="hidden" name="mode" value="emailSend"/>
+	<input type="hidden" name="All" value="$!searchParam.All"/>
+	<input type="hidden" name="selectSeq" value="$!searchParam.selectSeq"/>
+	
+	<div class="pop_title">E_Letter 메일전송(템플릿선택) 팝업</div>
+	<BR><BR>
+	<table cellpadding="0" cellspacing="0"  class="line_type02" width="100%" border='0'>
+		
+		<col width="5%" />
+		<col width="5%" />
+		<col width="30%" />
+		<col width="*%" />
+		<tr>
+			<th>선택</th>
+			<th>번호</th>
+			<th>제목</th>
+			<th>탬플릿 종류</th>
+		</tr>
+		
+#set ($__term = 7)
+#foreach($__info in $infos)
+	#set ($__tmpNo = $pageInfo.totalCount - ($pageInfo.page - 1) * $pageInfo.pageSize - $velocityCount + 1)
+	#if ($velocityCount % 2 == 1)
+		<tr class="g_td">##</tr>
+	#else
+		<tr>
+	#end
+			
+			<td>
+				<input type='radio' name='eSeq' id='eSeq' value='$!__info.seq'>
+			</td>	## 선택
+	
+			<td>$!__tmpNo</td>
+			
+			## 제목
+			<td>
+				$!__info.eTitle
+			</td>		
+			
+			<td>
+                #if		($!__info.tmpType == 'b') <img src="/images/eletter/template1.png" title="blue" />		## blue
+                #elseif	($!__info.tmpType == 'r') <img src="/images/eletter/red.gif" title="red" />			## red
+                #elseif	($!__info.tmpType == 'g') <img src="/images/eletter/green.gif" title="green" />		## green
+                #elseif	($!__info.tmpType == 'y') <img src="/images/eletter/yellow.gif" title="yellow" /> 	## yellow
+				#else	없음
+				#end
+			</td>	## 내용
+	
+		</tr>
+#end
+	</table>
+	<div class="paging_box">
+		#makePaging1($pageInfo)
+		<div class="pr_btn">
+			<a href="javascript:f_mailSend();"><img src="/images/eletter/btn_sendmail.gif" title="메일전송" /></a>
+			<a href="javascript:window.close();"><img src="/images/common/pop_btn_close.gif" alt="닫기" /></a>
+		</div>
+	</div>
+</form>

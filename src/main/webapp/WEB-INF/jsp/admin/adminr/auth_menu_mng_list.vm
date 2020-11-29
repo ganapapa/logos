@@ -1,0 +1,199 @@
+#makeSearchParams($searchParam, "orgCd,pos,limit,sortOrder", $searchParamUrl)
+#set ($searchParamUrl = "searchParamUrl=$!esc.url($searchParamUrl)")
+#set ($__brdTypeNm = $!CodeUtils.getCodeValue("MENU", $!searchParam.brdType))
+<script language="javascript">
+<!--
+//$(document).ready(function(){
+//	$(".submit").keydown(function(e) {
+//		if (e.keyCode == 13) {
+//			e.preventDefault();
+//			
+//		}
+//	});
+//});
+
+function goPage(p) {
+	$("#searchForm input[name=page]").val(p);
+	$("#searchForm").submit();
+}
+
+function f_save(dep, depKr) {
+	$("#searchForm input[name=selected01]").val(dep);
+	$("#searchForm input[name=clickType]").val("delete_save");
+	$("#searchForm input[name=searchDept]").val($("#searchForm input[name=searchDept]").val());
+	$("#searchForm input[name=searchDeptKr]").val(depKr);
+	$("#searchForm").attr("action","auth_menu_mng_list_proc.jsp");
+	gSubmitPost("searchForm",false);
+}
+
+// 대,중,소메뉴 조회
+function f_search(dep, depKr) {
+	//font change params
+	$("#searchForm input[name=searchDeptKr]").val(depKr);
+	
+	//menu change params
+	$("#searchForm input[name=searchDept]").val(dep);
+	
+	$("#searchForm").submit();
+}
+
+
+-->
+</script>
+<div class="right_content">
+<form id="searchForm" action="auth_menu_mng_list.jsp" method="post">
+	<input type="hidden" name="searchDept" value="$!searchParam.searchDept"/>
+	<input type="hidden" name="searchDeptKr" value="$!searchParam.searchDeptKr"/>
+	<input type="hidden" name="redirectUrl" value="auth_menu_mng_list.jsp?searchDept=$!searchParam.searchDept"/>
+	
+##</form>
+
+##<form id="tmpForm">
+	##<input type="text" name="selected01" value="$!searchParam.selected01"/>
+	##<input type="text" name="searchID" value="$!searchParam.searchID"/>
+	##<input type="hidden" name="page" value="$!searchParam.page"/>
+	##<input type="hidden" name="pageSize" value="$!searchParam.pageSize"/>
+	##<input type="hidden" name="auUserCode" value=""/>
+	##<input type="hidden" name="searchPcode" value="n"/>
+	##<input type="hidden" name="searchMuCode" value=""/>
+	##<input type="hidden" name="clickType" value=""/>
+	##<input type="hidden" name="searchPcode" value="n"/>
+	##<input type="hidden" name="searchPcode2" value=""/>
+	##<input type="hidden" name="searchPcode3" value=""/>
+	##<input type="text" name="searchDept" value="$!searchParam.searchDept"/>
+	##<input type="text" name="redirectUrl" value=""/>
+	##<input type="text" name="clickType" value=""/>
+	
+	<div class="t_icon">권한메뉴관리 <div class="r_txt"><div class="navi">Home &gt; 관리자 &gt; <strong>권한메뉴관리</strong></div></div></div>
+
+
+	 <table border="0" width="100%" height="660" cellpadding="0" cellspacing="0" >
+		<col width="35%">
+		<col width="65%">
+	
+		## 부서
+		<TR height="280px" valign="top">
+			<TD rowspan="2">
+                <table cellpadding="0" cellspacing="0" class="line_type02" width="95%">
+            		<col width="14%" />
+            		<col width="76%" />
+            		<tr>
+            			<th>번호</th>
+            			<th>부서 </th>			
+            		</tr>
+				</table>
+				
+				<div style="overflow-y:scroll; overflow-x:hidden; width:95%; height:600px; margin:0 auto; margin-left:0px">
+				<table cellpadding="0" cellspacing="0" class="line_type02" width="100%" height="100%">
+            		<col width="14%" />
+            		<col width="76%" />
+					
+                    #foreach($__info in $infos)
+                    	#set ($__tmpNo = $pageInfo.totalCount - ($pageInfo.page - 1) * $pageInfo.pageSize - $velocityCount + 1)
+                    	#if ($velocityCount % 2 == 1)
+                    		<tr class="g_td">
+                    	#else
+                    		<tr>
+                    	#end
+                    			<td>$velocityCount</td>
+                    			<td>
+									#if ($!searchParam.searchDept == $!__info.code)
+                                    <strong><a href="javascript:f_search('$!__info.code', '$!__info.name');">$!__info.name </a></strong>
+									#else
+										<a href="javascript:f_search('$!__info.code', '$!__info.name');">$!__info.name </a>
+									#end
+                    			</td>
+                    		</tr>
+                    #end
+            	</table>
+				</div>
+			</TD>
+			
+			## 메뉴
+			<TD rowspan="2">
+                <table cellpadding="0" cellspacing="0" width="100%" class="line_type02" style="float:left;">
+                    <col width="9%" />
+                    <col width="19%" />
+					<col width="19%" />
+					<col width="38%" />
+                    <col width="12%" />
+                	
+                    <tr>
+                        <th>번호</th>
+                        <th>대메뉴명</th>
+						<th>중메뉴명</th>
+						<th>소메뉴명</th>
+                        <th>권한</th>
+                    </tr>
+				</table>
+				
+				<div style="overflow-y:scroll; overflow-x:hidden; width:100%; height:600px; margin:0 auto; margin-left:0px">
+				<table cellpadding="0" cellspacing="0" width="100%" class="line_type02" style="float:left;" height="100%">
+                    <col width="9%" />
+                    <col width="19%" />
+					<col width="19%" />
+					<col width="38%" />
+                    <col width="12%" />
+					
+                    #if($mInfos.length == 0)
+                		<tr>
+                			<td colspan="2">연관된 분류가 없습니다.</td>
+                		</tr>
+					#end
+                
+                	<div>
+					#set ($__temporary = 0)
+					#foreach($__mInfo in $mInfos)
+                	
+                	#if ($velocityCount % 2 == 1)
+                		<tr>
+                	#else
+                		<tr>
+                	#end
+                			<td>$!velocityCount</td>
+                			<td>
+								$!__mInfo.mName
+							</td>
+                			<td>
+								$!__mInfo.mmName
+							</td>
+							<td>
+								<strong>$!__mInfo.adMuTitle</strong>
+								<input type="hidden" name="action" value="add"/>
+								<input type="hidden" name="auUserCode" value="$!__mInfo.auUserCode"/>
+								<input type="hidden" name="auUserCodeKr" value="$!__mInfo.auUserCodeKr"/>
+								
+								<input type="hidden" name="auMuCode" value="$!__mInfo.adMuCode"/>
+								<input type="hidden" name="auPcode" value="$!__mInfo.adPcode"/>
+								<input type="hidden" name="auMenu3" value="$!__mInfo.adMenu3"/>
+								
+								<input type="hidden" name="auMenuCode" value="$!__mInfo.adMuCode$!__mInfo.adPcode$!__mInfo.adMenu3"/>
+								<input type="hidden" name="auMenuCodeKr" value="$!__mInfo.adMuTitle"/>
+								
+							</td>
+							<td>
+								<input type="checkbox" name="auViewYn$__temporary" #setChecked("$!__mInfo.auViewYn", "Y") value="Y"/>
+								##<input type="text" name="auViewYn" value="$!__mInfo.auViewYn"/>##onclick="f_searchMM('$!__mInfo.adMenu3', '$!searchParam.selected01');"
+							</td>
+                		</tr>
+						#set ($__temporary = $__temporary+1)
+					#end
+					
+            	</table>
+                </div>
+			</TD>
+			
+	 </table>
+
+	<div class="t_icon">
+		<div class="r_txt">
+			<a href="javascript:f_save('$!searchParam.searchDept', '$!searchParam.searchDeptKr');"><img src="/admin/img/btn_save.gif" alt="저장" /></a>
+		</div>
+	</div>
+
+##	<div style="float:left; margin-left:940px;margin-top:0px">
+##		<a href="javascript:f_save('$!searchParam.searchDept', '$!searchParam.searchDeptKr');"><img src="/admin/img/btn_save.gif" alt="저장" /></a>
+##    </div>
+	 
+</form>
+</div>

@@ -1,0 +1,18 @@
+<%@ page pageEncoding="utf-8"%>
+<div id="page" class="page" role="banner">
+	<ul id="gnb">
+		<li><a href="#factory01">C 라인</a></li>
+		<!-- 
+        <li> <a href="#main">가동현황</a> </li>
+        <li> <a href="#factory02">생산2실</a> </li>
+        <li> <a href="#factory03">생산현황</a> </li>
+        -->
+	</ul>
+
+	<!-- Main Tab Page -->
+
+	<!-- C라인 Tab Page -->
+    <%@ include file="/WEB-INF/include/c-tab-page.jspf" %>
+
+
+</div>

@@ -1,0 +1,126 @@
+<%@ page pageEncoding="utf-8"%>
+
+<!-- Pop Up -->
+<div id="pop01" class="modal-layer">
+	<div class="modal-header">
+		<button class="icon-close" id="pop_close"></button>
+	</div>
+	<div class="row">
+		<div class="detail-header">
+			<div class="float-left">
+			    <input type="hidden" id="fa_no"></input>
+				<h2 id="fa_nm"></h2>
+			</div>
+			<div class="float-right">
+                <dl>
+					<!-- 
+                    <dt>
+						<span>Total Rate</span>
+					</dt>
+					<dd>
+						<span id="tot_rt">00.0%</span>
+					</dd>
+                    -->
+				</dl>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-6">
+			<div class="image">
+				<img id="imgShow" style="padding: 2px 0 0 2px; width: 100%; height: auto;" src="<c:url value="/images/item/m02.png" />" alt="machine_image">
+			</div>
+		</div>
+		<div class="col-10">
+            <h3 class="mt-75" id="title01">설비작업정보</h3>
+            
+			<table class="tbl-01" id="table01">
+				<tbody>
+					<tr>
+						<th scope="row" class="width-em-750">작업지시번호</th>
+						<td colspan="5" id="wo_no"></td>
+					</tr>
+					<tr>
+						<th scope="row">품명</th>
+						<td colspan="5" id="itm_cd"></td>
+					</tr>
+					<tr>
+						<th scope="row">계획</th>
+						<td id="plan_qty"></td>
+						<th class="width-em-300">실적</th>
+						<td id="result_qty"></td>
+						<th class="width-em-375">달성률</th>
+						<td id="result_rt"></td>
+					</tr>
+				</tbody>
+			</table>
+
+			<h3 class="mt-150" id="title02">작업결과정보</h3>
+			<table class="tbl-01" id="table02">
+				<tbody>
+					<tr>
+						<th scope="row" class="width-em-450">공정대기</th>
+						<td id="ready_qty"></td>
+						<th class="width-em-450">양품수량</th>
+						<td id="ok_qty"></td>
+						<th class="width-em-450">불량수량</th>
+						<td id="bad_qty"></td>
+					</tr>
+				</tbody>
+			</table>
+            
+            <br/>
+            
+            <div id="myGrid" style="width:98%; height:500px; overflow: scroll;"></div>
+            
+            <br/>
+            
+            <div id="dialog" title="비가동 현황 Graph">
+                <!-- 조회조건 -->
+                <div class="search01">
+                    <table>
+                        <tr>
+                            <td> <label style="color: black; font-size: 1.5em;">기준년월</label> </td>
+                            <td> <input type="text" id="txtDate"> </td>
+                            <td> <a href="#" class="btn_srch" id="srch">조회</a> </td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <!-- 그래프 -->
+                <div class="graph01">
+                    <!-- graph -->
+                    <div style="width: 98%; height: 500px;" id="non_oper_pie0"></div>
+                </div>
+                <div class="graph01">
+                    <!-- graph -->
+                    <div style="width: 98%; height: 500px;" id="non_oper_pie1"></div>
+                </div>
+                
+                <!-- 그리드 -->
+                <div class="table01">
+                    <div id="stopGrid0" style="width:98%; height:300px; overflow: scroll;"></div>
+                </div>
+                <div class="table01">
+                    <div id="stopGrid1" style="width:98%; height:300px; overflow: scroll;"></div>
+                </div>
+            </div>
+            
+            <input id="graphPop" type="button" value="Graph" style="width: 15%; float: right;">
+            
+            <!-- 
+            <div style="float: left; width: 100%; vertical-align: middle;"></div>
+            
+            <table style="width: 95%">
+                <tr>
+                    <td valign="top">
+                    </td>
+                </tr>
+            </table>
+            
+            <h6 id="drc" style="float: right;"></h6>
+            -->
+		</div>
+	</div>
+</div>
+

@@ -1,0 +1,131 @@
+## 정보관리 통합자료실 정책/법령/통계 뷰페이지
+#set ($searchParamUrl = "searchParamUrl=$!esc.url($searchParamUrl)")
+
+<script language="javascript" type="text/javascript">
+<!--
+// 비밀번호확인
+function f_pwd_confirm() {
+	//비밀번호 확인은 우선 사용하지않음
+	//var url = "hp_board_pwd_pop01.jsp?brdNum=$!info.brdNum";
+
+	//if(gf_openModalDialog(url, self, "330", "200", "no")=="OK") {
+	//	return true;
+	//}
+
+	//return false;
+	return true;
+}
+
+// 삭제
+function f_delete() {
+	//alert($!info.brdNum);
+	if(confirm("$!info.brdTypeNm 정보를 삭제하시겠습니까?")) {
+			gSubmitPost("writeForm");
+	}
+}
+
+// 첨부파일삭제
+function f_del_file(attFileNo) {
+	if(confirm("첨부파일을 삭제하시겠습니까?")) {
+		if(f_pwd_confirm()) {
+			gSendPost("../board/hp_board_file_delete_proc.jsp", {attFileNo: attFileNo, callback: "callbackFunc"});
+		}
+	}
+}
+
+function callbackFunc() {
+	document.getElementById("attFile").style.display="none";
+}
+
+
+
+// 수정
+function f_update() {
+	if(f_pwd_confirm()) {
+		$("#writeForm").attr("action","ref_lib_update.jsp?brdType=$!info.brdType&brdNum=$!info.brdNum&$!searchParamUrl").submit();
+	}
+}
+-->
+</script>
+<div class="right_content">
+<form id="writeForm" name="writeForm" action="ref_lib_delete_proc.jsp" method="post">
+	<input type="hidden" name="redirectUrl" value="ref_lib_list.jsp?brdType=$!info.brdType&!searchParam.searchParamUrl"/>
+	<input type="hidden" name="brdNum" id="brdNum" value="$!info.brdNum"/>
+	<input type="hidden" name="brdType" id="brdType" value="$!info.brdType"/>
+	<input type="hidden" name="attFileNo" id="attFileNo" value="$!attFileInfos.ATT1.attFileNo"/>
+	
+	<input type="hidden" name="brdRegId" id="brdRegId" value="$!SessionUtils.getAdminSeq($request)"/>
+	<input type="hidden" name="brdRegNm" id="brdRegNm" value="$!SessionUtils.getAdminName($request)"/>
+	
+	<div class="t_icon">$!info.brdTypeNm 상세보기 <div class="r_txt"><div class="navi">Home &gt; 정보관리 &gt; <strong>$!info.brdTypeNm</strong></div></div></div>
+	<table cellpadding="0" cellspacing="0" class="write_table02" width="100%">
+		<col width="15%" />
+		<col width="35%" />
+		<col width="15%" />
+		<col width="35%" />
+		<tr>
+			<th>제목</th>
+			<td colspan="3">$!info.brdTitle</td>
+		</tr>
+        <tr>
+            <th>구분</th>
+            <td colspan="3">$!info.brdTpNm</td>
+		</tr>
+		<tr>
+			<th>등록일</th>
+			<td>$!DateUtils.getTime($!info.updTm, "yyyyMMddhhmmss", "yyyy-MM-dd")</td>
+			<th>조회수</th>
+			<td >$!info.brdReadCnt</td>
+		</tr>
+		<tr>
+			<th>내용</th>
+			<td colspan="3" style="padding:10px 0 10px 10px;height:100px;">$!info.brdMemo</td>
+		</tr>
+		
+        <tr>
+            <th>첨부파일</th>
+            <td colspan="3">
+				#multifile($attFileInfos) #**	멀티파일  뷰 메크로	*#
+            </td>
+        </tr>
+	</table>
+	<br>
+	<table cellpadding="0" cellspacing="0" class="write_table02" width="100%">
+		<col width="15%" />
+		<col width="35%" />
+		<col width="15%" />
+		<col width="35%" />
+		<tr>
+			<th>등록일</th>
+			<td>$!DateUtils.getTime($!info.regTm, "yyyyMMddhhmmss", "yyyy-MM-dd")</td>
+			<th>등록자</th>
+			<td>$!info.brdRegNm</td>
+		</tr>
+		<tr>
+			<th>최근수정일</th>
+			<td>$!DateUtils.getTime($!info.updTm, "yyyyMMddhhmmss", "yyyy-MM-dd")</td>
+			<th>수정자</th>
+			<td>$!info.brdUpdNm</td>
+		</tr>
+    </table>
+	
+	<div class="paging_box">
+		<div class="pl_btn">
+		#if ($!info.prevBrdNum != "0")
+			<a href="ref_lib_view.jsp?brdType=$!info.brdType&brdNum=$!info.prevBrdNum&$!searchParamUrl"><img src="/admin/img/btn_pre.gif" alt="이전글" /></a>
+		#end
+		#if ($!info.nextBrdNum != "0")
+			<a href="ref_lib_view.jsp?brdType=$!info.brdType&brdNum=$!info.nextBrdNum&$!searchParamUrl"><img src="/admin/img/btn_next.gif" alt="다음글" /></a>
+		#end
+		</div>
+		<div class="pr_btn">
+#if ($!info.brdRegId == $!SessionUtils.getAdminSeq($request) || $!SessionUtils.getAdminSeq($request) == "admin")
+			<a href="javascript:f_delete();"><img src="/admin/img/btn_del.gif" alt="삭제" /></a>
+			<a href="javascript:f_update();"><img src="/admin/img/btn_modi.gif" alt="수정" /></a>
+#end
+			<a href="ref_lib_list.jsp?brdType=$!info.brdType&$!searchParam.searchParamUrl"><img src="/admin/img/btn_list.gif" alt="목록" /></a>
+		</div>
+	</div>
+
+</form>
+</div>

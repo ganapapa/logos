@@ -1,0 +1,113 @@
+## 용어사전 게시판
+#set ($searchParamUrl = "searchParamUrl=$!esc.url($searchParamUrl)")
+#set ($__brdTypeNm = $!CodeUtils.getCodeValue("BRDNM", $!searchParam.brdType))
+
+<script language="javascript" type="text/javascript">
+<!--
+$(document).ready(function(){
+	initSmartEdiotr("tdContents");
+});
+
+// 등록
+function f_insert() {
+    var oForm = document.forms["writeForm"];
+
+	if(!gf_validation(oForm)) {
+		return;
+	}
+
+	updateSmartEditor();
+	oForm.tdOpenYn.value = getRadioValue(oForm.tmpOpenYn);
+
+	if(confirm("정보를 등록하시겠습니까?")) {
+		gSubmitPost("writeForm",true);
+	}
+}
+
+// 삭제
+function f_delete() {
+	if(confirm("정보를 삭제하시겠습니까?")) {
+			gSubmitPost("delForm");
+	}
+}
+//-->
+</script>
+<div class="right_content">
+<form id="delForm" name="delForm" action="hp_tdic_delete_proc.jsp" method="post">
+	<input type="hidden" name="redirectUrl" value="tdic_list.jsp?$!searchParam.searchParamUrl"/>
+	<input type="hidden" name="tdNum" value="$!info.tdNum" />
+</form>
+<form id="writeForm" name="writeForm" action="hp_tdic_write_proc.jsp" method="post">
+	<input type="hidden" name="redirectUrl" value="tdic_list.jsp?$!searchParam.searchParamUrl"/>
+	<input type="hidden" name="mode" value="$!searchParam.mode"/>
+	<input type="hidden" name="regId" value="$!SessionUtils.getAdminId($request)" />
+	<input type="hidden" name="regNm" value="$!SessionUtils.getAdminName($request)" />
+	<input type="hidden" name="tdOpenYn" value="Y" />
+	<input type="hidden" name="tdNum" value="$!info.tdNum" />
+	
+	<div class="t_icon">용어사전 글쓰기 <div class="r_txt"><div class="navi">Home &gt; 통합자료실 &gt; <strong>용어사전</strong></div></div></div>
+	<table cellpadding="0" cellspacing="0" class="write_table02" width="100%">
+		<col width="15%" />
+		<col width="35%" />
+		<col width="15%" />
+		<col width="35%" />
+		<tr>
+			<th><span>*</span> 표제어</th>
+			<td colspan="3">
+				<input type="text" name="tdTitle" required title="표제어" class="login02_input" style="width:98%; height:18px;ime-mode:active" value="$!info.tdTitle"/>
+			</td>
+		</tr>
+		<tr>
+            <th><span>*</span> 가나다 구분</th>
+			<td colspan="3">
+				#genCodeSelect("TD_KR", "", "tdKrOdr", "$!info.tdKrOdr", 'required title="가나다 구분" style="width:150px; height:20px;"', "가나다 구분")				
+			</td>
+		</tr>
+		<tr>
+            <th><span>*</span> ABC 구분</th>
+			<td colspan="3">
+				#genCodeSelect("TD_ABC", "", "tdAbcOdr", "$!info.tdAbcOdr", 'required title="ABC 구분" style="width:150px; height:20px;"', "ABC 구분")				
+			</td>
+		</tr>
+		<tr>
+            <th><span>*</span> 용어구분</th>
+			<td colspan="3">
+				#genCodeSelect("TD_TYPE", "", "tdTermType", "$!info.tdTermType", 'required title="용어구분" style="width:150px; height:20px;"', "용어구분")				
+			</td>
+		</tr>
+		<tr>
+			<th><span>*</span> 내용</th>
+			<td style="padding:10px 0 10px 10px;" colspan="3">
+				<textarea name="tdContents" id="tdContents" title="내용" style="width:98%; height:350px;ime-mode:active">$!info.tdContents</textarea>
+			</td>
+		</tr>
+		<tr>
+			<th> 출처</th>
+			<td colspan="3">
+				<input type="text" name="tdOrigin" required title="출처" class="login02_input" style="width:98%; height:18px;ime-mode:active"  value="$!info.tdOrigin" />
+			</td>
+		</tr>		
+		<tr>
+			<th>등록자명</th>
+			<td colspan="3">$!SessionUtils.getAdminName($request)</td>
+		</tr>
+		<tr>
+			<th><span>*</span> 공개여부</th>
+			<td colspan="3">
+				<input type="radio" name="tmpOpenYn" #setChecked("$!info.tdOpenYn", "Y")title="공개여부" value="Y" id="OpenY" checked/> <label for="OpenY">공개</label>&nbsp;&nbsp;
+				<input type="radio" name="tmpOpenYn" #setChecked("$!info.tdOpenYn", "N")title="공개여부" value="N" id="OpenN"  /> <label for="OpenN">비공개</label>
+			</td>
+		</tr>
+	</table>
+	
+	<div class="sys_btn">
+#if ($!info.tdNum != "")
+			<a href="javascript:f_delete();"><img src="/admin/img/btn_del.gif" alt="삭제" /></a>
+#end		
+		<a href="tdic_list.jsp?$!searchParam.searchParamUrl"><img src="/admin/img/btn_cancel.gif" alt="취소" /></a>
+		<a href="javascript:f_insert();"><img src="/admin/img/btn_save.gif" alt="저장" /></a>
+	</div>
+</form>
+</div>
+
+

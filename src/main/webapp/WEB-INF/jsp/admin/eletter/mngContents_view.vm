@@ -1,0 +1,174 @@
+## 컨텐츠 관리 상세보기
+#makeSearchParams($searchParam, "orgCd,pos,limit,sortOrder", $searchParamUrl)
+#set ($searchParamUrl = "searchParamUrl=$!esc.url($searchParamUrl)")
+#set ($__brdTypeNm = $!CodeUtils.getCodeValue("BRDNM", $!searchParam.brdType))
+
+<script language="javascript" type="text/javascript">
+<!--
+// 비밀번호확인
+function f_pwd_confirm() {
+	//비밀번호 확인은 우선 사용하지않음
+	//var url = "hp_board_pwd_pop01.jsp?brdNum=$!info.brdNum";
+
+	//if(gf_openModalDialog(url, self, "330", "200", "no")=="OK") {
+	//	return true;
+	//}
+
+	//return false;
+	return true;
+}
+
+// 삭제
+function f_delete() {
+	//alert($!info.brdNum);
+	if(confirm("$__brdTypeNm 정보를 삭제하시겠습니까?")) {
+		if(f_pwd_confirm()) {
+			gSubmitPost("writeForm");
+		}
+	}
+}
+
+// 첨부파일삭제
+function f_del_file(attFileNo) {
+	if(confirm("첨부파일을 삭제하시겠습니까?")) {
+		if(f_pwd_confirm()) {
+			gSendPost("hp_board_file_delete_proc.jsp", {attFileNo: attFileNo, callback: "callbackFunc"});
+		}
+	}
+}
+
+function callbackFunc() {
+	document.getElementById("attFile").style.display="none";
+}
+
+// 수정
+function f_update() {
+	if(f_pwd_confirm()) {
+		$("#writeForm").attr("action","mngContents_update.jsp?brdType=$!info.brdType&brdNum=$!info.brdNum&$!searchParamUrl").submit();
+	}
+}
+
+// 댓글저장
+function f_commant_insert() {
+	if ($("#writeForm input[name=brdCommentMemo]").val() == "") {
+		$("#writeForm input[name=brdCommentMemo]").focus();
+		alert("댓글을 입력하십시요.");
+		return;
+	}
+
+	if(confirm("$__brdTypeNm 댓글정보를 등록하시겠습니까?")) {
+		gSendPost("hp_board_comment_write_proc.jsp", {mode: "add", brdNum: $("#brdNum").val(), brdCommentMemo: $("#brdCommentMemo").val(),brdRegId: $("#brdRegId").val(),brdRegNm: $("#brdRegNm").val(), callback: "callbackCommentFunc"});
+	}
+}
+
+// 댓글삭제
+function f_commant_delete(pBrdCommentNum) {
+	if(confirm("$__brdTypeNm 댓글정보를 삭제하시겠습니까?")) {
+		gSendPost("hp_board_comment_write_proc.jsp", {mode: "delete", brdCommentNum: pBrdCommentNum, callback: "callbackCommentFunc"});
+	}
+}
+
+function callbackCommentFunc() {
+	$("#writeForm").attr("action","mngContents_view.jsp?brdNum=$!info.brdNum&$!searchParamUrl").submit();
+}
+
+-->
+</script>
+<div class="right_content">
+<form id="writeForm" name="writeForm" action="hp_board_delete_proc.jsp" method="post">
+	<input type="hidden" name="redirectUrl" value="mngContents_list.jsp?brdType=$!info.brdType&!searchParam.searchParamUrl"/>
+	<input type="hidden" name="brdNum" id="brdNum" value="$!info.brdNum"/>
+	<input type="hidden" name="brdType" id="brdType" value="$!info.brdType"/>
+	<input type="hidden" name="attFileNo" id="attFileNo" value="$!attFileInfos.ATT1.attFileNo"/>
+	
+	<input type="hidden" name="brdRegId" id="brdRegId" value="$!SessionUtils.getAdminSeq($request)"/>
+	<input type="hidden" name="brdRegNm" id="brdRegNm" value="$!SessionUtils.getAdminName($request)"/>
+	
+	<div class="t_icon">$__brdTypeNm 상세보기 <div class="r_txt"><div class="navi">Home &gt; 웹진관리 &gt; <strong>$__brdTypeNm</strong></div></div></div>
+	<table cellpadding="0" cellspacing="0" class="write_table02" width="100%">
+		<col width="15%" />
+		<col width="35%" />
+		<col width="15%" />
+		<col width="35%" />
+		<tr>
+			<th>제목</th>
+			<td colspan="3">$!info.brdTitle</td>
+		</tr>
+		<tr>
+			<th>등록일</th>
+			<td>$!DateUtils.getTime($!info.updTm, "yyyyMMddhhmmss", "yyyy-MM-dd")</td>
+			<th>조회수</th>
+			<td >$!info.brdReadCnt</td>
+		</tr>
+		<tr>
+			<td colspan="4" style="padding:10px 0 10px 10px;height:100px;">
+				#**
+                #if ($attFileInfos.ATT1)
+                	#set ($__fileInfo = $attFileInfos.ATT1)
+        				<img src="#downloadPath($__fileInfo.attTableNm, $__fileInfo.attFileTp, $__fileInfo.attSaveFileNm, $!__fileInfo.attOrgFileNm)" title="$!esc.html($!__fileInfo.attOrgFileNm)" width="100%" />
+				#end
+				*#
+				$!info.brdMemo
+			</td>
+		</tr>
+	</table>
+	
+	<div class="paging_box">
+		<div class="pl_btn">
+		#if ($!info.prevBrdNum != "0")
+			<a href="mngContents_view.jsp?brdType=$!info.brdType&brdNum=$!info.prevBrdNum&$!searchParamUrl"><img src="/admin/img/btn_pre.gif" alt="이전글" /></a>
+		#end
+		#if ($!info.nextBrdNum != "0")
+			<a href="mngContents_view.jsp?brdType=$!info.brdType&brdNum=$!info.nextBrdNum&$!searchParamUrl"><img src="/admin/img/btn_next.gif" alt="다음글" /></a>
+		#end
+		</div>
+		<div class="pr_btn">
+#if ($!info.brdRegId == $!SessionUtils.getAdminSeq($request) || $!SessionUtils.getAdminSeq($request) == "admin")
+			<a href="javascript:f_delete();"><img src="/admin/img/btn_del.gif" alt="삭제" /></a>
+			<a href="javascript:f_update();"><img src="/admin/img/btn_modi.gif" alt="수정" /></a>
+#end
+			<a href="mngContents_list.jsp?brdType=$!info.brdType&$!searchParam.searchParamUrl"><img src="/admin/img/btn_list.gif" alt="목록" /></a>
+		</div>
+	</div>
+
+	<div class="sys_btn"></div>
+	<div class="alt_text">
+		<br/>&nbsp;&nbsp;&nbsp;* 댓글 [ $pageInfo.totalCount 건 ]
+		<div class="pop_txt_area">
+			<table cellpadding="0" cellspacing="0" class="line_type02" width="100%">
+				<col width="5%" />
+				<col width="85%" />
+				<col width="10%" />
+				<tr>
+                    <td colspan="2" style="width:90%; " ><textarea id="brdCommentMemo" name="brdCommentMemo" alt="댓글내용" style="width:98%; height:50px;ime-mode:active"></textarea></td>
+					<td >
+						<a href="javascript:f_commant_insert();"><img src="/admin/img/btn_save.gif" alt="저장" /></a>
+					</td>
+				</tr>
+#foreach($__info in $infos)
+	#set ($__tmpNo = $pageInfo.totalCount - ($pageInfo.page - 1) * $pageInfo.pageSize - $velocityCount + 1)
+			#if ($velocityCount % 2 == 1)
+				<tr class="g_td">##</tr>
+			#else
+				<tr>
+			#end
+					<td>$!__tmpNo</td>
+					<td class="subject">
+						$!__info.brdRegNm [$!DateUtils.getTime($!__info.updTm, "yyyyMMddhhmmss", "yyyy-MM-dd HH:mm:ss")]<br/>
+						$!StringUtils.cr2br($!esc.html($!__info.brdCommentMemo))
+					</td>
+					<td>
+#if ($__info.brdRegId == $!SessionUtils.getAdminSeq($request))
+						<a href="javascript:f_commant_delete('$!__info.brdCommentNum');"><img src="/admin/img/btn_del.gif" alt="삭제" /></a>
+#else
+						&nbsp;
+#end
+					</td>
+				</tr>
+#end
+			</table>
+		</div>
+	</div>
+	
+</form>
+</div>

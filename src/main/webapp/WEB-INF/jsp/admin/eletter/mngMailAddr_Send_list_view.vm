@@ -1,0 +1,261 @@
+#makeSearchParams($searchParam, "orgCd,pos,limit,sortOrder", $searchParamUrl)
+#set ($searchParamUrl = "searchParamUrl=$!esc.url($searchParamUrl)")
+#set ($__brdTypeNm = $!CodeUtils.getCodeValue("BRDNM", $!searchParam.brdType))
+
+<script language="javascript">
+<!--
+$(document).ready(function(){
+	$(".submit").keydown(function(e) {
+		if (e.keyCode == 13) {
+			e.preventDefault();
+			f_search();
+		}
+	});
+});
+
+function goPage(p) {
+	$("#searchForm input[name=page]").val(p);
+	$("#searchForm").submit();
+}
+
+// 조회
+function f_search() {
+	$("#searchForm input[name=searchSt]").val($("#tmpForm select[name=searchSt]").val());
+	$("#searchForm input[name=searchType]").val($("#tmpForm select[name=searchType]").val());
+	$("#searchForm input[name=searchKeyword]").val($("#tmpForm input[name=searchKeyword]").val());
+	$("#searchForm input[name=page]").val(1);
+	$("#searchForm").submit();
+}
+
+// 메일 발송
+function f_sendMail(All)
+{
+    var oForm = document.forms["tmpForm"];
+	var chk = document.getElementsByName("seq");
+	var chkFlag = false;
+	var count = 0;
+	
+	oForm.selectSeq.value = "";
+	
+	if(All != "Y")
+	{
+		for(var i=0;i<chk.length;i++)
+		{
+			if(chk[i].checked == true)
+			{
+				chkFlag = true;
+			}
+		}
+	}else{
+		chkFlag = true;
+	}
+	
+	if(!chkFlag)
+	{
+		alert('메일보낼 대상을 선택해주세요.');
+		return;
+	}
+	
+	for(var i=0;i<chk.length;i++)
+	{
+		if(chk[i].checked == true)
+		{
+			if(count>0)
+			{
+				oForm.selectSeq.value += ",";
+			}
+			
+			oForm.selectSeq.value += chk[i].value;
+			count++;
+		}
+	}
+	
+	window.open("mngMailAddr_Send_contTempPop.jsp?All="+All+"&selectSeq="+oForm.selectSeq.value,"contentPop", "width=620px,height=450px,scrollbars=yes,resizable=no,copyhistory=no,toolbar=no,status=no");
+}
+  
+// 체크버튼 컨트룰
+function f_AllChk(c)
+{
+	var chk = document.getElementsByName("seq");
+	var myAllChk = document.getElementsByName("AllChk");
+
+	if(c)
+	{
+		if(myAllChk[0].checked == true)
+		{
+    		for(var i=0;i<chk.length;i++){
+    			chk[i].checked = true;
+    		}
+		}else{
+    		for(var i=0;i<chk.length;i++){
+    			chk[i].checked = false;
+    		}
+		}
+	}else{
+		myAllChk[0].checked = false;
+	}
+}
+-->
+</script>
+<div class="right_content">
+<form id="searchForm" action="mngMailAddr_Send_list_view.jsp" method="post">
+	<input type="hidden" name="searchSt" value="$!searchParam.searchSt"/>
+	<input type="hidden" name="searchType" value="$!searchParam.searchType"/>
+	<input type="hidden" name="searchKeyword" value="$!searchParam.searchKeyword"/>
+	<input type="hidden" name="page" value="$!searchParam.page"/>
+	<input type="hidden" name="pageSize" value="$!searchParam.pageSize"/>
+</form>
+<form id="tmpForm"> 
+	<input type="hidden" name="page" value="$!searchParam.page"/>
+	<input type="hidden" name="pageSize" value="$!searchParam.pageSize"/>
+	## 팝업 전송시 꼭 필요한 정보
+	<input type="hidden" name="ALL" value="N"/>
+	<input type="hidden" name="selectSeq" value=""/>
+	
+	<div class="t_icon">주소록 & 발송 <div class="r_txt"><div class="navi">Home &gt; 웹진관리 &gt; <strong>주소록 & 발송</strong></div></div></div>
+
+	<table cellpadding="0" cellspacing="0" class="write_table" width="100%" border='0'>	## class="line_type02"
+		<col width="10%" />
+		<col width="10%" />
+		<col width="*" />
+		
+        <tr>
+            <th>구분</th>
+            <th>인원 (명)</th>
+            <th>평균 (%)</th>
+		</tr>
+		
+		<tr>
+            <th>등록된 회원</th>
+            <td>$!info.totalMember</td>
+            <td>
+				<img src="/images/board/progressbar.gif" width="90%" height="10px"> 100%
+			</td>
+		</tr>
+		
+		<tr>
+            <th>수신가능회원</th>
+            <td>$!info.yMember</td>
+            <td>
+				<img src="/images/board/progressbar.gif" width="$!info.yTotalBar%" height="10px"> $!info.yTotal%
+			</td>
+		</tr>
+		
+		<tr>
+            <th>수신거부회원</th>
+            <td>$!info.nMember</td>
+            <td>
+				<img src="/images/board/progressbar.gif" width="$!info.nTotalBar%" height="10px"> $!info.nTotal%
+			</td>
+		</tr>
+		
+		<tr>
+            <th>발신불가회원</th>
+            <td>$!info.fMember</td>
+            <td>
+				<img src="/images/board/progressbar.gif" width="$!info.fTotalBar%" height="10px"> $!info.fTotal%
+			</td>
+		</tr>
+    </table>
+	
+	<BR>
+	<div class="tc_box02">
+		<div class="l_box">총 <strong>$!pageInfo.totalCount</strong>개의 내용이 조회 되었습니다.</div>
+		<div class="r_box">
+			<div style=" margin-right:10px; margin-top:2px; float:left;">
+				구분 : 
+				<select name="searchSt" class="select" style="width:100px; height:20px;">
+                    <option value="">전체</option>
+                    <option value="Y" #if ($!searchParam.searchSt=="Y") selected #end>수신가능회원</option>
+                    <option value="N" #if ($!searchParam.searchSt=="N") selected #end>수신거부회원</option>
+                    <option value="F" #if ($!searchParam.searchSt=="F") selected #end>발신불가회원</option>
+                </select>
+				<select name="searchType" class="select" style="width:100px; height:20px;">
+					<option value="BRD_TITLE" #if ($!searchParam.searchType=="BRD_TITLE") selected #end>성명</option>
+					<option value="BRD_MEMO" #if ($!searchParam.searchType=="BRD_MEMO") selected #end>메일주소</option>
+					<option value="BRD_ALL" #if ($!searchParam.searchType=="BRD_ALL") selected #end>성명+메일주소</option>
+				</select>
+			</div>
+			<div >
+				<input type="text" name="searchKeyword" value="$!searchParam.searchKeyword" class="login02_input submit" style="width:150px; height:17px;" />&nbsp;&nbsp;&nbsp;
+				<a href="javascript:f_search();"><img src="/admin/img/sh_s_btn.gif" style="margin-bottom:-6px;" alt="검색" /></a>
+			</div>
+		</div>
+	</div>
+	<table cellpadding="10" cellspacing="10" class="line_type02" width="100%" border='1'>	## class="line_type02"
+		<col width="10%" />
+		<col width="10%" />
+		<col width="10%" />
+		<col width="10%" />
+		<col width="*" />
+		
+        <tr>
+            <th>
+				<input type="checkbox" name="AllChk" id="AllChk" onClick="f_AllChk(true);" />
+			</th>
+            <th>No.</th>
+            <th>성
+				&nbsp;&nbsp;&nbsp;&nbsp;
+				명</th>
+            <th>구
+				&nbsp;&nbsp;&nbsp;&nbsp;
+				분</th>
+            <th>메 일 주 소</th>
+		</tr>
+
+#set ($__term = 7)
+#foreach($__info in $infos)
+#set ($__tmpNo = $pageInfo.totalCount - ($pageInfo.page - 1) * $pageInfo.pageSize - $velocityCount + 1)
+
+	#if ($velocityCount % 2 == 1)
+		<tr class="g_td">##</tr>
+	#else
+		<tr>
+	#end
+	
+#set($seqNum = 0)
+			<td>
+				#if($__info.eletterReqYn == "Y")
+					<input type="checkbox" value="$__info.seq" name="seq" id="seq$seqNum" onClick="f_AllChk(false);">
+				#else
+					&nbsp;
+				#end
+					
+			</td>	## 체크박스
+			
+			<td>$__tmpNo</td>	## No.
+		
+			<td>$__info.name</td>	## 성명
+		
+			<td>
+				#if($__info.eletterReqYn == "Y")
+					<font color="blue">
+						수신가능
+                    </font>
+				#elseif($__info.eletterReqYn == "N")
+					<font color="red">
+						수신거부
+                    </font>
+				#else
+					<font color="gray">
+						발신불가
+                    </font>
+				#end
+			</td>	## 구분
+			
+			<td>$__info.email</td>	## 메일주소
+		</tr>
+#set($seqNum = $seqNum + 1)
+#end
+    </table>
+	<div class="paging_box">
+		#makePaging1($pageInfo)
+		<div class="pr_btn">
+			#if($!info.totalMember > 0)
+                <a href="javascript:f_sendMail('N');"><img src="/images/eletter/btn_selectsend.gif" title="선택발송" /></a>
+                <a href="javascript:f_sendMail('Y');"><img src="/images/eletter/btn_allsend.gif" title="전체발송" /></a>
+			#end
+		</div>
+	</div>
+</form>
+</div>

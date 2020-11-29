@@ -1,0 +1,28 @@
+<%@ page pageEncoding="utf-8"%>
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>CMS</title>
+
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>  
+
+<!-- Favicons -->
+<link rel="icon" href="<c:url value='/bootstrap/assets/img/favicon.png'/>" >
+<link rel="apple-touch-icon" href="<c:url value='/bootstrap/assets/img/apple-touch-icon.png'/>" >
+
+<!-- admin css -->
+<link rel="stylesheet" href="<c:url value='/admin/css/style.css'/>" />
+<link rel="stylesheet" href="<c:url value='/admin/css/excel_style.css'/>" />
+<link rel="stylesheet" href="<c:url value='/admin/css/pop_style.css'/>" />
+<link rel="stylesheet" href="<c:url value='/admin/css/print.css'/>" />
+
+<script src="<c:url value='/admin/js/jquery/jquery-1.7.1.min.js'/>"></script>
+<script src="<c:url value='/admin/js/jquery/jquery.js'/>"></script>
+<script src="<c:url value='/admin/js/common.dev.js'/>"></script>
+<script src="<c:url value='/admin/js/common.js'/>"></script>
+<script src="<c:url value='/admin/js/date.js'/>"></script>
+<script src="<c:url value='/admin/js/util.js'/>"></script>
+<script src="<c:url value='/admin/js/jquery/jquery.form.js'/>"></script>

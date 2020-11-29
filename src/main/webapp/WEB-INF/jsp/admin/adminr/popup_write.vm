@@ -1,0 +1,94 @@
+﻿#set ($searchParamUrl = "searchParamUrl=$!esc.url($searchParam.searchParamUrl)")
+<script language="javascript" type="text/javascript">
+// 등록
+function f_insert() {
+    var oForm = document.forms["writeForm"];
+
+	if(!gf_validation(oForm)) {
+		return;
+	}
+	
+	$("#writeForm input[name=mode]").val("$!mode");
+	gSubmitPost("writeForm",true);
+}
+
+function f_delete() {
+	if(confirm("정보를 삭제하시겠습니까?")) {
+		gSubmitPost("removeForm");
+	}
+}
+</script>
+<div class="right_content">
+<form id="removeForm" name="removeForm" method="post" action="popup_delete_proc.jsp">
+	<input type="hidden" name="mode" value="remove"/>
+	<input type="hidden" name="redirectUrl" value="popup_list.jsp?$!searchParam.searchParamUrl"/>
+	<input type="hidden" name="popNo" value="$!info.popNo"/>
+</form>	
+<form id="writeForm" name="writeForm" action="popup_write_proc.jsp" method="post">
+	<input type="hidden" name="redirectUrl" value="popup_list.jsp?$!searchParam.searchParamUrl"/>
+	<input type="hidden" name="mode"/>
+	<input type="hidden" name="popNo" value="$!info.popNo"/>
+	<div class="t_icon">팝업관리 <div class="r_txt"><div class="navi">Home &gt; 홈페이지관리 &gt; <strong>팝업관리</strong></div></div></div>
+	<table cellpadding="0" cellspacing="0" class="write_table02" width="100%">
+		<col width="15%" />
+		<col width="85%" />
+		<tr>
+			<th><span>*</span> 제목</th>
+			<td>
+				<input type="text" name="popTitle" value="$!info.popTitle" required alt="제목" class="login02_input" style="width:500px; height:18px;ime-mode:active" />
+			</td>
+		</tr>
+		<tr>
+			<th><span>*</span> 이미지설명</th>
+			<td>
+				<input type="text" name="popImgAlt" value="$!info.popImgAlt" required alt="이미지설명" class="login02_input" style="width:500px; height:18px;ime-mode:active" />
+			</td>
+		</tr>
+		<tr>
+			<th><span>*</span> 팝업이미지</th>
+			<td>
+				<input type="file" name="attachFile1_" class="file_board" #if ($mode == "add") required #end alt="팝업이미지" style="width:500px;" /> (178*148 px)
+#if ($attFileInfos.ATT1)
+	#set ($__fileInfo = $attFileInfos.ATT1)
+				<br /><a href="#downloadPath2($__fileInfo.attTableNm, $__fileInfo.attFileTp, $__fileInfo.attSaveFileNm, $!__fileInfo.attOrgFileNm, $!__fileInfo.attSaveFilePath)" class="down_file">$!esc.html($!__fileInfo.attOrgFileNm)</a>
+#end				
+			</td>
+		</tr>
+		<tr>
+			<th><span>*</span> 링크주소</th>
+			<td style="padding:10px 0 10px 10px;">
+				<input type="text" name="popLink" value="$!info.popLink" required alt="링크주소" class="login02_input" style="width:500px; height:18px;ime-mode:active" />
+			</td>
+		</tr>
+		<tr>
+			<th>링크구분</th>
+			<td>
+				<input type="radio" name="popLinkOpt" required radio value="_self" #setChecked("$!info.popLinkOpt", "_self") id="lab01" checked/> <label for="lab01">현재창</label>&nbsp;&nbsp;
+				<input type="radio" name="popLinkOpt" value="_blank" #setChecked("$!info.popLinkOpt", "_blank") id="lab02"/> <label for="lab02">새창</label>
+			</td>
+		</tr>
+		<tr>
+			<th>순서</th>
+			<td style="padding:10px 0 10px 10px;">
+				<input type="text" name="popOdr" value="$!info.popOdr" onkeydown="gf_num_only();" class="login02_input" maxlength="3" style="width:50px; height:18px;" />
+			</td>
+		</tr>
+		<tr>
+			<th>오픈여부</th>
+			<td>
+				<input type="radio" name="popOpenYn" required radio value="Y" #setChecked("$!info.popOpenYn", "Y") id="lab01" checked/> <label for="lab01">Y</label>&nbsp;&nbsp;
+				<input type="radio" name="popOpenYn" value="N" #setChecked("$!info.popOpenYn", "N") id="lab02"/> <label for="lab02">N</label>
+			</td>
+		</tr>
+	</table>
+	<div class="sys_btn">
+		<a href="popup_list.jsp?$!searchParam.searchParamUrl"><img src="/admin/img/btn_cancel.gif" alt="취소" /></a>
+#if ($mode == "add")		
+		<a href="javascript:f_insert();"><img src="/admin/img/btn_save.gif" alt="저장" /></a>
+#elseif ($mode == "update")
+		<a href="javascript:f_insert();"><img src="/admin/img/btn_modi.gif" alt="수정" /></a>
+		<a href="javascript:f_delete();"><img src="/admin/img/btn_del.gif" alt="삭제" /></a>
+#end		
+	</div>
+</form>
+</div>

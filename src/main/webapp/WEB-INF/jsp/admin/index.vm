@@ -1,0 +1,98 @@
+#makeSearchParams($searchParam, "orgCd,pos,limit,sortOrder", $searchParamUrl)
+#set ($searchParamUrl = "searchParamUrl=$!esc.url($searchParamUrl)")
+#set ($__brdTypeNm = $!CodeUtils.getCodeValue("BRDID", $!searchParam.brdType))
+<script language="javascript">
+
+
+</script>
+<div class="right_content" style="margin-left:180px;">
+	 <table border="0" width="100%" height="660" cellpadding="0" cellspacing="0" >
+		<col width="50%">
+		<col width="50%">
+	
+
+		<TR height="280px" valign="top">
+			<TD >
+			<div class="t_icon">공지사항</div>
+
+        	<table cellpadding="0" cellspacing="0" class="line_type02" width="98%">
+        		<col width="10%" />
+        		<col width="60%" />
+        		<col width="10%" />
+        		<col width="15%" />
+        		<tr>
+        			<th>구분</th>
+        			<th>제목</th>
+        			<th>등록자</th>
+        			<th>등록일</th>
+        		</tr>
+        #set ($__term = 7)
+        #foreach($__info in $notInfos)
+        	#set ($__tmpNo = $pageInfo.totalCount - ($pageInfo.page - 1) * $pageInfo.pageSize - $velocityCount + 1)
+        	#if ($velocityCount % 2 == 1)
+        		<tr class="g_td">##</tr>
+        	#else
+        		<tr>
+        	#end
+        			<td>
+        				#if ($!__info.brdTopNot =="on")<strong>#end
+        				$!__info.brdTpNm
+        				#if ($!__info.brdTopNot =="on")</strong>#end
+        			</td>
+        			<td class="subject">
+        				<strong><a href="hp/hp_board_view.jsp?readCnt=1&brdNum=$!__info.brdNum&$!searchParamUrl">
+								$!StringUtils.cutString($!__info.brdTitle,45,"..")
+						</a></strong>
+        			</td>
+                    <td> $!__info.brdRegNm</td>
+                    <td> $!DateUtils.getTime($!__info.regTm, "yyyyMMddhhmmss", "yyyy-MM-dd")</td>
+        		</tr>
+        #end
+        	</table>
+            </TD>
+			<TD >
+			<div class="t_icon">상담실</div>
+        	<table cellpadding="0" cellspacing="0" class="line_type02" width="100%">
+        		<col width="10%" />
+        		<col width="60%" />
+        		<col width="10%" />
+        		<col width="15%" />
+        		<tr>
+        			<th>구분</th>
+        			<th>제목</th>
+        			<th>등록자</th>
+        			<th>등록일</th>
+        		</tr>
+        #set ($__term = 7)
+        #foreach($__info in $qnaInfos)
+        	#set ($__tmpNo = $pageInfo.totalCount - ($pageInfo.page - 1) * $pageInfo.pageSize - $velocityCount + 1)
+        	#if ($velocityCount % 2 == 1)
+        		<tr class="g_td">##</tr>
+        	#else
+        		<tr>
+        	#end
+        			<td>
+        				#if ($!__info.brdTopNot =="on")<strong>#end
+        				$!__info.brdTpNm
+        				#if ($!__info.brdTopNot =="on")</strong>#end
+        			</td>
+        			<td class="subject">
+        				<strong><a href="hp/hp_board_view.jsp?readCnt=1&brdNum=$!__info.brdNum&$!searchParamUrl">
+                                #if ($!__info.brdStep > 0)
+                                	#set ($__mLeft = (10 * $!__info.brdStep) + "px")
+                                				<img src="/admin/img/re_icon.gif" align="absbottom" width="10" style="margin-left:$!__mLeft" />
+                                #end
+                                #if ($!__info.brdOpenYn=="N")
+                                				<img src="/admin/img/lock_icon.gif" align="absmiddle" width="10" />&nbsp;
+                                #end
+								$!StringUtils.cutString($!__info.brdTitle,45,"..")
+						</a></strong>
+        			</td>
+                    <td> $!__info.brdRegNm</td>
+                    <td> $!DateUtils.getTime($!__info.regTm, "yyyyMMddhhmmss", "yyyy-MM-dd")</td>
+        		</tr>
+        #end
+        	</table>
+            </TD>
+        </TR>
+</div>

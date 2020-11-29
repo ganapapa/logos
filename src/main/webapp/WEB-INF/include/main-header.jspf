@@ -1,0 +1,36 @@
+<%@ page pageEncoding="utf-8"%>
+<header id="header" role="banner">
+
+	<h1>Truth Coffee</h1>
+	<div>
+		<div id="brand">
+			<p class="title">영도 스마트팩토리 
+                <span class="color-secondary-5">현황판</span>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <span class="color-secondary-6" id="lineText">Line</span>
+			</p>
+		</div>
+	</div>
+
+	<div id="tabremote">
+		<dl>
+			<dt>시간설정</dt>
+			<dd>
+				<span class="alt"><img src="<c:url value="/images/common/toggle_dial.png" />" alt="토글버튼" /></span>
+			</dd>
+		</dl>
+		<div class="time">
+			<p class="line"><span class="title">Data조회<br>시간설정(초):</span><input id="setDataSec" type="text" style="width:5em"><button id="dataTimeSet">확인</button></p>
+            <p class="line"><span class="title">화면전환<br>시간설정(초):</span><input id="setSlideSec" type="text" style="width:5em"><button id="slideTimeSet">확인</button></p>
+            <p class="line"><span class="title">Slide Toggle:&nbsp;</span><button class="pause" id="slideToggle" style="width: 5em">ON</button></p>
+            <p class="line"><span class="title">DB Disconnect:</span><button id="discon">Disconnect</button></p>
+            <p class="line-title">화면이동</p>
+            <ul>
+               <li><a href="<%=request.getContextPath() %>/monitor/slideBoard01.do">slide</a></li>
+               <li><a href="<%=request.getContextPath() %>/monitor/slideBoard04.do">조립</a></li>
+            </ul>
+		</div>
+	</div>
+
+</header>

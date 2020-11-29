@@ -1,0 +1,69 @@
+﻿#set ($searchParamUrl = "searchParamUrl=$!esc.url($searchParam.searchParamUrl)")
+<script language="javascript" type="text/javascript">
+// 등록
+function f_insert() {
+    var oForm = document.forms["writeForm"];
+
+	if(!gf_validation(oForm)) {
+		return;
+	}
+
+	if(confirm("$!searchParam.brdTypeNm정보를 등록하시겠습니까?")) {
+		gSubmitPost("writeForm",true);
+	}
+}
+</script>
+<div class="right_content">
+<form id="writeForm" name="writeForm" action="submenu_write_proc.jsp" method="post">
+	<input type="hidden" name="redirectUrl" value="menu_mng_view.jsp?pk=$!searchParam.ppk&menu3=$!searchParam.pMenu3&brdType="/>
+	<input type="hidden" name="mode" value="add"/>
+	<input type="hidden" name="brdType" value=""/>
+	<input type="hidden" name="adPcode" value="$!searchParam.pMenu3"/>
+	<input type="hidden" name="adMenu1" id="adMenu1" value="MM" />
+	<input type="hidden" name="adUpdId"  value="$!SessionUtils.getAdminId($request)" />
+	<input type="hidden" name="brdRegId" value="$!SessionUtils.getAdminId($request)" />
+	<input type="hidden" name="brdRegNm" value="$!SessionUtils.getAdminName($request)" />
+	##<input type="hidden" name="managerIdUseYn" 	value="" />
+	##<input type="hidden" name="brdOpenYn" value="Y" />
+	
+	<div class="t_icon">$!searchParam.brdTypeNm 중분류등록<div class="r_txt"><div class="navi">Home &gt; 관리자 &gt; <strong>$!searchParam.brdTypeNm 중분류등록</strong></div></div></div>
+	<table cellpadding="0" cellspacing="0" class="write_table02" width="100%">
+		<col width="15%" />
+		<col width="35%" />
+		<col width="15%" />
+		<col width="35%" />
+		<tr>
+			<th>중메뉴명</th>
+			<td>
+				<input type="text" name="adMuTitle" value="$!info.adMuTitle" required alt="메뉴명" class="login02_input" style="width:90%; height:18px;ime-mode:active" />
+				##<a href="javascript:f_idcheck();"><img src="/admin/img/join02_btn02.gif" alt="중복체크" /></a>
+			</td>
+			<th>메모</th>
+			<td>
+				<input type="text"  name="adMuMemo" value="$!info.adMuMemo" required alt="메모" class="login02_input" style="width:90%; height:18px;ime-mode:active" />
+			</td>
+		</tr>
+		<tr>
+			<th>중메뉴URL</th>
+			<td colspan="3">
+				<input type="text"  name="adMuUrl" value="$!info.adMuUrl" required alt="메뉴URL" class="login02_input" style="width:96%; height:18px;ime-mode:active" />
+			</td>
+		</tr>
+		<tr>
+			<th>사용유무</th>
+			<td>
+				<input type="radio" name="adUseYn" required radio value="Y" #setChecked("$!info.useYn", "Y") id="lab01" checked/> <label for="lab01">Y</label>&nbsp;&nbsp;
+				<input type="radio" name="adUseYn" value="N" #setChecked("$!info.useYn", "N") id="lab02"/> <label for="lab02">N</label>
+			</td>
+			<th>순번</th>
+			<td >
+				<input type="text" name="adMuOdr" value="$!info.adMuOdr" required alt="메뉴순번" class="login02_input" style="width:90%; height:18px;ime-mode:active" onkeydown="gf_num_only();" maxlength="2"/>
+			</td>
+		</tr>
+	</table>
+	<div class="sys_btn">
+		<a href="menu_mng_view.jsp?pk=$!searchParam.ppk&menu3=$!searchParam.pMenu3&brdType="><img src="/admin/img/btn_cancel.gif" alt="취소" /></a>
+		<a href="javascript:f_insert();"><img src="/admin/img/btn_save.gif" alt="저장" /></a>
+	</div>
+</form>
+</div>

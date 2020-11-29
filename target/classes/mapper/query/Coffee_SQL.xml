@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="coffee">
+	
+	<!-- users list -->
+	<select id="selectUsersByID" parameterType="String" resultType="com.logos.coffee.vo.UserDto">
+	<![CDATA[
+		SELECT id, emailaddress
+			   , enabled, password
+			   , phonenumber, sex
+			   , username
+		  FROM user_info a
+		 WHERE a.username = #{username}
+	]]>
+	</select>
+	
+	<!-- 설비목록 -->
+	<select id="selectMachineInfo" parameterType="hashmap" resultType="hashmap">
+	<![CDATA[
+		SELECT A.FA_NO
+		       ,A.FA_NM
+		       ,A.FA_BC
+		       ,A.MAKER
+		       ,A.FAC_CD
+		       ,A.PROD_YN
+		       ,A.RMKS
+		  FROM FMA100 A
+		  JOIN PPZ300 B ON B.FA_NO = A.FA_NO
+		 WHERE B.WC_CD = #{wc_cd}	
+		 ORDER BY CONVERT(INT, SUBSTRING(A.FA_NO,3,4))
+	]]>
+	</select>
+	
+	<!-- 조립뷰 count-->
+	<select id="selectAssmCnt" parameterType="hashmap" resultType="hashmap">
+	<![CDATA[
+		SELECT COUNT(*) AS CNT
+		  FROM (SELECT WO_SEQ
+		      			,WO_DT        
+		      			,WO_NO        
+		      			,ITM_NM       
+		      			,LINE_NM       
+		      			,WO_QTY       
+		      			,OK_OUT_QTY   
+		      			,ACH_RATE     
+		      			,MNG_NO    
+			      FROM PPB100LV) A
+	]]>
+	</select>
+	
+	<!-- 조립뷰 -->
+	<!-- WHERE WO_DT = CONVERT(VARCHAR(10), GETDATE(), 120) -->
+	<select id="selectAssembleInfo" parameterType="hashmap" resultType="hashmap">
+	<![CDATA[
+		SELECT WO_SEQ
+			  ,WO_DT        
+			  ,WO_NO        
+			  ,ITM_NM
+			  ,ITM_CD
+			  ,LINE_NM       
+			  ,WO_QTY       
+			  ,OK_OUT_QTY   
+			  ,ACH_RATE     
+			  ,MNG_NO
+			  ,IMG
+	     FROM PPB100LV
+	    WHERE CONVERT(VARCHAR(10), WO_DT, 120) LIKE CONVERT(VARCHAR(10), GETDATE(), 120)
+ 		ORDER BY WO_SEQ
+	]]>
+	</select>
+	
+	<!-- 조립 이미지-->
+	<select id="selectAssembleImgInfo" parameterType="hashmap" resultType="hashmap">
+	<![CDATA[
+		SELECT WO_SEQ
+			  ,WO_DT        
+			  ,WO_NO        
+			  ,ITM_NM
+			  ,ITM_CD
+			  ,IMG
+	     FROM PPB100LV
+	    WHERE CONVERT(VARCHAR(10), WO_DT, 120) LIKE CONVERT(VARCHAR(10), GETDATE(), 120)
+ 		ORDER BY WO_SEQ
+	]]>
+	</select>
+	
+	<!-- 가공n단조반 -->
+	<select id="selectFA_MONITOR_PRESS_V" parameterType="hashmap" resultType="hashmap">
+	<![CDATA[
+		SELECT *
+		  FROM FA_MONITOR_PRESS_V
+		 ORDER BY FA_NM
+	]]>
+	</select>
+	
+	<!-- 자동반 -->
+	<select id="selectFA_MONITOR_AUTO_V" parameterType="hashmap" resultType="hashmap">
+	<![CDATA[
+		SELECT *
+		  FROM FA_MONITOR_AUTO_V
+		 ORDER BY FA_NM
+	]]>
+	</select>
+	
+	<!-- 클릭 시 상세팝업 -->
+	<select id="selectMachineDetail" parameterType="hashmap" resultType="hashmap">
+	<![CDATA[
+        EXEC FA_MONITOR_GET #{fa_no}
+	]]>
+	</select>
+	
+	<!-- 비가동 정보 -->
+	<select id="selectNonOper" parameterType="hashmap" resultType="hashmap">
+	<![CDATA[
+        SELECT *
+		  FROM FA_MONITOR_NON_OPER_V
+		 WHERE fa_no = #{fa_no}
+		 ORDER BY WORK_DT DESC
+	]]>
+	</select>
+	
+	<!-- 비가동 그래프 정보 -->
+	<resultMap id="rslt1" type="hashmap"></resultMap>
+	<resultMap id="rslt2" type="hashmap"></resultMap>
+	<resultMap id="rslt3" type="hashmap"></resultMap>
+	<resultMap id="rslt4" type="hashmap"></resultMap> 
+	
+	<select id="selectNonOperGraph" parameterType="hashmap" resultMap="rslt1, rslt2, rslt3, rslt4">
+	<![CDATA[
+		DECLARE	@_wc_cd	VARCHAR(1000)
+		
+		EXEC Util_CommaString @_wc_cd output, '100'
+		
+        EXEC PPW102_QueryForWeb #{yyyy_mm}, '100', '1000', @_wc_cd, #{fa_no}
+	]]>
+	</select>
+	
+</mapper>

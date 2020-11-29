@@ -1,0 +1,167 @@
+#makeSearchParams($searchParam, "orgCd,pos,limit,sortOrder", $searchParamUrl)
+#set ($searchParamUrl = "searchParamUrl=$!esc.url($searchParamUrl)")
+#set ($__brdTypeNm = $!CodeUtils.getCodeValue("MENU", $!searchParam.brdType))
+<script language="javascript">
+<!--
+$(document).ready(function(){
+	$(".submit").keydown(function(e) {
+		if (e.keyCode == 13) {
+			e.preventDefault();
+			f_search();
+		}
+	});
+});
+
+function goPage(p) {
+	$("#searchForm input[name=page]").val(p);
+	$("#searchForm").submit();
+}
+
+// 조회
+function f_search() {
+	//$("#searchForm input[name=selBrdProgSt]").val($("#tmpForm select[name=selBrdProgSt]").val());
+	//$("#searchForm input[name=searchType]").val($("#tmpForm select[name=searchType]").val());
+	//$("#searchForm input[name=searchKeyword]").val($("#tmpForm input[name=searchKeyword]").val());
+	//$("#searchForm input[name=searchName]").val($("#tmpForm input[name=searchName]").val());
+
+	//$("#searchForm input[name=searchID]").val($("#tmpForm input[name=searchID]").val());
+	//$("#searchForm input[name=searchDept]").val($("#tmpForm input[name=searchDept]").val());
+	//$("#searchForm input[name=searchJobtitl]").val($("#tmpForm input[name=searchJobtitl]").val());
+	
+	$("#searchForm input[name=codeName]").val($("#tmpForm input[name=cName]").val());
+	$("#searchForm input[name=code]").val($("#tmpForm input[name=code]").val());
+	$("#searchForm input[name=codeRmk]").val($("#tmpForm input[name=codeRmk]").val());
+	$("#searchForm input[name=codeUseYn]").val($("#tmpForm input:radio[name=useYn]:checked").val());
+	
+	$("#searchForm input[name=searchType]").val($("#tmpForm select[name=searchType]").val());
+	$("#searchForm input[name=page]").val(1);
+	$("#searchForm").submit();
+}
+-->
+</script>
+<div class="right_content">
+<form id="searchForm" action="cm_code_mng_list.jsp" method="post">
+	##<input type="hidden" name="selBrdProgSt" value="$!searchParam.selBrdProgSt"/>
+	##<input type="hidden" name="searchType" value="$!searchParam.searchType"/>
+	##<input type="hidden" name="searchKeyword" value="$!searchParam.searchKeyword"/>
+	##<input type="hidden" name="searchName" value="$!searchParam.searchName"/>
+	
+	##<input type="hidden" name="searchID" value="$!searchParam.searchID"/>
+	##<input type="hidden" name="searchDept" value="$!searchParam.searchDept"/>
+	##<input type="hidden" name="searchJobtitl" value="$!searchParam.searchJobtitl"/>
+	
+	<input type="hidden" name="codeName" value="$!searchParam.name"/>
+	<input type="hidden" name="code" value="$!searchParam.code"/>
+	<input type="hidden" name="codeRmk" value="$!searchParam.codeRmk"/>
+	<input type="hidden" name="codeUseYn" value="$!searchParam.codeUseYn"/>
+	
+	<input type="hidden" name="brdType" value="$!searchParam.brdType"/>
+	<input type="hidden" name="page" value="$!searchParam.page"/>
+	<input type="hidden" name="pageSize" value="$!searchParam.pageSize"/>
+</form>
+
+
+<form id="tmpForm">
+	<input type="hidden" name="page" value="$!searchParam.page"/>
+	<input type="hidden" name="pageSize" value="$!searchParam.pageSize"/>
+	<div class="t_icon">$__brdTypeNm <div class="r_txt"><div class="navi">Home &gt; 관리자 &gt; <strong>$__brdTypeNm</strong></div></div></div>
+	
+
+	<table cellpadding="0" cellspacing="0" width="1060" class="write_table">
+	<col width="15%" />
+	<col width="35%" />
+	<col width="15%" />
+	<col width="35%" />
+		
+		<tr>
+			<th class="c_th">코드명칭</th>
+			<td>
+				<div style="float:left; margin-right:10px;">
+					<input type="text" name="cName" value="$!searchParam.codeName" class="login02_input submit" style="width:180px; height:17px;" />&nbsp;
+				</div>
+			</td>
+			<th class="c_th">코드</th>
+			<td>
+				<div style="margin-right:10px; float:left;">
+					<input type="text" name="code" value="$!searchParam.code" class="login02_input submit" style="width:180px; height:17px;" />&nbsp;
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<th class="c_th">메모</th>
+			<td>
+				<div style="float:left; margin-right:10px;">
+					<input type="text" name="codeRmk" value="$!searchParam.codeRmk" class="login02_input submit" style="width:180px; height:17px;" />&nbsp;
+				</div>
+			</td>
+			<th class="c_th">사용유무</th>
+			<td>
+				<div style="float:left; margin-right:10px;">
+					<input type="radio" name="useYn" value="Y" #setChecked("$!searchParam.codeUseYn", "Y") id="lab01"/> <label for="lab01">Y</label>&nbsp;&nbsp;
+					<input type="radio" name="useYn" value="N" #setChecked("$!searchParam.codeUseYn", "N") id="lab02"/> <label for="lab02">N</label>
+				</div>
+			</td>
+		</tr>
+	</table>
+	
+	<div class="c_btn"><a href="javascript:f_search();"><img src="/admin/img/sh_s_btn.gif" alt="검색" /></a></div>
+	
+	
+	
+	<!-- 공통코드목록 -->
+	<div class="tc_box02">
+		<div class="l_box">총 <strong>$!pageInfo.totalCount</strong>개의 내용이 등록되어 있습니다.</div>
+		<div class="r_box">
+			<div style=" margin-right:10px; margin-top:2px; float:left;">
+					<a href="#"><img src="/admin/img/btn_ch_xls.gif" alt="엑셀 전환" /></a>
+			</div>
+		</div>
+	</div>
+	<table cellpadding="0" cellspacing="0" class="line_type02" width="100%">
+		<col width="3%" />
+		##<col width="10%" />
+		<col width="12%" />
+		<col width="20%" />
+		<col width="6%" />
+		<col width="6%" />
+		<col width="6%" />
+		
+		<tr>
+			<th>번호</th>
+			##<th>코드타입</th>
+			<th>코드</th>
+			<th>코드명칭</th>
+			##<th>상위코드</th>
+			<th>코드순번</th>
+			<th>사용유무</th>
+		</tr>
+		
+		#if ($infos.size() ==0)
+		<tr><td colspan="7"> ※ 조회된 내용이 없습니다. </td></tr>
+		#end
+#set ($__term = 7)
+#foreach($__info in $infos)
+	#set ($__tmpNo = $pageInfo.totalCount - ($pageInfo.page - 1) * $pageInfo.pageSize - $velocityCount + 1)
+	#if ($velocityCount % 2 == 1)
+		<tr class="g_td">
+	#else
+		<tr>
+	#end
+			<td>$!__tmpNo</td>
+			##<td>$!__info.codeType</td>
+			<td>$!__info.code</td>
+			<td>
+				<strong><a href="cm_code_view_and_subcode_list.jsp?readCnt=1&seq=$!__info.seq&code=$!__info.code&brdType=32&$!searchParamUrl">$!__info.name</a></strong>
+			</td>
+			##<td>$!__info.pcode</td>
+            <td>$!__info.codeOdr</td>
+            <td>$!__info.useYn</td>
+		</tr>
+#end
+	</table>
+	<div class="paging_box">
+		#makePaging1($pageInfo)
+		<div class="pr_btn"><a href="cm_code_write.jsp?brdType=$!searchParam.brdType&brdTypeNm=$__brdTypeNm&$!searchParamUrl"><img src="/admin/img/btn_write.gif" alt="등록" /></a></div>
+	</div>
+</form>
+</div>
